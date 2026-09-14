@@ -8,6 +8,16 @@
 
 **Input**: User description: "Mostrar categorías desde un apartado estático del menú, permitir filtrarlas por nivel de complejidad y presentar sus notas como una ruta de curso con la primera nota abierta y un listado lateral. Las notas solo se acceden desde categorías y pueden contener Markdown o un video de YouTube."
 
+## Clarifications
+
+### Session 2026-09-14
+
+- Q: ¿El nivel de complejidad debe pertenecer a la categoría completa, a cada nota individual o a ambas? → A: Cada categoría tiene un nivel y todas sus notas lo heredan.
+- Q: ¿Qué debe ocurrir cuando alguien abre directamente el enlace de una nota que incluye su categoría? → A: Abrir la nota si el enlace incluye su categoría válida.
+- Q: ¿Puede una misma nota combinar contenido escrito y video, o debe usar un único formato? → A: Cada nota es exclusivamente escrita o de video.
+- Q: ¿Cuándo debe considerarse publicada y visible una categoría o nota añadida a las fuentes de contenido? → A: Todo contenido válido queda publicado automáticamente.
+- Q: ¿Qué debe pasar con la publicación del sitio cuando una categoría o nota tiene datos inválidos? → A: Bloquear toda la publicación hasta corregir el error.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Descubrir categorías por nivel (Priority: P1)
@@ -56,7 +66,8 @@ Como estudiante, quiero leer una nota escrita o reproducir una nota en video den
 
 1. **Given** una nota escrita seleccionada, **When** se muestra su detalle, **Then** el estudiante ve el título, la descripción, la duración estimada y el contenido escrito completo con su formato legible.
 2. **Given** una nota de video seleccionada, **When** se muestra su detalle, **Then** el estudiante ve el título, la descripción, la duración estimada y un reproductor del video de YouTube correspondiente.
-3. **Given** que una persona intenta abrir directamente una nota fuera del flujo de categorías, **When** el sistema procesa el acceso, **Then** la conduce al apartado de categorías y le explica que debe elegir primero una categoría.
+3. **Given** un enlace directo que identifica una categoría válida y una nota perteneciente a ella, **When** una persona abre o recarga el enlace, **Then** ve la ruta de esa categoría con la nota indicada activa.
+4. **Given** un enlace de nota sin categoría o con una categoría que no le corresponde, **When** el sistema procesa el acceso, **Then** conduce a la persona al apartado de categorías con una explicación clara.
 
 ### Edge Cases
 
@@ -67,6 +78,8 @@ Como estudiante, quiero leer una nota escrita o reproducir una nota en video den
 - Si el contenido escrito no puede cargarse o el video no está disponible, se muestra un mensaje contextual y accionable sin detalles técnicos; el listado de la ruta continúa utilizable.
 - En pantallas donde no cabe un listado lateral permanente, la ruta de notas sigue siendo accesible mediante un control compacto sin perder el orden ni la indicación de la nota activa.
 - Una nota asociada a una categoría distinta no aparece ni puede seleccionarse dentro de la ruta actual.
+- Si un enlace combina una categoría y una nota que no pertenecen entre sí, no muestra el contenido de la nota y orienta a elegir una categoría válida.
+- Si alguna categoría o nota no supera la validación, se bloquea la publicación completa hasta corregir todos los errores detectados.
 
 ## Requirements *(mandatory)*
 
@@ -74,7 +87,7 @@ Como estudiante, quiero leer una nota escrita o reproducir una nota en video den
 
 - **FR-001**: El sistema DEBE mantener un acceso visible y estable a "Categorías" dentro del menú principal en todas las vistas que compartan esa navegación.
 - **FR-002**: El sistema DEBE permitir declarar cada categoría con un identificador único, nombre, referencia de imagen local o remota y exactamente un nivel de complejidad.
-- **FR-003**: Los niveles iniciales admitidos DEBEN incluir `Principiante`, `Intermedio`, `Avanzado` y `Pro`, y su presentación DEBE ser consistente en todas las categorías.
+- **FR-003**: Los niveles iniciales admitidos DEBEN incluir `Principiante`, `Intermedio`, `Avanzado` y `Pro`; el nivel DEBE pertenecer exclusivamente a la categoría, aplicar a todas sus notas y presentarse de manera consistente.
 - **FR-004**: El apartado de categorías DEBE mostrar todas las categorías publicadas y hacer visibles, como mínimo, su nombre, imagen y nivel de complejidad.
 - **FR-005**: El visitante DEBE poder filtrar las categorías por nivel de complejidad y restablecer el listado completo.
 - **FR-006**: Al seleccionar una categoría, el sistema DEBE mostrar únicamente las notas publicadas que pertenecen a ella.
@@ -87,10 +100,10 @@ Como estudiante, quiero leer una nota escrita o reproducir una nota en video den
 - **FR-013**: El estudiante DEBE poder cambiar la nota activa desde el listado de la ruta sin abandonar la categoría seleccionada.
 - **FR-014**: En pantallas estrechas, el sistema DEBE ofrecer un acceso compacto y operable al mismo listado, orden e indicador de nota activa.
 - **FR-015**: El detalle de toda nota DEBE mostrar su título, descripción, duración estimada y el contenido que corresponda a su formato.
-- **FR-016**: El sistema DEBE impedir el consumo de una nota fuera de una categoría seleccionada; un acceso directo DEBE llevar al apartado de categorías con una explicación clara.
+- **FR-016**: El sistema DEBE permitir abrir, recargar y compartir una nota cuando su enlace identifica una categoría válida a la que pertenece; si falta la categoría o la relación no es válida, DEBE llevar al apartado de categorías con una explicación clara sin mostrar la nota.
 - **FR-017**: Los estados vacíos y los fallos de imagen o contenido DEBEN comunicarse con mensajes comprensibles, contextuales y sin exponer detalles técnicos.
-- **FR-018**: Los responsables del contenido DEBEN poder añadir o actualizar categorías y notas mediante las fuentes de contenido versionadas del sitio, sin requerir una herramienta administrativa ni una base de datos externa.
-- **FR-019**: El sistema DEBE rechazar de la publicación categorías sin los campos de FR-002 y notas sin los campos o el contenido exigidos por FR-007 a FR-009, e identificar el dato faltante para que pueda corregirse.
+- **FR-018**: Los responsables del contenido DEBEN poder añadir o actualizar categorías y notas mediante las fuentes de contenido versionadas del sitio, sin requerir una herramienta administrativa ni una base de datos externa; todo contenido que supere la validación DEBE quedar publicado automáticamente, sin un estado editorial adicional.
+- **FR-019**: El sistema DEBE bloquear la publicación completa mientras exista una categoría sin los campos de FR-002 o una nota sin los campos o el contenido exigidos por FR-007 a FR-009, e identificar cada dato inválido para que pueda corregirse.
 
 ### Key Entities
 
@@ -110,7 +123,7 @@ Como estudiante, quiero leer una nota escrita o reproducir una nota en video den
 - **SC-004**: En el 100% de las categorías con notas, estas aparecen en el orden definido, la primera se abre inicialmente y la nota activa se identifica de forma inequívoca.
 - **SC-005**: Al menos el 95% de los participantes cambia entre dos notas de una ruta en menos de 10 segundos, tanto en pantalla amplia como estrecha.
 - **SC-006**: El 100% de las notas válidas muestra título, descripción, duración estimada y su contenido escrito o reproductor de video correspondiente.
-- **SC-007**: El 100% de los intentos de acceso directo a una nota fuera del flujo de categorías termina en el apartado de categorías con orientación comprensible y sin mostrar el contenido restringido.
+- **SC-007**: El 100% de los enlaces que combinan correctamente categoría y nota abren la ruta con esa nota activa; el 100% de los enlaces sin categoría válida o con una relación incorrecta terminan en el apartado de categorías sin mostrar la nota.
 - **SC-008**: El 100% de los contenidos incompletos incluidos en las pruebas de publicación se detecta antes de quedar disponible para visitantes, indicando cuál información debe corregirse.
 
 ## Assumptions
@@ -119,8 +132,8 @@ Como estudiante, quiero leer una nota escrita o reproducir una nota en video den
 - El nivel de complejidad clasifica la categoría completa; las notas heredan el contexto de dificultad de su categoría y no tienen un nivel independiente.
 - Cada nota pertenece a una sola categoría y ocupa una posición única dentro de esa ruta.
 - "Primera nota" significa la nota publicada con la posición más baja dentro de la categoría.
-- El acceso restringido a notas se refiere al flujo de navegación: para consumir una nota debe existir una categoría seleccionada, incluso si alguien conoce una dirección directa.
+- El acceso restringido a notas exige un contexto de categoría válido, que puede provenir de la navegación o estar incluido en un enlace directo compartido.
 - La administración visual de categorías y notas está fuera del alcance; el contenido lo mantienen responsables con acceso al repositorio.
+- No existen estados de borrador o publicación: la validez del contenido determina automáticamente su visibilidad para visitantes.
 - Los controles de reproducción, disponibilidad y políticas del video dependen de YouTube; el sitio ofrece un mensaje útil cuando el recurso no puede mostrarse.
 - La accesibilidad mediante teclado, etiquetas comprensibles, contraste suficiente y adaptación a distintos tamaños de pantalla forma parte de la calidad esperada del flujo.
-
