@@ -19,6 +19,39 @@ Las etiquetas visibles se centralizan: `beginner → Principiante`, `intermediat
 - El nivel pertenece a la categoría; ninguna nota almacena nivel.
 - Eliminar o renombrar una categoría exige actualizar todas sus notas antes de que el build vuelva a pasar.
 
+## HomeCategoryIndex
+
+Modelo derivado, no persistido, que alimenta el índice de la portada en todas las anchuras.
+
+| Campo | Tipo | Derivación |
+|---|---|---|
+| `categories` | `ReadonlyArray<Category>` | Todas las categorías válidas, ordenadas por `name` normalizado y luego por `id` |
+| `destination` | string por categoría | URL canónica `/categorias/{category.id}/` |
+
+La presentación amplia y el control compacto DEBEN consumir el mismo array ordenado. No se crean copias con orden, etiquetas o destinos independientes.
+
+## SiteConfig
+
+Configuración pública, versionada e inmutable del sitio.
+
+| Campo | Tipo | Requerido | Reglas |
+|---|---|---:|---|
+| `socialLinks` | `ReadonlyArray<SocialLink>` | sí | Puede estar vacío; nunca contiene valores inválidos ni de ejemplo |
+
+Un array vacío significa que la portada omite los enlaces sociales; no muestra iconos deshabilitados, URLs vacías ni placeholders.
+
+## SocialLink
+
+Destino social proporcionado expresamente por el autor.
+
+| Campo | Tipo | Requerido | Reglas |
+|---|---|---:|---|
+| `network` | string | sí | Clave estable, no vacía y única dentro de `socialLinks` |
+| `label` | string | sí | Texto no vacío que identifica de forma comprensible la red y el destino |
+| `url` | string | sí | URL absoluta con esquema `https`; única dentro de `socialLinks` |
+
+La validez comprueba forma, unicidad y origen autoral; no consulta en tiempo de build si el proveedor remoto está disponible.
+
 ## Note
 
 Unidad ordenada de aprendizaje. Cada entrada se almacena en un archivo Markdown.
@@ -42,6 +75,10 @@ Unidad ordenada de aprendizaje. Cada entrada se almacena en un archivo Markdown.
 3. El orden de una ruta es ascendente por `position`; `id` se usa como desempate defensivo, aunque un empate bloquea el build.
 4. `written` y `video` son mutuamente excluyentes.
 5. No existe estado editorial. Una entrada válida está publicada; cualquier entrada inválida bloquea toda publicación.
+
+### Invariante de datos de validación
+
+Los datos usados para validar los dos formatos incluyen al menos una nota `written` y una nota `video` que comparten exactamente el mismo `category`, declaran títulos, descripciones y duraciones válidas, y usan posiciones enteras positivas distintas. Esta condición pertenece a fixtures y pruebas de aceptación; no obliga a que toda categoría de producción contenga ambos formatos.
 
 ## LearningRoute
 
@@ -93,3 +130,14 @@ Modelo interno emitido por el gate; nunca se presenta crudo al visitante.
 | `message` | string | Explicación accionable para el responsable del contenido |
 
 El validador retorna todos los issues encontrados. El comando de validación los imprime agrupados por archivo y finaliza con error si la colección no es íntegramente válida.
+
+## MotionPreference
+
+Estado efímero derivado de la preferencia del sistema; no se persiste.
+
+| Campo | Tipo | Valores |
+|---|---|---|
+| `reducedMotion` | boolean | `true` cuando el navegador indica `prefers-reduced-motion: reduce` |
+
+- `false`: se habilitan transiciones discretas que no retrasan contenido ni navegación.
+- `true`: se eliminan o reducen desplazamiento, escala, parallax, scroll suave y cualquier movimiento no esencial; la información y los controles permanecen idénticos.

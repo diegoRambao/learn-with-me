@@ -31,7 +31,8 @@
 
 ## Notes
 
-- Validation completed in one iteration on 2026-09-14.
+- Validation completed in one iteration on 2026-09-14 after incorporating the homepage purpose, usage guidance, benefits, category index, social links, dark visual direction, and motion requirements.
 - The user-provided Markdown and YouTube constraints describe the content contract rather than an implementation architecture; they are retained as product requirements.
+- Tailwind remains an implementation constraint in the plan and is intentionally omitted from the stakeholder-facing specification.
+- “Video y/o documento escrito” is resolved at catalog level while preserving the previously approved rule that each individual note has exactly one format.
 - The repository constitution additionally requires category, duration, versioned written content, and a public learning flow; the specification incorporates those constraints.
-

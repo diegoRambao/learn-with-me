@@ -4,7 +4,7 @@
 
 | Método | Ruta | Resultado |
 |---|---|---|
-| GET | `/` | Inicio con navegación principal que incluye “Categorías” |
+| GET | `/` | Portada informativa con navegación principal, índice responsive de categorías y redes sociales válidas |
 | GET | `/categorias/` | Catálogo completo, filtros de nivel y avisos contextuales |
 | GET | `/categorias/{categoryId}/` | Redirección estática a la primera nota o estado vacío de la categoría |
 | GET | `/categorias/{categoryId}/{noteId}/` | Ruta de la categoría con esa nota activa, solo si la relación es válida |
@@ -40,10 +40,13 @@ Todas las notas muestran título, descripción y duración en minutos.
 
 - `written`: renderiza el cuerpo Markdown dentro de una región de artículo con tipografía legible.
 - `video`: renderiza iframe responsive con `title` descriptivo, `loading="lazy"`, `allowfullscreen` y origen `youtube.com/embed/{id}`.
-- Si el contenido o video no puede mostrarse en el navegador, se ofrece un mensaje contextual y una acción útil; la navegación de ruta permanece operable.
+- Toda nota de video muestra junto al iframe un enlace externo siempre visible y descriptivo para abrir el recurso en YouTube; no depende de detectar un fallo cross-origin del iframe.
+- Si el contenido no puede mostrarse en el navegador, se ofrece un mensaje contextual y una acción útil; la navegación de ruta permanece operable.
 
 ## Imágenes y errores
 
 - Las imágenes incluyen `alt` útil basado en la categoría, dimensiones o aspect ratio reservados y fallback visual.
 - Ningún estado público imprime excepciones, paths internos, stack traces o payloads de validación.
 - El foco visible, el orden de tabulación y el contraste deben cumplir WCAG 2.2 AA en controles y texto esencial.
+
+El contrato detallado de la portada, su índice, redes, tema oscuro y movimiento se define en [homepage-ui.md](./homepage-ui.md).
