@@ -1,4 +1,4 @@
-# Aprender con propósito
+# Learn with Me
 
 Sitio estático de notas y rutas de aprendizaje construido con Astro, TypeScript y Tailwind CSS.
 

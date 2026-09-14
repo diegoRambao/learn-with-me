@@ -18,7 +18,7 @@ const initialNoteUrl = route.activeNote ? noteUrl(category.id, route.activeNote.
 if (initialNoteUrl) return Astro.redirect(initialNoteUrl);
 ---
 
-<BaseLayout title={`${category.name} · Aprender con propósito`}>
+<BaseLayout title={`${category.name} · Learn with Me`}>
   <div class="shell pt-12">
     <a href="/categorias/" class="text-sm font-bold text-accent no-underline">← Todas las categorías</a>
     <p class="eyebrow mt-10">Ruta de aprendizaje</p>

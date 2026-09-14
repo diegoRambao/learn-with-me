@@ -11,7 +11,7 @@ const categories = (await getCollection('categories')).map(categoryFromEntry);
 const categoryIndex = createHomeCategoryIndex(categories);
 ---
 
-<BaseLayout title="Aprender con propósito · Notas y rutas de aprendizaje">
+<BaseLayout title="Learn with Me · Notas y rutas de aprendizaje">
   <div class="shell grid gap-8 pt-10 lg:grid-cols-[18rem_1fr] lg:pt-16">
     <aside><HomeCategoryIndex index={categoryIndex} /></aside>
     <div>
