@@ -28,13 +28,12 @@ const { category, notes, activeNoteId } = Astro.props;
 
 <style>
   .route-link { display: grid; grid-template-columns: 2.2rem 1fr; gap: .7rem; min-height: 3.5rem; align-items: center; border: 1px solid transparent; border-radius: .8rem; padding: .7rem; text-decoration: none; }
-  .route-link:hover { background: #171d27; }
-  .route-link.active { border-color: #67e8f9; background: #12303b; }
-  .route-number { color: #67e8f9; font-size: .75rem; font-weight: 800; }
+  .route-link:hover { background: var(--interactive-hover); }
+  .route-link.active { border-color: var(--accent-color); background: var(--interactive-active); color: var(--interactive-active-text); }
+  .route-number { color: var(--accent-color); font-size: .75rem; font-weight: 800; }
   @media (min-width: 64rem) {
     .course-navigation:not([open]) > nav { display: block; }
     .course-navigation summary { list-style: none; pointer-events: none; }
     .course-navigation summary::-webkit-details-marker { display: none; }
   }
 </style>
-

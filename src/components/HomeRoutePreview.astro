@@ -1,0 +1,46 @@
+---
+import CategoryCard from '@components/CategoryCard.astro';
+import type { HomeCategoryPreview } from '@lib/content';
+
+interface Props { preview: HomeCategoryPreview }
+
+const { preview } = Astro.props;
+const visibleCount = preview.primary.length + preview.teaser.length;
+---
+
+<section aria-labelledby="rutas-destacadas" class="route-preview" data-home-routes>
+  <div class="mx-auto max-w-2xl text-center">
+    <p class="eyebrow">El archivo, por temas</p>
+    <h2 id="rutas-destacadas" class="display-heading mt-3 text-4xl font-semibold text-balance sm:text-6xl">Rutas para seguir una curiosidad.</h2>
+    <p class="mt-5 text-base leading-7 text-muted">Una pequeña muestra del cuaderno. Cada ruta reúne las notas de un tema para que puedas entrar por donde más te sirva.</p>
+  </div>
+
+  {visibleCount === 0 ? (
+    <div class="panel mx-auto mt-10 max-w-2xl px-6 py-12 text-center">
+      <span aria-hidden="true" class="benefit-glyph">◇</span>
+      <h3 class="mt-5 text-xl font-bold">Las primeras rutas están tomando forma</h3>
+      <p class="mx-auto mt-3 max-w-lg text-muted">Aún no hay temas publicados. El catálogo será el primer lugar en mostrar los nuevos apuntes.</p>
+    </div>
+  ) : (
+    <div class="mt-12">
+      <ul class="route-grid" data-route-group="primary" aria-label="Rutas destacadas">
+        {preview.primary.map((category) => <li class="contents"><CategoryCard category={category} headingLevel="h3" /></li>)}
+      </ul>
+
+      {preview.teaser.length > 0 && (
+        <div class="route-teaser" data-route-group="teaser" aria-label="Más rutas disponibles">
+          <ul class="route-grid">
+            {preview.teaser.map((category) => <li class="contents"><CategoryCard category={category} headingLevel="h3" /></li>)}
+          </ul>
+          <div class="route-fade" data-route-fade aria-hidden="true"></div>
+        </div>
+      )}
+    </div>
+  )}
+
+  <div class:list={['route-more', { 'route-more-overlay': preview.teaser.length > 0 }]}>
+    <a href="/categorias/" class="secondary-cta relative z-[3] inline-flex min-h-12 items-center gap-3 rounded-full border border-line px-6 font-bold no-underline">
+      Explorar más rutas <span aria-hidden="true">→</span>
+    </a>
+  </div>
+</section>

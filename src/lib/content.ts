@@ -36,6 +36,11 @@ export type HomeCategoryIndex = Readonly<{
   destination: Readonly<Record<string, string>>;
 }>;
 
+export type HomeCategoryPreview = Readonly<{
+  primary: ReadonlyArray<Category>;
+  teaser: ReadonlyArray<Category>;
+}>;
+
 export type LearningRoute = Readonly<{
   category: Category;
   notes: ReadonlyArray<Note>;
@@ -71,6 +76,11 @@ export const createHomeCategoryIndex = (categories: ReadonlyArray<Category>): Ho
     destination: Object.fromEntries(orderedCategories.map(({ id }) => [id, `/categorias/${id}/`])),
   };
 };
+
+export const createHomeCategoryPreview = (categories: ReadonlyArray<Category>): HomeCategoryPreview => ({
+  primary: categories.slice(0, 3),
+  teaser: categories.slice(3, 6),
+});
 
 export const createLearningRoute = (
   category: Category,

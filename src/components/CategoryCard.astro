@@ -1,18 +1,19 @@
 ---
 import { levelLabels, type Category } from '@lib/content';
 import { categoryUrl } from '@lib/routes';
-interface Props { category: Category }
-const { category } = Astro.props;
+interface Props { category: Category; headingLevel?: 'h2' | 'h3' }
+const { category, headingLevel = 'h2' } = Astro.props;
+const Heading = headingLevel;
 ---
 
-<article class="interactive-card category-card panel overflow-hidden" data-level={category.level}>
+<article class="interactive-card category-card panel overflow-hidden" data-level={category.level} data-category-id={category.id}>
   <a class="block h-full no-underline" href={categoryUrl(category.id)}>
     <div class="aspect-video overflow-hidden border-b border-line bg-ink-800">
       <img src={category.image} alt={`Ilustración de ${category.name}`} width="800" height="450" loading="lazy" class="h-full w-full object-cover" data-category-image />
     </div>
     <div class="p-5">
       <span class="inline-flex rounded-full border border-line px-3 py-1 text-xs font-bold text-accent">{levelLabels[category.level]}</span>
-      <h2 class="mt-5 text-xl font-bold">{category.name}</h2>
+      <Heading class="mt-5 text-xl font-bold">{category.name}</Heading>
       <p class="mt-2 text-sm text-muted">Explorar ruta <span aria-hidden="true">→</span></p>
     </div>
   </a>

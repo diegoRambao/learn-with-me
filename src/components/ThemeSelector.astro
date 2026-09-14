@@ -1,0 +1,29 @@
+<div class="theme-control">
+  <label for="theme-selector">Tema</label>
+  <select id="theme-selector" name="theme" data-theme-selector>
+    <option value="system">Sistema</option>
+    <option value="light">Claro</option>
+    <option value="dark">Oscuro</option>
+  </select>
+</div>
+
+<script>
+  import { isThemePreference, normalizeThemePreference, themeStorageKey } from '@lib/theme';
+
+  const selector = document.querySelector<HTMLSelectElement>('[data-theme-selector]');
+
+  if (selector) {
+    selector.value = normalizeThemePreference(document.documentElement.dataset.theme);
+    selector.addEventListener('change', () => {
+      if (!isThemePreference(selector.value)) return;
+
+      document.documentElement.dataset.theme = selector.value;
+      try {
+        localStorage.setItem(themeStorageKey, selector.value);
+      } catch {
+        // The active page still honors the selection when storage is unavailable.
+      }
+    });
+  }
+</script>
+

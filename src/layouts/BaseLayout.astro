@@ -1,5 +1,6 @@
 ---
 import SiteHeader from '@components/SiteHeader.astro';
+import { themePreferences, themeStorageKey } from '@lib/theme';
 import '@styles/global.css';
 
 interface Props {
@@ -9,13 +10,21 @@ interface Props {
 
 const {
   title = 'Learn with Me',
-  description = 'Notas y rutas de aprendizaje sobre tecnología, matemáticas y educación de personas adultas.',
+  description = 'Apuntes personales sobre los temas que voy estudiando, abiertos para consultar, estudiar y compartir.',
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="es">
+<html lang="es" data-theme="system">
   <head>
+    <script is:inline define:vars={{ themePreferences, themeStorageKey }}>
+      try {
+        const savedTheme = localStorage.getItem(themeStorageKey);
+        if (themePreferences.includes(savedTheme)) document.documentElement.dataset.theme = savedTheme;
+      } catch {
+        document.documentElement.dataset.theme = 'system';
+      }
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
@@ -29,8 +38,7 @@ const {
       <slot />
     </main>
     <footer class="shell mt-24 border-t border-line py-10 text-sm text-muted">
-      <p>Conocimiento que se estudia, se comparte y vuelve a ponerse en práctica.</p>
+      <p>Apuntes para pensar, consultar y volver a mirar.</p>
     </footer>
   </body>
 </html>
-

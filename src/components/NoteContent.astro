@@ -17,7 +17,7 @@ const embedUrl = note.format === 'video' ? `https://www.youtube.com/embed/${note
     </div>
   ) : (
     <section aria-label={`Video: ${note.title}`} class="mt-10">
-      <div class="aspect-video overflow-hidden rounded-2xl border border-line bg-black">
+      <div class="video-frame aspect-video overflow-hidden rounded-2xl border border-line">
         <iframe class="h-full w-full" src={embedUrl} title={`Video: ${note.title}`} loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       </div>
       <p class="mt-4 text-sm text-muted">Si el reproductor no está disponible, <a class="font-bold text-accent underline underline-offset-4" href={watchUrl}>abre “{note.title}” directamente en YouTube</a>.</p>

@@ -1,28 +1,75 @@
-<div class="space-y-16">
-  <section aria-labelledby="proposito" class="max-w-3xl">
-    <p class="eyebrow">Educación para transformar</p>
-    <h1 id="proposito" class="mt-4 text-4xl font-bold tracking-tight text-balance sm:text-6xl">Aprender conecta la experiencia con nuevas posibilidades.</h1>
-    <p class="mt-7 text-lg leading-8 text-muted">Este sitio comparte el conocimiento adquirido en la maestría en didáctica de las matemáticas, con enfoque en educación de personas adultas y orientado por la educación popular y el aprendizaje significativo.</p>
+<div class="space-y-24 sm:space-y-32">
+  <section aria-labelledby="proposito" class="hero-notes mx-auto max-w-5xl pt-12 text-center sm:pt-20">
+    <div class="notebook-mark mx-auto" aria-hidden="true">
+      <span>01</span>
+      <span>bitácora abierta</span>
+      <span>2026—</span>
+    </div>
+    <p class="eyebrow mt-10">Apuntes de estudio</p>
+    <h1 id="proposito" class="display-title mx-auto mt-5 max-w-4xl text-5xl leading-[.98] font-semibold tracking-[-.045em] text-balance sm:text-7xl lg:text-[5.6rem]">
+      Lo que estudio, lo escribo y lo comparto.
+    </h1>
+    <p class="mx-auto mt-8 max-w-2xl text-lg leading-8 text-muted sm:text-xl">
+      Este es mi archivo de apuntes personales sobre los temas que voy estudiando. Los dejo abiertos para volver a ellos y para que también puedan servirte al estudiar o repasar por tu cuenta.
+    </p>
+    <div class="mt-10 flex justify-center">
+      <a href="/categorias/" data-primary-cta class="primary-cta group inline-flex min-h-12 items-center gap-3 rounded-full bg-accent px-6 font-bold text-accent-contrast no-underline">
+        Explorar categorías
+        <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">↗</span>
+      </a>
+    </div>
+    <p class="mx-auto mt-8 max-w-xl text-sm leading-6 text-muted">
+      Sin lecciones cerradas ni promesas grandilocuentes: solo ideas trabajadas, referencias útiles y preguntas que vale la pena conservar.
+    </p>
   </section>
 
-  <section aria-labelledby="como-usar" class="panel p-6 sm:p-9">
-    <p class="eyebrow">Una ruta clara</p>
-    <h2 id="como-usar" class="mt-3 text-2xl font-bold">Cómo utilizar este espacio</h2>
-    <ol class="mt-8 grid gap-6 sm:grid-cols-3">
-      <li><span class="text-accent font-bold">01</span><h3 class="mt-2 font-bold">Elige una categoría</h3><p class="mt-2 text-sm leading-6 text-muted">Encuentra un tema acorde con tu nivel de experiencia.</p></li>
-      <li><span class="text-accent font-bold">02</span><h3 class="mt-2 font-bold">Sigue el orden</h3><p class="mt-2 text-sm leading-6 text-muted">Recorre las notas como clases de una ruta de aprendizaje.</p></li>
-      <li><span class="text-accent font-bold">03</span><h3 class="mt-2 font-bold">Aprende a tu manera</h3><p class="mt-2 text-sm leading-6 text-muted">Consume cada nota en su formato disponible: escrito o video.</p></li>
+  <slot />
+
+  <section aria-labelledby="como-usar" class="panel overflow-hidden">
+    <div class="border-b border-line px-6 py-6 sm:px-10">
+      <p class="eyebrow">Un recorrido sencillo</p>
+      <h2 id="como-usar" class="display-heading mt-3 text-3xl font-semibold sm:text-4xl">Cómo usar estos apuntes</h2>
+    </div>
+    <ol class="grid md:grid-cols-3">
+      <li class="study-step p-6 sm:p-9">
+        <span class="step-number" aria-hidden="true">01</span>
+        <h3 class="mt-10 text-lg font-bold">Elige un tema</h3>
+        <p class="mt-3 text-sm leading-6 text-muted">Empieza por la categoría que conecta con lo que quieres comprender hoy.</p>
+      </li>
+      <li class="study-step p-6 sm:p-9">
+        <span class="step-number" aria-hidden="true">02</span>
+        <h3 class="mt-10 text-lg font-bold">Recorre las notas</h3>
+        <p class="mt-3 text-sm leading-6 text-muted">Sigue el orden propuesto o abre directamente el apunte que necesitas consultar.</p>
+      </li>
+      <li class="study-step p-6 sm:p-9">
+        <span class="step-number" aria-hidden="true">03</span>
+        <h3 class="mt-10 text-lg font-bold">Estudia a tu ritmo</h3>
+        <p class="mt-3 text-sm leading-6 text-muted">Lee, mira, contrasta y vuelve cuando una idea necesite una segunda pasada.</p>
+      </li>
     </ol>
   </section>
 
   <section aria-labelledby="beneficios">
-    <p class="eyebrow">Por qué aprender aquí</p>
-    <h2 id="beneficios" class="mt-3 text-3xl font-bold">Conocimiento pensado para permanecer</h2>
-    <div class="mt-8 grid gap-4 md:grid-cols-3">
-      <article class="panel p-6"><span aria-hidden="true" class="text-2xl text-accent">↗</span><h3 class="mt-8 text-lg font-bold">Aprendizaje estructurado y organizado</h3><p class="mt-3 text-sm leading-6 text-muted">Rutas que convierten temas amplios en próximos pasos comprensibles.</p></article>
-      <article class="panel p-6"><span aria-hidden="true" class="text-2xl text-violet">✦</span><h3 class="mt-8 text-lg font-bold">Contenido de calidad y actualizado</h3><p class="mt-3 text-sm leading-6 text-muted">Notas versionadas que evolucionan junto con la práctica y el estudio.</p></article>
-      <article class="panel p-6"><span aria-hidden="true" class="text-2xl text-amber-300">◎</span><h3 class="mt-8 text-lg font-bold">Aprendizaje desde la experiencia del autor</h3><p class="mt-3 text-sm leading-6 text-muted">Ideas conectadas con situaciones reales, preguntas y hallazgos del camino.</p></article>
+    <div class="max-w-2xl">
+      <p class="eyebrow">Por qué compartirlos</p>
+      <h2 id="beneficios" class="display-heading mt-3 text-3xl font-semibold text-balance sm:text-5xl">Un cuaderno crece cuando circula.</h2>
+    </div>
+    <div class="mt-10 grid gap-px overflow-hidden rounded-[1.25rem] border border-line bg-line md:grid-cols-3">
+      <article class="benefit-card p-7 sm:p-9">
+        <span aria-hidden="true" class="benefit-glyph">⌁</span>
+        <h3 class="mt-14 text-xl font-bold">Ideas ordenadas</h3>
+        <p class="mt-3 text-sm leading-6 text-muted">Los hallazgos dejan de vivir dispersos y ganan un lugar fácil de recorrer.</p>
+      </article>
+      <article class="benefit-card p-7 sm:p-9">
+        <span aria-hidden="true" class="benefit-glyph">↺</span>
+        <h3 class="mt-14 text-xl font-bold">Un archivo para volver</h3>
+        <p class="mt-3 text-sm leading-6 text-muted">Cada apunte queda disponible para recuperar contexto y refrescar una idea.</p>
+      </article>
+      <article class="benefit-card p-7 sm:p-9">
+        <span aria-hidden="true" class="benefit-glyph">∴</span>
+        <h3 class="mt-14 text-xl font-bold">Aprendizaje compartido</h3>
+        <p class="mt-3 text-sm leading-6 text-muted">Lo que me ayuda a entender también puede abrirle una puerta a otra persona.</p>
+      </article>
     </div>
   </section>
 </div>
-
