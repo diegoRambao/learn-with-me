@@ -114,3 +114,20 @@ npm run build
 ```
 
 Resultado esperado: ambos comandos fallan, enumeran archivo y campo corregible, y no producen una publicación parcial. Restaurar contenido válido debe hacer que ambos vuelvan a finalizar correctamente.
+
+## Registro de validación de implementación — 2026-09-14
+
+La implementación se verificó con Node.js 24 (compatible con el requisito LTS 22+) y los siguientes resultados:
+
+| Área | Evidencia | Resultado |
+|---|---|---|
+| Contrato de contenido y configuración | `npm run validate:content` y 10 pruebas Vitest, incluidos fixtures con campos ausentes, relaciones/posiciones duplicadas, formatos incoherentes y redes inválidas | PASS |
+| Tipos y componentes Astro | `npm run check` | PASS, 0 errores |
+| Portada y catálogo | Playwright en desktop, móvil y movimiento reducido; propósito, uso, beneficios, índice, navegación, filtros, redes ausentes, estados vacíos e imagen fallback | PASS |
+| Rendimiento del filtro | 20 cambios sincrónicos sobre 100 tarjetas; p95 exigido menor a 100 ms | PASS |
+| Accesibilidad esencial | Teclado y skip link, `aria-pressed`, `aria-live`, `aria-current`, contraste calculado ≥ 4.5:1, viewport equivalente a zoom 200% sin overflow y movimiento reducido | PASS |
+| Ruta y formatos | Orden/primera nota, navegación desktop/móvil, categoría vacía, Markdown, iframe sin autoplay, enlace externo visible y deep links | PASS |
+| URLs y resiliencia | Pares inválidos y nota sin categoría vuelven al catálogo con aviso no técnico; parámetros desconocidos se ignoran | PASS |
+| Salida estática | `npm run build` produjo portada, catálogo, cuatro categorías, cinco detalles y 404 (12 páginas) | PASS |
+
+Revisión constitucional: se conservaron Astro/Tailwind/TypeScript, fuentes versionadas e inmutables, funciones y datos simples, nombres `camelCase`/`PascalCase`, mensajes públicos no técnicos, identidad visual propia y ausencia de backend, base de datos, CMS, clases o capas innecesarias.

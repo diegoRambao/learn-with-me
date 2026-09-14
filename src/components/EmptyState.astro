@@ -1,0 +1,16 @@
+---
+interface Props { kind: 'categories' | 'route' | 'matches' }
+const { kind } = Astro.props;
+const content = {
+  categories: { title: 'Las primeras rutas están en preparación', description: 'Vuelve pronto para comenzar con una categoría.' },
+  route: { title: 'Esta ruta aún no tiene notas', description: 'La categoría está disponible y pronto tendrá su primera clase.' },
+  matches: { title: 'No hay categorías para este nivel', description: 'Prueba otro nivel o vuelve a mostrar todas las categorías.' },
+}[kind];
+---
+
+<section class="panel px-6 py-12 text-center" data-no-matches={kind === 'matches' ? '' : undefined} hidden={kind === 'matches'}>
+  <p aria-hidden="true" class="text-3xl text-accent">◇</p>
+  <h2 class="mt-4 text-xl font-bold">{content.title}</h2>
+  <p class="mx-auto mt-3 max-w-lg text-muted">{content.description}</p>
+  {kind === 'matches' && <button type="button" data-show-all class="mt-6 min-h-11 rounded-full border border-accent px-5 font-bold text-accent">Ver todas</button>}
+</section>

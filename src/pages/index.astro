@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import HomeCategoryIndex from '@components/HomeCategoryIndex.astro';
+import HomeIntroduction from '@components/HomeIntroduction.astro';
+import SocialLinks from '@components/SocialLinks.astro';
+import { siteConfig } from '@data/site';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { categoryFromEntry, createHomeCategoryIndex } from '@lib/content';
+
+const categories = (await getCollection('categories')).map(categoryFromEntry);
+const categoryIndex = createHomeCategoryIndex(categories);
+---
+
+<BaseLayout title="Aprender con propósito · Notas y rutas de aprendizaje">
+  <div class="shell grid gap-8 pt-10 lg:grid-cols-[18rem_1fr] lg:pt-16">
+    <aside><HomeCategoryIndex index={categoryIndex} /></aside>
+    <div>
+      <HomeIntroduction />
+      <SocialLinks links={siteConfig.socialLinks} />
+    </div>
+  </div>
+</BaseLayout>
+

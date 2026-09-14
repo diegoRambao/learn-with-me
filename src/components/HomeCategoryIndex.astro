@@ -1,0 +1,37 @@
+---
+import { levelLabels, type HomeCategoryIndex } from '@lib/content';
+
+interface Props { index: HomeCategoryIndex }
+const { index } = Astro.props;
+---
+
+<details open class="home-index panel overflow-hidden lg:sticky lg:top-6">
+  <summary class="flex min-h-14 cursor-pointer items-center justify-between px-5 font-bold lg:cursor-default">
+    Categorías <span aria-hidden="true" class="text-accent lg:hidden">⌄</span>
+  </summary>
+  <nav aria-label="Categorías" class="border-t border-line px-3 py-3">
+    {index.categories.length === 0 ? (
+      <p class="px-2 py-4 text-sm text-muted">Aún no hay categorías disponibles.</p>
+    ) : (
+      <ul class="space-y-1">
+        {index.categories.map((category) => (
+          <li>
+            <a class="flex min-h-12 items-center justify-between gap-3 rounded-xl px-3 no-underline hover:bg-ink-800" href={index.destination[category.id]}>
+              <span class="font-semibold">{category.name}</span>
+              <span class="text-xs text-muted">{levelLabels[category.level]}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
+  </nav>
+</details>
+
+<style>
+  @media (min-width: 64rem) {
+    .home-index:not([open]) > nav { display: block; }
+    .home-index summary { list-style: none; pointer-events: none; }
+    .home-index summary::-webkit-details-marker { display: none; }
+  }
+</style>
+

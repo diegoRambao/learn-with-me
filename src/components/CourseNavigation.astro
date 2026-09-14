@@ -1,0 +1,40 @@
+---
+import type { Category, Note } from '@lib/content';
+import { noteUrl } from '@lib/routes';
+interface Props { category: Category; notes: ReadonlyArray<Note>; activeNoteId?: string }
+const { category, notes, activeNoteId } = Astro.props;
+---
+
+<details open class="course-navigation panel overflow-hidden lg:sticky lg:top-6">
+  <summary class="flex min-h-14 cursor-pointer items-center justify-between gap-4 px-5 font-bold lg:cursor-default">
+    <span>Ruta: {category.name}</span><span aria-hidden="true" class="text-accent lg:hidden">⌄</span>
+  </summary>
+  <nav aria-label={`Notas de ${category.name}`} class="border-t border-line p-3">
+    <ol class="space-y-1">
+      {notes.map((note, index) => {
+        const active = note.id === activeNoteId;
+        return (
+          <li>
+            <a href={noteUrl(category.id, note.id)} aria-current={active ? 'page' : undefined} class:list={['route-link', { active }]}>
+              <span aria-hidden="true" class="route-number">{String(index + 1).padStart(2, '0')}</span>
+              <span><span class="block font-semibold">{note.title}</span><span class="mt-1 block text-xs text-muted">{note.durationMinutes} min {active && '· Nota actual'}</span></span>
+            </a>
+          </li>
+        );
+      })}
+    </ol>
+  </nav>
+</details>
+
+<style>
+  .route-link { display: grid; grid-template-columns: 2.2rem 1fr; gap: .7rem; min-height: 3.5rem; align-items: center; border: 1px solid transparent; border-radius: .8rem; padding: .7rem; text-decoration: none; }
+  .route-link:hover { background: #171d27; }
+  .route-link.active { border-color: #67e8f9; background: #12303b; }
+  .route-number { color: #67e8f9; font-size: .75rem; font-weight: 800; }
+  @media (min-width: 64rem) {
+    .course-navigation:not([open]) > nav { display: block; }
+    .course-navigation summary { list-style: none; pointer-events: none; }
+    .course-navigation summary::-webkit-details-marker { display: none; }
+  }
+</style>
+

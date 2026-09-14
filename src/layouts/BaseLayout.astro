@@ -1,0 +1,36 @@
+---
+import SiteHeader from '@components/SiteHeader.astro';
+import '@styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Aprender con propósito',
+  description = 'Notas y rutas de aprendizaje sobre tecnología, matemáticas y educación de personas adultas.',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <SiteHeader />
+    <main id="contenido" tabindex="-1">
+      <slot />
+    </main>
+    <footer class="shell mt-24 border-t border-line py-10 text-sm text-muted">
+      <p>Conocimiento que se estudia, se comparte y vuelve a ponerse en práctica.</p>
+    </footer>
+  </body>
+</html>
+

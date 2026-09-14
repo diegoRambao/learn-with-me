@@ -1,0 +1,6 @@
+{
+  "socialLinks": [
+    { "network": "web", "label": "", "url": "http://example.com" },
+    { "network": "web", "label": "Duplicada", "url": "http://example.com" }
+  ]
+}

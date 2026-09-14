@@ -1,0 +1,54 @@
+---
+import { levelLabels, categoryLevels } from '@lib/content';
+interface Props { total: number }
+const { total } = Astro.props;
+---
+
+<section aria-labelledby="filter-title" data-category-filters>
+  <h2 id="filter-title" class="sr-only">Filtrar por nivel</h2>
+  <div class="flex flex-wrap gap-2" role="group" aria-label="Nivel de complejidad">
+    <button class="filter-button" type="button" data-filter="all" aria-pressed="true">Todos</button>
+    {categoryLevels.map((level) => <button class="filter-button" type="button" data-filter={level} aria-pressed="false">{levelLabels[level]}</button>)}
+  </div>
+  <p class="mt-5 text-sm text-muted"><span data-matching-count>{total}</span> <span data-count-label>{total === 1 ? 'categoría visible' : 'categorías visibles'}</span></p>
+  <p class="sr-only" aria-live="polite" data-filter-announcement></p>
+</section>
+
+<script>
+  const initializeCategoryFilters = () => {
+    const root = document.querySelector<HTMLElement>('[data-category-filters]');
+    if (!root) return;
+    const buttons = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-level]')];
+    const empty = document.querySelector<HTMLElement>('[data-no-matches]');
+    const count = root.querySelector<HTMLElement>('[data-matching-count]');
+    const label = root.querySelector<HTMLElement>('[data-count-label]');
+    const announcement = root.querySelector<HTMLElement>('[data-filter-announcement]');
+
+    const applyFilter = (selectedLevel: string) => {
+      let matchingCount = 0;
+      for (const card of cards) {
+        const matches = selectedLevel === 'all' || card.dataset.level === selectedLevel;
+        card.hidden = !matches;
+        if (matches) matchingCount += 1;
+      }
+      for (const button of buttons) button.setAttribute('aria-pressed', String(button.dataset.filter === selectedLevel));
+      if (count) count.textContent = String(matchingCount);
+      if (label) label.textContent = matchingCount === 1 ? 'categoría visible' : 'categorías visibles';
+      if (announcement) announcement.textContent = `Filtro actualizado: ${matchingCount} ${matchingCount === 1 ? 'categoría visible' : 'categorías visibles'}.`;
+      if (empty) empty.hidden = matchingCount > 0;
+    };
+
+    for (const button of buttons) button.addEventListener('click', () => applyFilter(button.dataset.filter ?? 'all'));
+    document.querySelector('[data-show-all]')?.addEventListener('click', () => applyFilter('all'));
+  };
+
+  initializeCategoryFilters();
+</script>
+
+<style>
+  .filter-button { min-height: 2.75rem; border: 1px solid #394150; border-radius: 999px; padding: .55rem 1rem; background: #0d1118; color: #f8fafc; cursor: pointer; font-weight: 700; }
+  .filter-button:hover { border-color: #67e8f9; }
+  .filter-button[aria-pressed="true"] { border-color: #67e8f9; background: #164e63; color: #ecfeff; box-shadow: inset 0 0 0 1px #67e8f9; }
+</style>
+

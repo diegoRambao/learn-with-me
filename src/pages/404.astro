@@ -1,0 +1,19 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Página no encontrada · Aprender con propósito">
+  <div class="shell grid min-h-[65vh] place-items-center py-16 text-center">
+    <section class="max-w-xl">
+      <p class="eyebrow">404</p>
+      <h1 class="mt-4 text-4xl font-bold">No encontramos esa ruta de aprendizaje.</h1>
+      <p class="mt-5 text-lg leading-8 text-muted">La dirección puede haber cambiado o no incluir una categoría válida. Puedes elegir una categoría y continuar desde allí.</p>
+      <a href="/categorias/" class="mt-8 inline-flex min-h-12 items-center rounded-full bg-accent px-6 font-bold text-ink-950 no-underline">Explorar categorías</a>
+    </section>
+  </div>
+</BaseLayout>
+
+<script is:inline>
+  const learningPath = /^\/categorias\/[^/]+\/[^/]+\/?$/.test(location.pathname) || /^\/notas\/[^/]+\/?$/.test(location.pathname);
+  if (learningPath) location.replace('/categorias/?notice=invalid-note-context');
+</script>

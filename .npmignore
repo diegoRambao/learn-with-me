@@ -1,0 +1,11 @@
+src/
+tests/
+scripts/
+specs/
+.specify/
+playwright-report/
+test-results/
+coverage/
+*.log
+.env*
+

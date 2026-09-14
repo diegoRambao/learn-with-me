@@ -1,0 +1,26 @@
+---
+import type { Note } from '@lib/content';
+interface Props { note: Note; Content?: any }
+const { note, Content } = Astro.props;
+const watchUrl = note.format === 'video' ? `https://www.youtube.com/watch?v=${note.youtubeVideoId}` : '';
+const embedUrl = note.format === 'video' ? `https://www.youtube.com/embed/${note.youtubeVideoId}` : '';
+---
+
+<article aria-labelledby="note-title">
+  <p class="eyebrow">Clase {note.position} · {note.durationMinutes} minutos</p>
+  <h1 id="note-title" class="mt-4 text-4xl font-bold tracking-tight text-balance sm:text-5xl">{note.title}</h1>
+  <p class="mt-5 max-w-3xl text-lg leading-8 text-muted">{note.description}</p>
+
+  {note.format === 'written' ? (
+    <div class="prose mt-10 border-t border-line pt-8">
+      {Content ? <Content /> : <p>Este contenido no se pudo mostrar. Vuelve a la ruta e intenta otra nota.</p>}
+    </div>
+  ) : (
+    <section aria-label={`Video: ${note.title}`} class="mt-10">
+      <div class="aspect-video overflow-hidden rounded-2xl border border-line bg-black">
+        <iframe class="h-full w-full" src={embedUrl} title={`Video: ${note.title}`} loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      </div>
+      <p class="mt-4 text-sm text-muted">Si el reproductor no está disponible, <a class="font-bold text-accent underline underline-offset-4" href={watchUrl}>abre “{note.title}” directamente en YouTube</a>.</p>
+    </section>
+  )}
+</article>
