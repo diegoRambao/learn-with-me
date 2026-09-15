@@ -1,0 +1,29 @@
+---
+import type { Category, Note } from '@lib/content';
+import { noteUrl } from '@lib/routes';
+
+interface Props {
+  category: Category;
+  previousNote: Note | null;
+  nextNote: Note | null;
+}
+
+const { category, previousNote, nextNote } = Astro.props;
+---
+
+{(previousNote || nextNote) && (
+  <nav class="note-navigation" aria-label="Navegación entre notas">
+    {previousNote && (
+      <a class="note-navigation-link note-navigation-previous" href={noteUrl(category.id, previousNote.id)}>
+        <span class="note-navigation-direction">Anterior</span>
+        <span>{previousNote.title}</span>
+      </a>
+    )}
+    {nextNote && (
+      <a class="note-navigation-link note-navigation-next" href={noteUrl(category.id, nextNote.id)}>
+        <span class="note-navigation-direction">Siguiente</span>
+        <span>{nextNote.title}</span>
+      </a>
+    )}
+  </nav>
+)}

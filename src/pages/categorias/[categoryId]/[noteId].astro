@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import CourseNavigation from '@components/CourseNavigation.astro';
 import NoteContent from '@components/NoteContent.astro';
+import NoteNavigation from '@components/NoteNavigation.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { categoryFromEntry, createLearningRoute, noteFromEntry } from '@lib/content';
 
@@ -28,8 +29,10 @@ const { Content } = await render(noteEntry);
     <a href="/categorias/" class="text-sm font-bold text-accent no-underline">← Todas las categorías</a>
     <div class="mt-8 grid gap-8 lg:grid-cols-[19rem_minmax(0,1fr)] lg:items-start">
       <CourseNavigation category={category} notes={route.notes} activeNoteId={note.id} />
-      <div class="min-w-0 lg:px-6"><NoteContent note={note} Content={Content} /></div>
+      <div class="min-w-0 lg:px-6">
+        <NoteContent note={note} Content={Content} />
+        <NoteNavigation category={route.category} previousNote={route.previousNote} nextNote={route.nextNote} />
+      </div>
     </div>
   </div>
 </BaseLayout>
-

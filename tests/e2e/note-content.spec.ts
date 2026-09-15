@@ -28,3 +28,53 @@ test('redirects a note URL that lacks category context', async ({ page }) => {
   await expect(page).toHaveURL(/\/categorias\/\?notice=invalid-note-context$/);
 });
 
+test('styles standard and GFM Markdown without page overflow', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.goto('/categorias/dart/dart-function/');
+  await page.locator('.note-prose').evaluate((element) => {
+    element.insertAdjacentHTML('beforeend', `
+      <h1>Encabezado 1</h1><h2>Encabezado 2</h2><h3>Encabezado 3</h3><h4>Encabezado 4</h4><h5>Encabezado 5</h5><h6>Encabezado 6</h6>
+      <p><strong>Negrita</strong> <em>Énfasis</em> <del>Tachado</del> <a href="/categorias/dart/">Enlace interno</a> <code>inline</code></p>
+      <blockquote>Cita de prueba</blockquote><ul><li>Raíz<ul><li>Anidada</li></ul></li></ul>
+      <ul><li class="task-list-item"><input type="checkbox" checked disabled>Completada</li><li class="task-list-item"><input type="checkbox" disabled>Pendiente</li></ul>
+      <img alt="Imagen de prueba" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==">
+      <table><thead><tr><th>Columna</th><th>Valor</th></tr></thead><tbody><tr><td>Etiqueta muy larga para comprobar desplazamiento local</td><td>Dato</td></tr></tbody></table>
+      <pre><code>const veryLongLine = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";</code></pre>`);
+  });
+  const prose = page.locator('.note-prose');
+  const headingSizes = await prose.locator('h1, h2, h3, h4, h5, h6').evaluateAll((headings) => headings.map((heading) => Number.parseFloat(getComputedStyle(heading).fontSize)));
+  expect(headingSizes).toHaveLength(6);
+  expect(headingSizes.every((size, index) => index === 0 || headingSizes[index - 1] > size)).toBe(true);
+  expect(await prose.locator('ul').count()).toBeGreaterThan(1);
+  await expect(prose.locator('blockquote')).toBeVisible();
+  await expect(prose.locator('del')).toHaveCSS('text-decoration-line', 'line-through');
+  await expect(prose.locator('img')).toBeVisible();
+  await expect(prose.locator('input[type="checkbox"]')).toHaveCount(2);
+  await expect(prose.locator('table')).toBeVisible();
+  expect(await prose.locator('pre code').count()).toBeGreaterThan(1);
+  expect(await page.locator('html').evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+  expect(await prose.locator('pre').last().evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
+  expect(await prose.locator('table').evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
+});
+
+test('adds independent accessible copy controls and selects intact code when copying fails', async ({ page }) => {
+  await page.goto('/categorias/dart/dart-function/');
+  const codeBlocks = page.locator('.note-prose pre > code');
+  const copyButtons = page.getByRole('button', { name: /Copiar bloque de código/ });
+  await expect(copyButtons).toHaveCount(await codeBlocks.count());
+  await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new Error('denied'); } } }));
+  await copyButtons.first().focus();
+  await page.keyboard.press('Enter');
+  await expect(page.getByText(/No se pudo copiar automáticamente/)).toBeVisible();
+  await expect(page.locator('.note-prose pre').first()).toContainText(await codeBlocks.first().textContent() ?? '');
+  expect(await page.evaluate(() => getSelection()?.toString().length ?? 0)).toBeGreaterThan(0);
+});
+
+test('keeps Markdown links visibly interactive in both themes', async ({ page }) => {
+  await page.goto('/categorias/dart/dart-function/');
+  const link = page.locator('.note-prose a').first();
+  await expect(link).toHaveAttribute('href', 'https://dart.dev/guides/language/language-tour#functions');
+  await expect(link).toHaveCSS('text-decoration-line', 'underline');
+  await page.locator('html').evaluate((element) => { element.dataset.theme = 'dark'; });
+  await expect(link).toHaveCSS('text-decoration-line', 'underline');
+});

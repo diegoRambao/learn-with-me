@@ -1,6 +1,6 @@
-import { defineConfig } from 'vitest/config';
+import { getViteConfig } from 'astro/config';
 
-export default defineConfig({
+const testConfig = {
   test: {
     environment: 'node',
     include: ['tests/unit/**/*.test.ts'],
@@ -8,5 +8,6 @@ export default defineConfig({
       reporter: ['text', 'html'],
     },
   },
-});
+};
 
+export default getViteConfig(testConfig as Parameters<typeof getViteConfig>[0]);

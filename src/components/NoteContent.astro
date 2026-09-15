@@ -12,7 +12,7 @@ const embedUrl = note.format === 'video' ? `https://www.youtube.com/embed/${note
   <p class="mt-5 max-w-3xl text-lg leading-8 text-muted">{note.description}</p>
 
   {note.format === 'written' ? (
-    <div class="prose mt-10 border-t border-line pt-8">
+    <div class="note-prose mt-10 border-t border-line pt-8">
       {Content ? <Content /> : <p>Este contenido no se pudo mostrar. Vuelve a la ruta e intenta otra nota.</p>}
     </div>
   ) : (
@@ -24,3 +24,60 @@ const embedUrl = note.format === 'video' ? `https://www.youtube.com/embed/${note
     </section>
   )}
 </article>
+
+<script>
+  const selectCodeForManualCopy = (code: HTMLElement): void => {
+    const selection = window.getSelection();
+    if (!selection) return;
+
+    const range = document.createRange();
+    range.selectNodeContents(code);
+    selection.removeAllRanges();
+    selection.addRange(range);
+  };
+
+  const enhanceCodeBlock = (code: HTMLElement): void => {
+    const preformattedBlock = code.parentElement;
+    if (!(preformattedBlock instanceof HTMLPreElement) || preformattedBlock.parentElement?.classList.contains('code-block')) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'code-block';
+    const button = document.createElement('button');
+    button.className = 'code-copy-button';
+    button.type = 'button';
+    button.textContent = 'Copiar';
+    button.setAttribute('aria-label', 'Copiar bloque de código');
+    const status = document.createElement('p');
+    status.className = 'code-copy-status';
+    status.setAttribute('aria-live', 'polite');
+
+    preformattedBlock.before(wrapper);
+    wrapper.append(button, status, preformattedBlock);
+
+    let resetTimer: number | undefined;
+    const showStatus = (message: string, state: 'copied' | 'error'): void => {
+      window.clearTimeout(resetTimer);
+      wrapper.dataset.copyState = state;
+      status.textContent = message;
+      if (state === 'copied') {
+        resetTimer = window.setTimeout(() => {
+          wrapper.dataset.copyState = 'idle';
+          status.textContent = '';
+        }, 2400);
+      }
+    };
+
+    button.addEventListener('click', async () => {
+      try {
+        if (!navigator.clipboard) throw new Error('Clipboard unavailable');
+        await navigator.clipboard.writeText(code.textContent ?? '');
+        showStatus('Código copiado.', 'copied');
+      } catch {
+        selectCodeForManualCopy(code);
+        showStatus('No se pudo copiar automáticamente. El código quedó seleccionado para copiarlo manualmente.', 'error');
+      }
+    });
+  };
+
+  document.querySelectorAll<HTMLElement>('.note-prose pre > code').forEach(enhanceCodeBlock);
+</script>

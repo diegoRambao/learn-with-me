@@ -45,6 +45,8 @@ export type LearningRoute = Readonly<{
   category: Category;
   notes: ReadonlyArray<Note>;
   activeNote: Note | null;
+  previousNote: Note | null;
+  nextNote: Note | null;
 }>;
 
 export type CategoryFilter = Readonly<{
@@ -93,8 +95,11 @@ export const createLearningRoute = (
   const activeNote = activeNoteId
     ? routeNotes.find(({ id }) => id === activeNoteId) ?? null
     : routeNotes[0] ?? null;
+  const activeNoteIndex = activeNote ? routeNotes.findIndex(({ id }) => id === activeNote.id) : -1;
+  const previousNote = activeNoteIndex > 0 ? routeNotes[activeNoteIndex - 1] : null;
+  const nextNote = activeNoteIndex >= 0 ? routeNotes[activeNoteIndex + 1] ?? null : null;
 
-  return { category, notes: routeNotes, activeNote };
+  return { category, notes: routeNotes, activeNote, previousNote, nextNote };
 };
 
 export const categoryFromEntry = (entry: Readonly<{ id: string; data: Omit<Category, 'id'> }>): Category =>

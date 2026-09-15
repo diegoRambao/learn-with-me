@@ -22,3 +22,25 @@ test('shows a friendly empty route', async ({ page }) => {
   await expect(page.locator('[aria-current="page"]')).toHaveCount(0);
 });
 
+test('provides only real Dart neighbors in written–video–written order', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.goto('/categorias/dart/dart-types/');
+  const firstNavigation = page.getByRole('navigation', { name: 'Navegación entre notas' });
+  await expect(firstNavigation.getByRole('link')).toHaveCount(1);
+  await expect(firstNavigation.getByRole('link')).toContainText('Siguiente');
+  await expect(firstNavigation.getByRole('link')).toContainText('Dart en una sesión práctica');
+
+  await firstNavigation.getByRole('link').focus();
+  await page.keyboard.press('Enter');
+  await expect(page).toHaveURL(/\/categorias\/dart\/dart-video\/$/);
+  const middleNavigation = page.getByRole('navigation', { name: 'Navegación entre notas' });
+  await expect(middleNavigation.getByRole('link')).toHaveCount(2);
+  await expect(middleNavigation.getByRole('link').first()).toContainText('Anterior');
+  await expect(middleNavigation.getByRole('link').nth(1)).toContainText('Siguiente');
+
+  await page.goto('/categorias/dart/dart-function/');
+  const lastNavigation = page.getByRole('navigation', { name: 'Navegación entre notas' });
+  await expect(lastNavigation.getByRole('link')).toHaveCount(1);
+  await expect(lastNavigation.getByRole('link')).toContainText('Anterior');
+  expect(await page.locator('html').evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+});

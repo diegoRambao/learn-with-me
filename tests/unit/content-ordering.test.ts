@@ -21,6 +21,8 @@ describe('content ordering', () => {
     const route = createLearningRoute(categories[1], notes);
     expect(route.notes.map(({ id }) => id)).toEqual(['first-a', 'first-b', 'third']);
     expect(route.activeNote?.id).toBe('first-a');
+    expect(route.previousNote).toBeNull();
+    expect(route.nextNote?.id).toBe('first-b');
   });
 
   it('returns an empty route when a category has no notes', () => {
@@ -28,8 +30,34 @@ describe('content ordering', () => {
   });
 
   it('selects only an active note that belongs to the category', () => {
-    expect(createLearningRoute(categories[1], notes, 'third').activeNote?.id).toBe('third');
-    expect(createLearningRoute(categories[1], notes, 'missing').activeNote).toBeNull();
+    const middleRoute = createLearningRoute(categories[1], notes, 'first-b');
+    expect(middleRoute.activeNote?.id).toBe('first-b');
+    expect(middleRoute.previousNote?.id).toBe('first-a');
+    expect(middleRoute.nextNote?.id).toBe('third');
+
+    const lastRoute = createLearningRoute(categories[1], notes, 'third');
+    expect(lastRoute.previousNote?.id).toBe('first-b');
+    expect(lastRoute.nextNote).toBeNull();
+
+    const invalidRoute = createLearningRoute(categories[1], notes, 'missing');
+    expect(invalidRoute.activeNote).toBeNull();
+    expect(invalidRoute.previousNote).toBeNull();
+    expect(invalidRoute.nextNote).toBeNull();
+  });
+
+  it('keeps category routes immutable and supports video neighbors with discontinuous positions', () => {
+    const sourceNotes = [
+      { ...notes[0], position: 30 },
+      { ...notes[1], position: 10, format: 'video' as const, youtubeVideoId: 'video-id' },
+      { ...notes[2], position: 20 },
+      { id: 'other', title: 'Otra', description: 'Otra nota', category: 'zeta', durationMinutes: 1, position: 1, format: 'written' as const, body: '' },
+    ];
+    const originalOrder = sourceNotes.map(({ id }) => id);
+    const route = createLearningRoute(categories[1], sourceNotes, 'first-a');
+
+    expect(route.notes.map(({ id }) => id)).toEqual(['first-b', 'first-a', 'third']);
+    expect(route.previousNote?.format).toBe('video');
+    expect(route.nextNote?.id).toBe('third');
+    expect(sourceNotes.map(({ id }) => id)).toEqual(originalOrder);
   });
 });
-
