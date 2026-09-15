@@ -12,9 +12,20 @@ const embedUrl = note.format === 'video' ? `https://www.youtube.com/embed/${note
   <p class="mt-5 max-w-3xl text-lg leading-8 text-muted">{note.description}</p>
 
   {note.format === 'written' ? (
-    <div class="note-prose mt-10 border-t border-line pt-8">
-      {Content ? <Content /> : <p>Este contenido no se pudo mostrar. Vuelve a la ruta e intenta otra nota.</p>}
-    </div>
+    <>
+      <div class="note-prose mt-10 border-t border-line pt-8">
+        {Content ? <Content /> : <p>Este contenido no se pudo mostrar. Vuelve a la ruta e intenta otra nota.</p>}
+      </div>
+      <dialog class="note-image-dialog" data-note-image-dialog aria-label="Vista ampliada de imagen">
+        <button class="note-image-dialog-close" type="button" aria-label="Cerrar imagen ampliada" data-note-image-close>
+          <span aria-hidden="true">×</span>
+        </button>
+        <figure class="note-image-dialog-figure">
+          <img alt="" data-note-image-preview />
+          <figcaption data-note-image-caption hidden></figcaption>
+        </figure>
+      </dialog>
+    </>
   ) : (
     <section aria-label={`Video: ${note.title}`} class="mt-10">
       <div class="video-frame aspect-video overflow-hidden rounded-2xl border border-line">
@@ -26,6 +37,60 @@ const embedUrl = note.format === 'video' ? `https://www.youtube.com/embed/${note
 </article>
 
 <script>
+  const noteProse = document.querySelector<HTMLElement>('.note-prose');
+  const imageDialog = document.querySelector<HTMLDialogElement>('[data-note-image-dialog]');
+  const dialogImage = imageDialog?.querySelector<HTMLImageElement>('[data-note-image-preview]');
+  const dialogCaption = imageDialog?.querySelector<HTMLElement>('[data-note-image-caption]');
+  const dialogCloseButton = imageDialog?.querySelector<HTMLButtonElement>('[data-note-image-close]');
+  let imageTriggerToRestore: HTMLButtonElement | null = null;
+
+  noteProse?.querySelectorAll<HTMLAnchorElement>('a').forEach((link) => {
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+  });
+
+  const closeImageDialog = (): void => {
+    imageDialog?.close();
+  };
+
+  const openImageDialog = (image: HTMLImageElement, trigger: HTMLButtonElement): void => {
+    if (!imageDialog || !dialogImage || !dialogCaption) return;
+
+    const description = image.alt.trim();
+    imageTriggerToRestore = trigger;
+    dialogImage.src = image.currentSrc || image.src;
+    dialogImage.alt = description;
+    dialogCaption.textContent = description;
+    dialogCaption.hidden = description.length === 0;
+    document.documentElement.classList.add('has-open-dialog');
+    imageDialog.showModal();
+    dialogCloseButton?.focus();
+  };
+
+  noteProse?.querySelectorAll<HTMLImageElement>('img').forEach((image) => {
+    if (image.closest('a, button, [role="button"]')) return;
+
+    const trigger = document.createElement('button');
+    const description = image.alt.trim();
+    trigger.type = 'button';
+    trigger.className = 'note-image-trigger';
+    trigger.setAttribute('aria-label', description ? `Ampliar imagen: ${description}` : 'Ampliar imagen');
+    image.before(trigger);
+    trigger.append(image);
+    trigger.addEventListener('click', () => openImageDialog(image, trigger));
+  });
+
+  dialogCloseButton?.addEventListener('click', closeImageDialog);
+  imageDialog?.addEventListener('click', (event) => {
+    if (event.target === imageDialog) closeImageDialog();
+  });
+  imageDialog?.addEventListener('close', () => {
+    document.documentElement.classList.remove('has-open-dialog');
+    dialogImage?.removeAttribute('src');
+    imageTriggerToRestore?.focus();
+    imageTriggerToRestore = null;
+  });
+
   const selectCodeForManualCopy = (code: HTMLElement): void => {
     const selection = window.getSelection();
     if (!selection) return;
@@ -79,5 +144,5 @@ const embedUrl = note.format === 'video' ? `https://www.youtube.com/embed/${note
     });
   };
 
-  document.querySelectorAll<HTMLElement>('.note-prose pre > code').forEach(enhanceCodeBlock);
+  noteProse?.querySelectorAll<HTMLElement>('pre > code').forEach(enhanceCodeBlock);
 </script>

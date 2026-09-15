@@ -14,6 +14,38 @@ test('renders a relative image after its note is grouped', async ({ page }) => {
   await expect(image).toHaveAttribute('src', /20260915_085815_factory-method/);
 });
 
+test('opens note images in an accessible dialog and restores focus when it closes', async ({ page }) => {
+  await page.goto('/categorias/design-patterns/pattern-design-factory-method/');
+  const trigger = page.getByRole('button', { name: 'Ampliar imagen' });
+  const dialog = page.getByRole('dialog', { name: 'Vista ampliada de imagen' });
+
+  await trigger.focus();
+  await page.keyboard.press('Enter');
+  await expect(dialog).toBeVisible();
+  await expect(dialog.locator('[data-note-image-preview]')).toHaveAttribute('src', /20260915_085815_factory-method/);
+  await expect(page.locator('html')).toHaveClass(/has-open-dialog/);
+  await expect(page.getByRole('button', { name: 'Cerrar imagen ampliada' })).toBeFocused();
+
+  await page.keyboard.press('Escape');
+  await expect(dialog).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+  await expect(page.locator('html')).not.toHaveClass(/has-open-dialog/);
+});
+
+test('closes an enlarged note image from the button and backdrop', async ({ page }) => {
+  await page.goto('/categorias/design-patterns/pattern-design-factory-method/');
+  const trigger = page.getByRole('button', { name: 'Ampliar imagen' });
+  const dialog = page.getByRole('dialog', { name: 'Vista ampliada de imagen' });
+
+  await trigger.click();
+  await page.getByRole('button', { name: 'Cerrar imagen ampliada' }).click();
+  await expect(dialog).not.toBeVisible();
+
+  await trigger.click();
+  await dialog.click({ position: { x: 2, y: 2 } });
+  await expect(dialog).not.toBeVisible();
+});
+
 test('renders a safe lazy video and an external fallback', async ({ page }) => {
   await page.goto('/categorias/dart/dart-video/');
   const frame = page.getByTitle('Video: Dart en una sesión práctica');
@@ -81,7 +113,17 @@ test('keeps Markdown links visibly interactive in both themes', async ({ page })
   await page.goto('/categorias/dart/dart-function/');
   const link = page.locator('.note-prose a').first();
   await expect(link).toHaveAttribute('href', 'https://dart.dev/language/functions');
+  await expect(link).toHaveAttribute('target', '_blank');
+  await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   await expect(link).toHaveCSS('text-decoration-line', 'underline');
   await page.locator('html').evaluate((element) => { element.dataset.theme = 'dark'; });
   await expect(link).toHaveCSS('text-decoration-line', 'underline');
+});
+
+test('opens automatic Markdown links in a new tab without changing course navigation', async ({ page }) => {
+  await page.goto('/categorias/design-patterns/pattern-design-factory-method/');
+  const automaticLink = page.locator('.note-prose a[href="https://refactoring.guru/es/design-patterns/factory-method"]');
+  await expect(automaticLink).toHaveAttribute('target', '_blank');
+  await expect(automaticLink).toHaveAttribute('rel', 'noopener noreferrer');
+  await expect(page.locator('.note-navigation a').first()).not.toHaveAttribute('target', '_blank');
 });

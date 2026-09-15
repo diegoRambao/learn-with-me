@@ -290,6 +290,125 @@ a {
   border: 1px solid var(--border-color);
   border-radius: 0.8rem;
 }
+.note-image-trigger {
+  display: block;
+  position: relative;
+  max-width: 100%;
+  margin: 1.5rem auto;
+  border: 0;
+  border-radius: 0.8rem;
+  background: transparent;
+  padding: 0;
+  cursor: zoom-in;
+}
+.note-image-trigger::after {
+  content: 'Ampliar';
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  border: 1px solid color-mix(in srgb, white 35%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--page-background) 88%, transparent);
+  padding: 0.28rem 0.65rem;
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1.4;
+  opacity: 0;
+  transform: translateY(0.35rem);
+  transition: opacity 160ms ease, transform 160ms ease;
+  pointer-events: none;
+}
+.note-image-trigger:hover::after,
+.note-image-trigger:focus-visible::after {
+  opacity: 1;
+  transform: translateY(0);
+}
+.note-prose .note-image-trigger img {
+  margin: 0;
+  transition: border-color 160ms ease, filter 160ms ease;
+}
+.note-image-trigger:hover img,
+.note-image-trigger:focus-visible img {
+  border-color: var(--accent-color);
+  filter: brightness(0.92);
+}
+.has-open-dialog {
+  overflow: hidden;
+}
+.note-image-dialog {
+  width: min(72rem, calc(100% - 2rem));
+  max-width: none;
+  max-height: calc(100dvh - 2rem);
+  margin: auto;
+  overflow: visible;
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  background: var(--surface-background);
+  padding: 3rem 1rem 1rem;
+  color: var(--text-primary);
+  box-shadow: 0 1.5rem 5rem rgb(0 0 0 / 45%);
+}
+.note-image-dialog::backdrop {
+  background: rgb(4 8 18 / 82%);
+  backdrop-filter: blur(0.3rem);
+}
+.note-image-dialog-close {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  place-items: center;
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.note-image-dialog-close:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+.note-image-dialog-figure {
+  display: grid;
+  gap: 0.8rem;
+  margin: 0;
+}
+.note-image-dialog-figure img {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  max-height: calc(100dvh - 8rem);
+  margin: auto;
+  border-radius: 0.65rem;
+  object-fit: contain;
+}
+.note-image-dialog-figure figcaption {
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+@media (max-width: 40rem) {
+  .note-image-dialog {
+    width: calc(100% - 1rem);
+    max-height: calc(100dvh - 1rem);
+    padding-inline: 0.5rem;
+  }
+  .note-image-dialog-figure img {
+    max-height: calc(100dvh - 9rem);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .note-image-trigger::after,
+  .note-prose .note-image-trigger img {
+    transition: none;
+  }
+}
 .note-prose :not(pre) > code {
   border-radius: 0.3rem;
   background: var(--surface-raised);
