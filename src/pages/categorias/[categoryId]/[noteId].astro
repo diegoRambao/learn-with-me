@@ -5,12 +5,14 @@ import NoteContent from '@components/NoteContent.astro';
 import NoteNavigation from '@components/NoteNavigation.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
 import { categoryFromEntry, createLearningRoute, noteFromEntry } from '@lib/content';
+import { noteIdFromEntryId } from '@lib/note-path';
 
 export async function getStaticPaths() {
   const [categories, notes] = await Promise.all([getCollection('categories'), getCollection('notes')]);
-  return notes.flatMap((note) => {
-    const category = categories.find(({ id }) => id === note.data.category);
-    return category ? [{ params: { categoryId: category.id, noteId: note.id }, props: { category, note } }] : [];
+  return notes.flatMap((noteEntry) => {
+    const category = categories.find(({ id }) => id === noteEntry.data.category);
+    const note = noteFromEntry(noteEntry);
+    return category ? [{ params: { categoryId: category.id, noteId: note.id }, props: { category, note: noteEntry } }] : [];
   });
 }
 
@@ -18,7 +20,7 @@ const { category: categoryEntry, note: noteEntry } = Astro.props;
 const category = categoryFromEntry(categoryEntry);
 const entries = await getCollection('notes');
 const notes = entries.map(noteFromEntry);
-const route = createLearningRoute(category, notes, noteEntry.id);
+const route = createLearningRoute(category, notes, noteIdFromEntryId(noteEntry.id));
 const note = route.activeNote;
 if (!note) return Astro.redirect('/categorias/?notice=invalid-note-context');
 const { Content } = await render(noteEntry);

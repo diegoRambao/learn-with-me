@@ -4,7 +4,7 @@ import matter from 'gray-matter';
 import { validateContent, type NoteInput } from '../../src/lib/validation';
 
 const validCategory = { sourcePath: 'categories/flutter.json', id: 'flutter', name: 'Flutter', description: 'Widgets para aplicaciones', image: '/images/categories/flutter.svg', level: 'beginner' };
-const validWritten = { sourcePath: 'notes/intro.md', id: 'intro', title: 'Intro', description: 'Introducción', tags: ['flutter'], category: 'flutter', durationMinutes: 5, position: 1, format: 'written', body: '# Hola' };
+const validWritten = { sourcePath: 'notes/guides/intro.md', folder: 'guides', depth: 2, id: 'intro', title: 'Intro', description: 'Introducción', tags: ['flutter'], category: 'flutter', durationMinutes: 5, position: 1, format: 'written', body: '# Hola' };
 
 describe('validateContent', () => {
   it('accepts a complete content graph', () => {
@@ -16,12 +16,34 @@ describe('validateContent', () => {
       [validCategory, { ...validCategory, sourcePath: 'categories/copy.json' }],
       [
         validWritten,
-        { ...validWritten, sourcePath: 'notes/other.md', id: 'other' },
-        { ...validWritten, sourcePath: 'notes/missing.md', id: 'missing', category: 'missing', position: 2 },
+        { ...validWritten, sourcePath: 'notes/guides/copy.md' },
+        { ...validWritten, sourcePath: 'notes/guides/missing.md', id: 'missing', category: 'missing' },
       ],
       { socialLinks: [] },
     );
-    expect(issues.map(({ code }) => code)).toEqual(expect.arrayContaining(['duplicate_id', 'unknown_category', 'duplicate_position']));
+    expect(issues.map(({ code }) => code)).toEqual(expect.arrayContaining(['duplicate_id', 'duplicate_route', 'unknown_category', 'duplicate_position']));
+  });
+
+  it('allows the same note id in different categories', () => {
+    const dartCategory = { ...validCategory, sourcePath: 'categories/dart.json', id: 'dart', name: 'Dart' };
+    const notes = [
+      validWritten,
+      { ...validWritten, sourcePath: 'notes/dart/intro.md', folder: 'dart', category: 'dart' },
+    ];
+
+    expect(validateContent([validCategory, dartCategory], notes, { socialLinks: [] })).toEqual([]);
+  });
+
+  it('requires exactly one slug folder for every note', () => {
+    const notes = [
+      { ...validWritten, sourcePath: 'notes/loose.md', folder: undefined, depth: 1 },
+      { ...validWritten, sourcePath: 'notes/deep/topic/intro.md', folder: 'deep', depth: 3, id: 'deep-intro', position: 2 },
+      { ...validWritten, sourcePath: 'notes/Not Valid/other.md', folder: 'Not Valid', id: 'other', position: 3 },
+    ];
+    const issues = validateContent([validCategory], notes, { socialLinks: [] });
+
+    expect(issues.filter(({ code }) => code === 'invalid_location')).toHaveLength(2);
+    expect(issues.map(({ code }) => code)).toContain('invalid_folder');
   });
 
   it('rejects non-positive or fractional numeric fields', () => {
@@ -62,6 +84,8 @@ describe('validateContent', () => {
     const site = JSON.parse(readFileSync(new URL('../fixtures/invalid-content/site/invalid-social-links.json', import.meta.url), 'utf8'));
     const notes: NoteInput[] = [invalidWritten, invalidVideo, missingFields].map((fixture, index) => ({
       sourcePath: `fixture-${index}.md`,
+      folder: 'fixtures',
+      depth: 2,
       id: `fixture-${index}`,
       title: fixture.data.title,
       description: fixture.data.description,

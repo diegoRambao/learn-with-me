@@ -7,6 +7,13 @@ test('renders Markdown metadata and content', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Modelar antes de implementar' })).toBeVisible();
 });
 
+test('renders a relative image after its note is grouped', async ({ page }) => {
+  await page.goto('/categorias/design-patterns/pattern-design-factory-method/');
+  const image = page.locator('.note-prose img').first();
+  await expect(image).toBeVisible();
+  await expect(image).toHaveAttribute('src', /20260915_085815_factory-method/);
+});
+
 test('renders a safe lazy video and an external fallback', async ({ page }) => {
   await page.goto('/categorias/dart/dart-video/');
   const frame = page.getByTitle('Video: Dart en una sesión práctica');

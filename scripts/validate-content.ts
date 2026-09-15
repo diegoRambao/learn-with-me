@@ -2,6 +2,7 @@ import { readFile, readdir } from 'node:fs/promises';
 import { basename, join, relative } from 'node:path';
 import matter from 'gray-matter';
 import { siteConfig } from '../src/data/site';
+import { noteEntryIdFromPath, noteIdFromEntryId } from '../src/lib/note-path';
 import { validateContent, type CategoryInput, type NoteInput } from '../src/lib/validation';
 
 const root = process.cwd();
@@ -18,11 +19,20 @@ const loadCategories = async (): Promise<ReadonlyArray<CategoryInput>> => {
 
 const loadNotes = async (): Promise<ReadonlyArray<NoteInput>> => {
   const directory = join(root, 'src/content/notes');
-  const fileNames = (await readdir(directory)).filter((fileName) => fileName.endsWith('.md'));
+  const fileNames = (await readdir(directory, { recursive: true })).filter((fileName) => fileName.endsWith('.md'));
   return Promise.all(fileNames.map(async (fileName) => {
     const sourcePath = relative(root, join(directory, fileName));
+    const entryId = noteEntryIdFromPath(fileName);
+    const pathSegments = entryId.split('/');
     const parsed = matter(await readFile(join(directory, fileName), 'utf8'));
-    return { sourcePath, id: basename(fileName, '.md'), ...parsed.data, body: parsed.content } as NoteInput;
+    return {
+      sourcePath,
+      folder: pathSegments.length > 1 ? pathSegments[0] : undefined,
+      depth: pathSegments.length,
+      id: noteIdFromEntryId(entryId),
+      ...parsed.data,
+      body: parsed.content,
+    } as NoteInput;
   }));
 };
 

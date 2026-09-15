@@ -29,10 +29,14 @@ Crea `src/content/categories/{id}.json`. El nombre del archivo es el ID canónic
 
 ## Añadir una nota
 
-Crea `src/content/notes/{id}.md` con `title`, `description`, `category`, `durationMinutes`, `position` y `format`. La categoría debe existir y la posición no puede repetirse dentro de ella.
+Crea `src/content/notes/{carpeta}/{id}.md` con `title`, `description`, `category`, `durationMinutes`, `position` y `format`. La nota debe estar exactamente dentro de una carpeta: no se admiten archivos Markdown sueltos ni carpetas más profundas. Tanto `{carpeta}` como `{id}` usan minúsculas, números y guiones.
+
+La carpeta solo organiza los archivos y no tiene que coincidir con `category`. La categoría debe existir y la posición no puede repetirse dentro de ella. La URL pública se deriva de `category` y `{id}`, por lo que mover una nota entre carpetas no cambia su dirección. Un mismo `{id}` puede repetirse en categorías distintas, pero no dentro de la misma categoría.
 
 - Una nota `written` contiene Markdown no vacío después del frontmatter y no declara `youtubeVideoId`.
 - Una nota `video` deja vacío el cuerpo y declara un ID válido de YouTube de 11 caracteres, no una URL.
+
+Guarda recursos relativos en una carpeta `assets` junto al grupo de notas que los utiliza; por ejemplo, `src/content/notes/design-patterns/assets/diagram.png` se referencia desde una nota del mismo grupo como `assets/diagram.png`.
 
 Cada nota usa exactamente uno de esos formatos. Todo contenido válido se publica automáticamente en el siguiente build.
 

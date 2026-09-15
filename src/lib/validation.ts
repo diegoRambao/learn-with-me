@@ -18,6 +18,8 @@ export type CategoryInput = Readonly<{
 
 export type NoteInput = Readonly<{
   sourcePath: string;
+  folder: unknown;
+  depth: unknown;
   id: unknown;
   title: unknown;
   description: unknown;
@@ -77,6 +79,11 @@ const validateCategory = (category: CategoryInput): ContentValidationIssue[] => 
 
 const validateNote = (note: NoteInput): ContentValidationIssue[] => {
   const issues: ContentValidationIssue[] = [];
+  if (note.depth !== 2) {
+    issues.push(issue(note.sourcePath, 'location', 'invalid_location', 'Guarda la nota exactamente en src/content/notes/{carpeta}/{id}.md.'));
+  } else if (!isNonEmptyString(note.folder) || !slugPattern.test(note.folder)) {
+    issues.push(issue(note.sourcePath, 'folder', 'invalid_folder', 'Usa un nombre de carpeta en formato slug.'));
+  }
   const fields = [['id', note.id], ['title', note.title], ['description', note.description], ['category', note.category]] as const;
   for (const [field, value] of fields) {
     if (!isNonEmptyString(value)) issues.push(issue(note.sourcePath, field, `invalid_${field}`, `Añade un valor no vacío para ${field}.`));
@@ -118,7 +125,7 @@ const duplicateIssues = <T>(
 const validateRelations = (categories: ReadonlyArray<CategoryInput>, notes: ReadonlyArray<NoteInput>): ContentValidationIssue[] => {
   const categoryIds = new Set(categories.map(({ id }) => id));
   const issues = duplicateIssues(categories, ({ id }) => id, ({ sourcePath }) => sourcePath, 'id', 'duplicate_id', 'El ID de categoría debe ser único.');
-  issues.push(...duplicateIssues(notes, ({ id }) => id, ({ sourcePath }) => sourcePath, 'id', 'duplicate_id', 'El ID de nota debe ser único.'));
+  issues.push(...duplicateIssues(notes, ({ category, id }) => `${String(category)}:${String(id)}`, ({ sourcePath }) => sourcePath, 'id', 'duplicate_route', 'La combinación de categoría e ID de nota debe ser única.'));
   issues.push(...duplicateIssues(notes, ({ category, position }) => `${String(category)}:${String(position)}`, ({ sourcePath }) => sourcePath, 'position', 'duplicate_position', 'La posición debe ser única dentro de la categoría.'));
   for (const note of notes) {
     if (!categoryIds.has(note.category)) issues.push(issue(note.sourcePath, 'category', 'unknown_category', 'Referencia una categoría existente.'));

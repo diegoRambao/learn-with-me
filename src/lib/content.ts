@@ -1,3 +1,5 @@
+import { noteIdFromEntryId } from './note-path';
+
 export const categoryLevels = ['beginner', 'intermediate', 'advanced', 'pro'] as const;
 
 export type CategoryLevel = (typeof categoryLevels)[number];
@@ -108,4 +110,4 @@ export const categoryFromEntry = (entry: Readonly<{ id: string; data: Omit<Categ
   ({ id: entry.id, ...entry.data });
 
 export const noteFromEntry = (entry: Readonly<{ id: string; data: Omit<Note, 'id' | 'body'>; body?: string }>): Note =>
-  ({ id: entry.id, ...entry.data, body: entry.body ?? '' }) as Note;
+  ({ id: noteIdFromEntryId(entry.id), ...entry.data, body: entry.body ?? '' }) as Note;

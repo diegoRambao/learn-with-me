@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createHomeCategoryIndex, createLearningRoute } from '../../src/lib/content';
+import { createHomeCategoryIndex, createLearningRoute, noteFromEntry } from '../../src/lib/content';
 
 const categories = [
   { id: 'zeta', name: 'Álgebra', description: 'Álgebra avanzada', image: '/images/categories/zeta.svg', level: 'advanced' as const },
@@ -13,6 +13,13 @@ const notes = [
 ];
 
 describe('content ordering', () => {
+  it('projects a nested content entry to its public note id', () => {
+    const { id: _id, body, ...data } = notes[0];
+    const entry = { id: 'guides/intro', data, body };
+
+    expect(noteFromEntry(entry).id).toBe('intro');
+  });
+
   it('orders categories by normalized name and id', () => {
     expect(createHomeCategoryIndex(categories).categories.map(({ id }) => id)).toEqual(['algebra', 'zeta']);
   });

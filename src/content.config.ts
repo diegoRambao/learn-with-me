@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { noteEntryIdFromPath } from './lib/note-path';
 
 const nonEmptyText = z.string().trim().min(1);
 const positiveInteger = z.number().int().positive();
@@ -24,7 +25,11 @@ const categories = defineCollection({
 });
 
 const notes = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/notes' }),
+  loader: glob({
+    pattern: '*/*.md',
+    base: './src/content/notes',
+    generateId: ({ entry }) => noteEntryIdFromPath(entry),
+  }),
   schema: z.discriminatedUnion('format', [
     z.object({
       title: nonEmptyText,
