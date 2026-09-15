@@ -5,16 +5,17 @@ import HomeRoutePreview from '@components/HomeRoutePreview.astro';
 import SocialLinks from '@components/SocialLinks.astro';
 import { siteConfig } from '@data/site';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import { categoryFromEntry, createHomeCategoryIndex, createHomeCategoryPreview } from '@lib/content';
+import { categoryFromEntry, createHomeCategoryIndex, createHomeCategoryPreview, noteFromEntry } from '@lib/content';
 
 const categories = createHomeCategoryIndex((await getCollection('categories')).map(categoryFromEntry)).categories;
 const categoryPreview = createHomeCategoryPreview(categories);
+const notes = (await getCollection('notes')).map(noteFromEntry);
 ---
 
 <BaseLayout title="Learn with Me · Apuntes de estudio">
   <div class="shell">
     <HomeIntroduction>
-      <HomeRoutePreview preview={categoryPreview} />
+      <HomeRoutePreview preview={categoryPreview} notes={notes} />
     </HomeIntroduction>
     <SocialLinks links={siteConfig.socialLinks} />
   </div>

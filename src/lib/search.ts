@@ -1,5 +1,5 @@
 import { type Category, createHomeCategoryIndex, type Note } from './content';
-import { categoryUrl, noteUrl } from './routes';
+import { categoryDestination, noteUrl } from './routes';
 
 export type SearchQuery = Readonly<{
   raw: string;
@@ -68,7 +68,7 @@ export const buildSearchIndex = (
     name: category.name,
     description: category.description,
     image: category.image,
-    href: categoryUrl(category.id),
+    href: categoryDestination(category.id, notes),
     searchableFields: createSearchableFields([category.name, category.description]),
   }));
   const noteRecords = [...notes]

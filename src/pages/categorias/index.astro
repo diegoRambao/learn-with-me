@@ -4,9 +4,11 @@ import CategoryCard from '@components/CategoryCard.astro';
 import CategoryFilters from '@components/CategoryFilters.astro';
 import EmptyState from '@components/EmptyState.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
-import { categoryFromEntry, createHomeCategoryIndex } from '@lib/content';
+import { categoryFromEntry, createHomeCategoryIndex, noteFromEntry } from '@lib/content';
+import { categoryDestination } from '@lib/routes';
 
 const categories = createHomeCategoryIndex((await getCollection('categories')).map(categoryFromEntry)).categories;
+const notes = (await getCollection('notes')).map(noteFromEntry);
 ---
 
 <BaseLayout title="Categorías · Learn with Me" description="Explora rutas de aprendizaje y elige una categoría según tu nivel.">
@@ -28,7 +30,7 @@ const categories = createHomeCategoryIndex((await getCollection('categories')).m
       <>
         <div class="mt-12"><CategoryFilters total={categories.length} /></div>
         <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-category-grid>
-          {categories.map((category) => <CategoryCard category={category} />)}
+          {categories.map((category) => <CategoryCard category={category} destination={categoryDestination(category.id, notes)} />)}
         </div>
         <div class="mt-8"><EmptyState kind="matches" /></div>
       </>

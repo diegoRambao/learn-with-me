@@ -1,10 +1,11 @@
 ---
 import CategoryCard from '@components/CategoryCard.astro';
-import type { HomeCategoryPreview } from '@lib/content';
+import type { HomeCategoryPreview, Note } from '@lib/content';
+import { categoryDestination } from '@lib/routes';
 
-interface Props { preview: HomeCategoryPreview }
+interface Props { preview: HomeCategoryPreview; notes: ReadonlyArray<Note> }
 
-const { preview } = Astro.props;
+const { preview, notes } = Astro.props;
 const visibleCount = preview.primary.length + preview.teaser.length;
 ---
 
@@ -24,13 +25,13 @@ const visibleCount = preview.primary.length + preview.teaser.length;
   ) : (
     <div class="mt-12">
       <ul class="route-grid" data-route-group="primary" aria-label="Rutas destacadas">
-        {preview.primary.map((category) => <li class="contents"><CategoryCard category={category} headingLevel="h3" /></li>)}
+        {preview.primary.map((category) => <li class="contents"><CategoryCard category={category} destination={categoryDestination(category.id, notes)} headingLevel="h3" /></li>)}
       </ul>
 
       {preview.teaser.length > 0 && (
         <div class="route-teaser" data-route-group="teaser" aria-label="Más rutas disponibles">
           <ul class="route-grid">
-            {preview.teaser.map((category) => <li class="contents"><CategoryCard category={category} headingLevel="h3" /></li>)}
+            {preview.teaser.map((category) => <li class="contents"><CategoryCard category={category} destination={categoryDestination(category.id, notes)} headingLevel="h3" /></li>)}
           </ul>
           <div class="route-fade" data-route-fade aria-hidden="true"></div>
         </div>

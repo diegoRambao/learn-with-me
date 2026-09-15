@@ -1,13 +1,13 @@
 ---
 import { levelLabels, type Category } from '@lib/content';
 import { categoryUrl } from '@lib/routes';
-interface Props { category: Category; headingLevel?: 'h2' | 'h3' }
-const { category, headingLevel = 'h2' } = Astro.props;
+interface Props { category: Category; destination?: string; headingLevel?: 'h2' | 'h3' }
+const { category, destination = categoryUrl(category.id), headingLevel = 'h2' } = Astro.props;
 const Heading = headingLevel;
 ---
 
 <article class="interactive-card category-card panel overflow-hidden" data-level={category.level} data-category-id={category.id}>
-  <a class="block h-full no-underline" href={categoryUrl(category.id)}>
+  <a class="block h-full no-underline" href={destination}>
     <div class="aspect-video overflow-hidden border-b border-line bg-ink-800">
       <img src={category.image} alt={`Ilustración de ${category.name}`} width="800" height="450" loading="lazy" class="h-full w-full object-cover" data-category-image />
     </div>
