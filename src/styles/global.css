@@ -302,7 +302,7 @@ a {
   cursor: zoom-in;
 }
 .note-image-trigger::after {
-  content: 'Ampliar';
+  content: "Ampliar";
   position: absolute;
   right: 0.75rem;
   bottom: 0.75rem;
@@ -316,7 +316,9 @@ a {
   line-height: 1.4;
   opacity: 0;
   transform: translateY(0.35rem);
-  transition: opacity 160ms ease, transform 160ms ease;
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
   pointer-events: none;
 }
 .note-image-trigger:hover::after,
@@ -326,7 +328,9 @@ a {
 }
 .note-prose .note-image-trigger img {
   margin: 0;
-  transition: border-color 160ms ease, filter 160ms ease;
+  transition:
+    border-color 160ms ease,
+    filter 160ms ease;
 }
 .note-image-trigger:hover img,
 .note-image-trigger:focus-visible img {
@@ -544,7 +548,7 @@ a {
   background: color-mix(in srgb, var(--surface-background) 84%, transparent);
   padding: 1rem;
   color: var(--text-primary);
-  font-weight: 750;
+  font-weight: 700;
   line-height: 1.35;
   text-decoration: none;
 }
