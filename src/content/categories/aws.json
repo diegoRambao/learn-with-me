@@ -1,6 +1,6 @@
 {
   "name": "AWS",
+  "description": "Servicios de Amazon Web Services para diseñar, desplegar y operar aplicaciones en la nube.",
   "image": "/images/categories/aws.svg",
   "level": "intermediate"
 }
-

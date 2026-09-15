@@ -3,21 +3,21 @@ import { expect, test } from '@playwright/test';
 test.beforeEach(async ({ page }) => page.goto('/categorias/'));
 
 test('shows every category and filters by each level', async ({ page }) => {
-  await expect(page.locator('article[data-level]')).toHaveCount(4);
-  for (const [label, level] of [['Principiante', 'beginner'], ['Intermedio', 'intermediate'], ['Avanzado', 'advanced'], ['Pro', 'pro']] as const) {
+  await expect(page.locator('article[data-level]')).toHaveCount(5);
+  for (const [label, level, count] of [['Principiante', 'beginner', 2], ['Intermedio', 'intermediate', 1], ['Avanzado', 'advanced', 1], ['Pro', 'pro', 1]] as const) {
     const button = page.getByRole('button', { name: label });
     await button.click();
     await expect(button).toHaveAttribute('aria-pressed', 'true');
-    await expect(page.locator(`article[data-level="${level}"]:visible`)).toHaveCount(1);
-    await expect(page.locator('[data-matching-count]')).toHaveText('1');
+    await expect(page.locator(`article[data-level="${level}"]:visible`)).toHaveCount(count);
+    await expect(page.locator('[data-matching-count]')).toHaveText(String(count));
   }
   await page.getByRole('button', { name: 'Todos' }).click();
-  await expect(page.locator('article[data-level]:visible')).toHaveCount(4);
+  await expect(page.locator('article[data-level]:visible')).toHaveCount(5);
 });
 
 test('provides names, levels, images and canonical links', async ({ page }) => {
   const cards = page.locator('article[data-level]');
-  await expect(cards).toHaveCount(4);
+  await expect(cards).toHaveCount(5);
   for (const card of await cards.all()) {
     await expect(card.getByRole('heading')).toBeVisible();
     await expect(card.getByRole('img')).toHaveAttribute('width', '800');
@@ -33,7 +33,7 @@ test('shows and clears the zero-match state', async ({ page }) => {
   await page.getByRole('button', { name: 'Pro', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'No hay categorías para este nivel' })).toBeVisible();
   await page.getByRole('button', { name: 'Ver todas' }).click();
-  await expect(page.locator('article[data-level]:visible')).toHaveCount(4);
+  await expect(page.locator('article[data-level]:visible')).toHaveCount(5);
 });
 
 test('ignores unknown notice parameters', async ({ page }) => {

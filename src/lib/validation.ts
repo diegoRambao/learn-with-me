@@ -11,6 +11,7 @@ export type CategoryInput = Readonly<{
   sourcePath: string;
   id: unknown;
   name: unknown;
+  description: unknown;
   image: unknown;
   level: unknown;
 }>;
@@ -20,6 +21,7 @@ export type NoteInput = Readonly<{
   id: unknown;
   title: unknown;
   description: unknown;
+  tags: unknown;
   category: unknown;
   durationMinutes: unknown;
   position: unknown;
@@ -67,6 +69,7 @@ const validateCategory = (category: CategoryInput): ContentValidationIssue[] => 
   const issues: ContentValidationIssue[] = [];
   if (!isNonEmptyString(category.id) || !slugPattern.test(category.id)) issues.push(issue(category.sourcePath, 'id', 'invalid_id', 'Usa un ID slug URL-safe derivado del archivo.'));
   if (!isNonEmptyString(category.name)) issues.push(issue(category.sourcePath, 'name', 'empty_name', 'Añade un nombre visible no vacío.'));
+  if (!isNonEmptyString(category.description)) issues.push(issue(category.sourcePath, 'description', 'empty_description', 'Añade una descripción no vacía para la categoría.'));
   if (!isValidImage(category.image)) issues.push(issue(category.sourcePath, 'image', 'invalid_image', 'Usa /images/categories/... o una URL HTTPS absoluta.'));
   if (!categoryLevels.includes(category.level as CategoryLevel)) issues.push(issue(category.sourcePath, 'level', 'invalid_level', 'Usa beginner, intermediate, advanced o pro.'));
   return issues;
@@ -80,6 +83,7 @@ const validateNote = (note: NoteInput): ContentValidationIssue[] => {
   }
   if (isNonEmptyString(note.id) && !slugPattern.test(note.id)) issues.push(issue(note.sourcePath, 'id', 'invalid_id', 'Usa un ID slug URL-safe derivado del archivo.'));
   if (!isPositiveInteger(note.durationMinutes)) issues.push(issue(note.sourcePath, 'durationMinutes', 'invalid_duration', 'Usa un entero mayor que cero.'));
+  if (!Array.isArray(note.tags) || note.tags.length === 0 || note.tags.some((tag) => !isNonEmptyString(tag))) issues.push(issue(note.sourcePath, 'tags', 'invalid_tags', 'Añade al menos una etiqueta no vacía.'));
   if (!isPositiveInteger(note.position)) issues.push(issue(note.sourcePath, 'position', 'invalid_position', 'Usa un entero mayor que cero.'));
   if (note.format !== 'written' && note.format !== 'video') issues.push(issue(note.sourcePath, 'format', 'invalid_format', 'Usa exactamente written o video.'));
   if (note.format === 'written') {
@@ -145,4 +149,3 @@ export const validateContent = (
   ...validateRelations(categories, notes),
   ...validateSocialLinks(siteConfig),
 ];
-

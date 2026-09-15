@@ -31,23 +31,23 @@ test('replaces the sidebar with a central route to the category catalog', async 
   await expect(page.getByRole('link', { name: 'Saltar al contenido' })).toBeFocused();
 });
 
-test('shows three primary routes and one accessible teaser in stable order', async ({ page }) => {
+test('shows three primary routes and two accessible teasers in stable order', async ({ page }) => {
   const primaryRoutes = page.locator('[data-route-group="primary"] article[data-category-id]');
   const teaserRoutes = page.locator('[data-route-group="teaser"] article[data-category-id]');
   await expect(primaryRoutes).toHaveCount(3);
-  await expect(teaserRoutes).toHaveCount(1);
+  await expect(teaserRoutes).toHaveCount(2);
 
   const visibleIds = await page.locator('[data-home-routes] article[data-category-id]').evaluateAll((cards) =>
     cards.map((card) => card.getAttribute('data-category-id')),
   );
-  expect(visibleIds).toEqual(['aws', 'dart', 'sdd', 'flutter']);
-  expect(new Set(visibleIds).size).toBe(4);
+  expect(visibleIds).toEqual(['aws', 'dart', 'sdd', 'flutter-basic', 'terminal']);
+  expect(new Set(visibleIds).size).toBe(5);
 
   for (const link of await page.locator('[data-home-routes] article[data-category-id] a').all()) {
     await expect(link).toHaveAttribute('href', /^\/categorias\/[a-z0-9-]+\/$/);
   }
 
-  const teaserLink = teaserRoutes.getByRole('link');
+  const teaserLink = teaserRoutes.getByRole('link').first();
   await teaserLink.focus();
   await expect(teaserLink).toBeFocused();
   await expect(teaserLink).toBeVisible();

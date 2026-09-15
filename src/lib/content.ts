@@ -5,6 +5,7 @@ export type CategoryLevel = (typeof categoryLevels)[number];
 export type Category = Readonly<{
   id: string;
   name: string;
+  description: string;
   image: string;
   level: CategoryLevel;
 }>;
@@ -13,6 +14,7 @@ type NoteBase = Readonly<{
   id: string;
   title: string;
   description: string;
+  tags: ReadonlyArray<string>;
   category: string;
   durationMinutes: number;
   position: number;

@@ -8,10 +8,29 @@ import ThemeSelector from '@components/ThemeSelector.astro';
       <span aria-hidden="true" class="brand-mark grid size-9 place-items-center rounded-xl bg-accent">∴</span>
       <span>Learn with Me</span>
     </a>
-    <nav aria-label="Navegación principal" class="flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end">
+    <form action="/buscar/" method="get" class="search-form flex min-h-11 w-full items-center gap-2 sm:w-auto" data-search-form>
+      <label class="sr-only" for="site-search">Buscar categorías y notas</label>
+      <input id="site-search" name="q" type="search" class="min-w-0 flex-1 rounded-lg border border-line bg-ink-900 px-3 py-2" placeholder="Buscar categorías y notas" data-search-input />
+      <button type="submit" class="rounded-lg bg-accent px-3 py-2 font-bold text-accent-contrast">Buscar</button>
+      <p class="sr-only" aria-live="polite" data-search-error></p>
+    </form>
+    <nav aria-label="Navegación principal" class="flex w-full flex-wrap items-center justify-between gap-3 sm:w-auto sm:flex-nowrap sm:justify-end">
       <a class="category-nav-link inline-flex min-h-11 items-center rounded-full border border-line px-4 font-semibold no-underline hover:border-accent hover:text-accent" href="/categorias/">Categorías</a>
       <ThemeSelector />
     </nav>
   </div>
 </header>
 
+<script>
+  const form = document.querySelector<HTMLFormElement>('[data-search-form]');
+  const input = document.querySelector<HTMLInputElement>('[data-search-input]');
+  const error = document.querySelector<HTMLElement>('[data-search-error]');
+  const query = new URLSearchParams(window.location.search).get('q');
+  if (input && query !== null) input.value = query;
+  form?.addEventListener('submit', (event) => {
+    if (!input || input.value.trim()) return;
+    event.preventDefault();
+    if (error) error.textContent = 'Escribe un término para buscar';
+    input.focus();
+  });
+</script>

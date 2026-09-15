@@ -1,6 +1,7 @@
 ---
 title: Operadores de control en la terminal.
 description: Algunos de los operadores mas utilizados para controlar el flujo de ejecución de comandos en la terminal.
+tags: [terminal, operadores, automatización]
 category: terminal
 durationMinutes: 2
 position: 3

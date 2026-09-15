@@ -1,6 +1,7 @@
 ---
 title: Comandos básicos de la terminal
 description: Algunos de los comandos mas utilizados en la terminal para navegar, visualizar archivos y gestionar el sistema.
+tags: [terminal, comandos, navegación]
 category: terminal
 durationMinutes: 4
 position: 1

@@ -17,6 +17,7 @@ const categories = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/categories' }),
   schema: z.object({
     name: nonEmptyText,
+    description: nonEmptyText,
     image: imageReference,
     level: z.enum(['beginner', 'intermediate', 'advanced', 'pro']),
   }),
@@ -28,6 +29,7 @@ const notes = defineCollection({
     z.object({
       title: nonEmptyText,
       description: nonEmptyText,
+      tags: z.array(nonEmptyText).min(1),
       category: nonEmptyText,
       durationMinutes: positiveInteger,
       position: positiveInteger,
@@ -37,6 +39,7 @@ const notes = defineCollection({
     z.object({
       title: nonEmptyText,
       description: nonEmptyText,
+      tags: z.array(nonEmptyText).min(1),
       category: nonEmptyText,
       durationMinutes: positiveInteger,
       position: positiveInteger,

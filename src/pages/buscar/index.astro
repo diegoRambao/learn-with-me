@@ -1,0 +1,73 @@
+---
+import { getCollection } from 'astro:content';
+import SearchCategoryResult from '@components/SearchCategoryResult.astro';
+import SearchNoteResult from '@components/SearchNoteResult.astro';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { categoryFromEntry, noteFromEntry } from '@lib/content';
+import { buildSearchIndex } from '@lib/search';
+
+const searchIndex = buildSearchIndex(
+  (await getCollection('categories')).map(categoryFromEntry),
+  (await getCollection('notes')).map(noteFromEntry),
+);
+---
+
+<BaseLayout title="Buscar · Learn with Me" description="Busca categorías y notas de estudio.">
+  <div class="shell max-w-5xl py-12 sm:py-18">
+    <header class="max-w-3xl">
+      <p class="eyebrow">Descubrimiento</p>
+      <h1 class="mt-4 text-4xl font-bold tracking-tight sm:text-6xl">Busca categorías y notas.</h1>
+      <p class="mt-5 text-lg leading-8 text-muted">Encuentra contenido por nombre, descripción o etiquetas.</p>
+    </header>
+    <p class="notice mt-8 rounded-xl border p-5" role="status" aria-live="polite" data-search-status>Escribe un término para buscar.</p>
+    <section class="mt-10" aria-labelledby="search-categories-heading">
+      <h2 id="search-categories-heading" class="text-2xl font-bold">Categorías</h2>
+      <p class="mt-2 text-muted" data-search-empty="category" hidden>No hay categorías que coincidan con la búsqueda.</p>
+      <div class="mt-5 grid gap-5" data-search-section="category">
+        {searchIndex.categories.map((result) => <SearchCategoryResult result={result} />)}
+      </div>
+    </section>
+    <section class="mt-12" aria-labelledby="search-notes-heading">
+      <h2 id="search-notes-heading" class="text-2xl font-bold">Notas</h2>
+      <p class="mt-2 text-muted" data-search-empty="note" hidden>No hay notas que coincidan con la búsqueda.</p>
+      <div class="mt-5 grid gap-5" data-search-section="note">
+        {searchIndex.notes.map((result) => <SearchNoteResult result={result} />)}
+      </div>
+    </section>
+    <noscript><p class="notice mt-8 rounded-xl border p-5">La búsqueda necesita JavaScript para actualizar los resultados. Puedes seguir navegando por las categorías.</p></noscript>
+  </div>
+</BaseLayout>
+
+<script>
+  const normalize = (value: string): string => value.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLocaleLowerCase('es');
+  const parameters = new URLSearchParams(window.location.search);
+  const rawQuery = parameters.get('q');
+  const trimmedQuery = rawQuery?.trim() ?? '';
+  const tokens = [...new Set(trimmedQuery.split(/\s+/u).map(normalize).filter(Boolean))];
+  const status = document.querySelector<HTMLElement>('[data-search-status]');
+  const results = [...document.querySelectorAll<HTMLElement>('[data-search-result]')];
+  const match = (element: HTMLElement): boolean => {
+    const fields = JSON.parse(element.dataset.searchFields ?? '[]') as string[];
+    return tokens.every((token) => fields.some((field) => field.includes(token)));
+  };
+  const showEmptyMessage = (type: string, visible: boolean): void => {
+    const message = document.querySelector<HTMLElement>(`[data-search-empty="${type}"]`);
+    if (message) message.hidden = !visible;
+  };
+
+  if (rawQuery === null) {
+    if (status) status.textContent = 'Escribe un término para buscar.';
+  } else if (!trimmedQuery) {
+    if (status) status.textContent = 'Escribe un término para buscar.';
+  } else {
+    const matchingResults = results.filter(match);
+    for (const result of results) result.hidden = !matchingResults.includes(result);
+    const categoryCount = matchingResults.filter(({ dataset }) => dataset.searchType === 'category').length;
+    const noteCount = matchingResults.filter(({ dataset }) => dataset.searchType === 'note').length;
+    showEmptyMessage('category', categoryCount === 0);
+    showEmptyMessage('note', noteCount === 0);
+    if (status) status.textContent = matchingResults.length
+      ? `Se encontraron ${matchingResults.length} resultado(s) para “${trimmedQuery}”.`
+      : `No hubo coincidencias para “${trimmedQuery}”. Prueba otro término.`;
+  }
+</script>

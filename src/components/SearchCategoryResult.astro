@@ -1,0 +1,23 @@
+---
+import type { SearchCategoryRecord } from '@lib/search';
+interface Props { result: SearchCategoryRecord }
+const { result } = Astro.props;
+---
+
+<article class="search-result panel overflow-hidden" data-search-result data-search-type="category" data-search-id={result.id} data-search-fields={JSON.stringify(result.searchableFields)} hidden>
+  <a href={result.href} class="grid gap-4 p-4 no-underline sm:grid-cols-[11rem_1fr]">
+    <img src={result.image} alt={`Ilustración de ${result.name}`} class="h-40 w-full rounded-lg border border-line object-cover sm:h-full" loading="lazy" data-category-image />
+    <div class="min-w-0">
+      <p class="eyebrow">Categoría</p>
+      <h3 class="mt-2 text-xl font-bold">{result.name}</h3>
+      <p class="mt-3 leading-7 text-muted">{result.description}</p>
+      <span class="mt-4 inline-block font-bold text-accent">Abrir categoría <span aria-hidden="true">→</span></span>
+    </div>
+  </a>
+</article>
+
+<script>
+  for (const image of document.querySelectorAll<HTMLImageElement>('[data-category-image]')) {
+    image.addEventListener('error', () => { image.src = '/category-fallback.svg'; }, { once: true });
+  }
+</script>

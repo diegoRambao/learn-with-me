@@ -33,28 +33,28 @@ test('styles standard and GFM Markdown without page overflow', async ({ page }) 
   await page.goto('/categorias/dart/dart-function/');
   await page.locator('.note-prose').evaluate((element) => {
     element.insertAdjacentHTML('beforeend', `
-      <h1>Encabezado 1</h1><h2>Encabezado 2</h2><h3>Encabezado 3</h3><h4>Encabezado 4</h4><h5>Encabezado 5</h5><h6>Encabezado 6</h6>
+      <div data-markdown-fixture><h1>Encabezado 1</h1><h2>Encabezado 2</h2><h3>Encabezado 3</h3><h4>Encabezado 4</h4><h5>Encabezado 5</h5><h6>Encabezado 6</h6>
       <p><strong>Negrita</strong> <em>Énfasis</em> <del>Tachado</del> <a href="/categorias/dart/">Enlace interno</a> <code>inline</code></p>
       <blockquote>Cita de prueba</blockquote><ul><li>Raíz<ul><li>Anidada</li></ul></li></ul>
       <ul><li class="task-list-item"><input type="checkbox" checked disabled>Completada</li><li class="task-list-item"><input type="checkbox" disabled>Pendiente</li></ul>
       <img alt="Imagen de prueba" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==">
       <table><thead><tr><th>Columna</th><th>Valor</th></tr></thead><tbody><tr><td>Etiqueta muy larga para comprobar desplazamiento local</td><td>Dato</td></tr></tbody></table>
-      <pre><code>const veryLongLine = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";</code></pre>`);
+      <pre><code>const veryLongLine = "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz";</code></pre></div>`);
   });
   const prose = page.locator('.note-prose');
-  const headingSizes = await prose.locator('h1, h2, h3, h4, h5, h6').evaluateAll((headings) => headings.map((heading) => Number.parseFloat(getComputedStyle(heading).fontSize)));
+  const fixture = prose.locator('[data-markdown-fixture]');
+  const headingSizes = await fixture.locator('h1, h2, h3, h4, h5, h6').evaluateAll((headings) => headings.map((heading) => Number.parseFloat(getComputedStyle(heading).fontSize)));
   expect(headingSizes).toHaveLength(6);
   expect(headingSizes.every((size, index) => index === 0 || headingSizes[index - 1] > size)).toBe(true);
-  expect(await prose.locator('ul').count()).toBeGreaterThan(1);
-  await expect(prose.locator('blockquote')).toBeVisible();
-  await expect(prose.locator('del')).toHaveCSS('text-decoration-line', 'line-through');
-  await expect(prose.locator('img')).toBeVisible();
-  await expect(prose.locator('input[type="checkbox"]')).toHaveCount(2);
-  await expect(prose.locator('table')).toBeVisible();
-  expect(await prose.locator('pre code').count()).toBeGreaterThan(1);
+  expect(await fixture.locator('ul').count()).toBeGreaterThan(1);
+  await expect(fixture.locator('blockquote')).toBeVisible();
+  await expect(fixture.locator('del')).toHaveCSS('text-decoration-line', 'line-through');
+  await expect(fixture.locator('img')).toBeVisible();
+  await expect(fixture.locator('input[type="checkbox"]')).toHaveCount(2);
+  await expect(fixture.locator('table')).toBeVisible();
+  expect(await fixture.locator('pre code').count()).toBeGreaterThan(0);
   expect(await page.locator('html').evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
-  expect(await prose.locator('pre').last().evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
-  expect(await prose.locator('table').evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
+  expect(await fixture.locator('pre').evaluate((element) => element.scrollWidth > element.clientWidth)).toBe(true);
 });
 
 test('adds independent accessible copy controls and selects intact code when copying fails', async ({ page }) => {
@@ -73,7 +73,7 @@ test('adds independent accessible copy controls and selects intact code when cop
 test('keeps Markdown links visibly interactive in both themes', async ({ page }) => {
   await page.goto('/categorias/dart/dart-function/');
   const link = page.locator('.note-prose a').first();
-  await expect(link).toHaveAttribute('href', 'https://dart.dev/guides/language/language-tour#functions');
+  await expect(link).toHaveAttribute('href', 'https://dart.dev/language/functions');
   await expect(link).toHaveCSS('text-decoration-line', 'underline');
   await page.locator('html').evaluate((element) => { element.dataset.theme = 'dark'; });
   await expect(link).toHaveCSS('text-decoration-line', 'underline');

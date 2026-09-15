@@ -2,14 +2,14 @@ import { describe, expect, it } from 'vitest';
 import { createHomeCategoryIndex, createLearningRoute } from '../../src/lib/content';
 
 const categories = [
-  { id: 'zeta', name: 'Álgebra', image: '/images/categories/zeta.svg', level: 'advanced' as const },
-  { id: 'algebra', name: 'Algebra', image: '/images/categories/algebra.svg', level: 'beginner' as const },
+  { id: 'zeta', name: 'Álgebra', description: 'Álgebra avanzada', image: '/images/categories/zeta.svg', level: 'advanced' as const },
+  { id: 'algebra', name: 'Algebra', description: 'Álgebra inicial', image: '/images/categories/algebra.svg', level: 'beginner' as const },
 ];
 
 const notes = [
-  { id: 'third', title: 'Tercera', description: 'Tercera nota', category: 'algebra', durationMinutes: 3, position: 3, format: 'written' as const, body: 'C' },
-  { id: 'first-b', title: 'Primera B', description: 'Primera nota B', category: 'algebra', durationMinutes: 3, position: 1, format: 'written' as const, body: 'B' },
-  { id: 'first-a', title: 'Primera A', description: 'Primera nota A', category: 'algebra', durationMinutes: 3, position: 1, format: 'written' as const, body: 'A' },
+  { id: 'third', title: 'Tercera', description: 'Tercera nota', tags: ['algebra'], category: 'algebra', durationMinutes: 3, position: 3, format: 'written' as const, body: 'C' },
+  { id: 'first-b', title: 'Primera B', description: 'Primera nota B', tags: ['algebra'], category: 'algebra', durationMinutes: 3, position: 1, format: 'written' as const, body: 'B' },
+  { id: 'first-a', title: 'Primera A', description: 'Primera nota A', tags: ['algebra'], category: 'algebra', durationMinutes: 3, position: 1, format: 'written' as const, body: 'A' },
 ];
 
 describe('content ordering', () => {
@@ -50,7 +50,7 @@ describe('content ordering', () => {
       { ...notes[0], position: 30 },
       { ...notes[1], position: 10, format: 'video' as const, youtubeVideoId: 'video-id' },
       { ...notes[2], position: 20 },
-      { id: 'other', title: 'Otra', description: 'Otra nota', category: 'zeta', durationMinutes: 1, position: 1, format: 'written' as const, body: '' },
+      { id: 'other', title: 'Otra', description: 'Otra nota', tags: ['algebra'], category: 'zeta', durationMinutes: 1, position: 1, format: 'written' as const, body: '' },
     ];
     const originalOrder = sourceNotes.map(({ id }) => id);
     const route = createLearningRoute(categories[1], sourceNotes, 'first-a');

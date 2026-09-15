@@ -3,8 +3,8 @@ import { readFileSync } from 'node:fs';
 import matter from 'gray-matter';
 import { validateContent, type NoteInput } from '../../src/lib/validation';
 
-const validCategory = { sourcePath: 'categories/flutter.json', id: 'flutter', name: 'Flutter', image: '/images/categories/flutter.svg', level: 'beginner' };
-const validWritten = { sourcePath: 'notes/intro.md', id: 'intro', title: 'Intro', description: 'Introducción', category: 'flutter', durationMinutes: 5, position: 1, format: 'written', body: '# Hola' };
+const validCategory = { sourcePath: 'categories/flutter.json', id: 'flutter', name: 'Flutter', description: 'Widgets para aplicaciones', image: '/images/categories/flutter.svg', level: 'beginner' };
+const validWritten = { sourcePath: 'notes/intro.md', id: 'intro', title: 'Intro', description: 'Introducción', tags: ['flutter'], category: 'flutter', durationMinutes: 5, position: 1, format: 'written', body: '# Hola' };
 
 describe('validateContent', () => {
   it('accepts a complete content graph', () => {
@@ -27,6 +27,15 @@ describe('validateContent', () => {
   it('rejects non-positive or fractional numeric fields', () => {
     const issues = validateContent([validCategory], [{ ...validWritten, durationMinutes: 0, position: 1.5 }], { socialLinks: [] });
     expect(issues.map(({ field }) => field)).toEqual(expect.arrayContaining(['durationMinutes', 'position']));
+  });
+
+  it('requires a category description and non-empty note tags', () => {
+    const issues = validateContent(
+      [{ ...validCategory, description: ' ' }],
+      [{ ...validWritten, tags: [] }, { ...validWritten, id: 'empty-tag', position: 2, tags: [' '] }],
+      { socialLinks: [] },
+    );
+    expect(issues.map(({ field }) => field)).toEqual(expect.arrayContaining(['description', 'tags']));
   });
 
   it('enforces mutually exclusive written and video payloads', () => {
@@ -56,6 +65,7 @@ describe('validateContent', () => {
       id: `fixture-${index}`,
       title: fixture.data.title,
       description: fixture.data.description,
+      tags: fixture.data.tags,
       category: fixture.data.category,
       durationMinutes: fixture.data.durationMinutes,
       position: fixture.data.position,

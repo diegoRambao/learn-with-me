@@ -33,10 +33,10 @@ El proyecto Astro, TypeScript, Vitest y Playwright ya está inicializado y no re
 
 **⚠️ CRITICAL**: Ninguna historia puede compilar de forma válida hasta completar esta fase.
 
-- [ ] T001 [P] Ampliar los esquemas Astro y tipos inmutables para que `Category.description` sea “obligatorio, recortado y no vacío” y `Note.tags` tenga “al menos una etiqueta; cada valor recortado y no vacío” en src/content.config.ts y src/lib/content.ts
-- [ ] T002 [P] Añadir una descripción editorial no vacía y útil para búsqueda a las cinco categorías existentes en src/content/categories/aws.json, src/content/categories/dart.json, src/content/categories/flutter-basic.json, src/content/categories/sdd.json y src/content/categories/terminal.json
-- [ ] T003 [P] Añadir una o más etiquetas editoriales no vacías a cada nota existente, conservando sus descripciones actuales, categoría, formato y orden, en src/content/notes/*.md
-- [ ] T004 Actualizar los objetos tipados y factories existentes afectados por `Category.description` y `Note.tags` sin relajar los nuevos campos obligatorios en tests/unit/content-ordering.test.ts, tests/unit/home-category-preview.test.ts y tests/unit/note-navigation.test.ts
+- [X] T001 [P] Ampliar los esquemas Astro y tipos inmutables para que `Category.description` sea “obligatorio, recortado y no vacío” y `Note.tags` tenga “al menos una etiqueta; cada valor recortado y no vacío” en src/content.config.ts y src/lib/content.ts
+- [X] T002 [P] Añadir una descripción editorial no vacía y útil para búsqueda a las cinco categorías existentes en src/content/categories/aws.json, src/content/categories/dart.json, src/content/categories/flutter-basic.json, src/content/categories/sdd.json y src/content/categories/terminal.json
+- [X] T003 [P] Añadir una o más etiquetas editoriales no vacías a cada nota existente, conservando sus descripciones actuales, categoría, formato y orden, en src/content/notes/*.md
+- [X] T004 Actualizar los objetos tipados y factories existentes afectados por `Category.description` y `Note.tags` sin relajar los nuevos campos obligatorios en tests/unit/content-ordering.test.ts, tests/unit/home-category-preview.test.ts y tests/unit/note-navigation.test.ts
 
 **Checkpoint**: Las colecciones y tipos contienen los metadatos buscables requeridos, el contenido existente cumple el esquema y las historias pueden comenzar.
 
@@ -50,15 +50,15 @@ El proyecto Astro, TypeScript, Vitest y Playwright ya está inicializado y no re
 
 ### Tests for User Story 1
 
-- [ ] T005 [P] [US1] Escribir pruebas unitarias fallidas para `SearchQuery`, normalización NFD, deduplicación de tokens, coincidencia parcial literal, AND entre campos, exclusión del cuerpo Markdown, deduplicación por entidad y orden canónico en tests/unit/search.test.ts
-- [ ] T006 [P] [US1] Escribir pruebas E2E fallidas para presencia transversal del formulario, envío GET, codificación y recarga de `q`, secciones Categorías/Notas, variantes de caja/tilde, consultas multi-token y estados inicial, vacío y cero resultados en tests/e2e/search.spec.ts
+- [X] T005 [P] [US1] Escribir pruebas unitarias fallidas para `SearchQuery`, normalización NFD, deduplicación de tokens, coincidencia parcial literal, AND entre campos, exclusión del cuerpo Markdown, deduplicación por entidad y orden canónico en tests/unit/search.test.ts
+- [X] T006 [P] [US1] Escribir pruebas E2E fallidas para presencia transversal del formulario, envío GET, codificación y recarga de `q`, secciones Categorías/Notas, variantes de caja/tilde, consultas multi-token y estados inicial, vacío y cero resultados en tests/e2e/search.spec.ts
 
 ### Implementation for User Story 1
 
-- [ ] T007 [US1] Implementar tipos derivados, normalización Unicode, parseo de `SearchQuery`, construcción de registros únicos y filtrado AND puro que preserve orden en src/lib/search.ts
-- [ ] T008 [P] [US1] Añadir a `SiteHeader` el formulario GET accesible con `name="q"`, destino `/buscar/`, validación trim para espacios, mensaje “Escribe un término para buscar” y foco correctivo en src/components/SiteHeader.astro
-- [ ] T009 [US1] Crear la página estática que carga ambas colecciones, relaciona notas con categorías, excluye el cuerpo Markdown y prerenderiza una entrada oculta por entidad en orden canónico en src/pages/buscar/index.astro
-- [ ] T010 [US1] Conectar `window.location.search` con las funciones de búsqueda, reflejar `q` en el formulario, alternar `hidden`, actualizar conteos y presentar estados inicial, inválido, parcial y sin resultados mediante mensajes anunciables en src/pages/buscar/index.astro
+- [X] T007 [US1] Implementar tipos derivados, normalización Unicode, parseo de `SearchQuery`, construcción de registros únicos y filtrado AND puro que preserve orden en src/lib/search.ts
+- [X] T008 [P] [US1] Añadir a `SiteHeader` el formulario GET accesible con `name="q"`, destino `/buscar/`, validación trim para espacios, mensaje “Escribe un término para buscar” y foco correctivo en src/components/SiteHeader.astro
+- [X] T009 [US1] Crear la página estática que carga ambas colecciones, relaciona notas con categorías, excluye el cuerpo Markdown y prerenderiza una entrada oculta por entidad en orden canónico en src/pages/buscar/index.astro
+- [X] T010 [US1] Conectar `window.location.search` con las funciones de búsqueda, reflejar `q` en el formulario, alternar `hidden`, actualizar conteos y presentar estados inicial, inválido, parcial y sin resultados mediante mensajes anunciables en src/pages/buscar/index.astro
 
 **Checkpoint**: US1 funciona de extremo a extremo y puede validarse sin la presentación enriquecida de US2: cada resultado ya expone su nombre o título y destino canónico.
 
@@ -72,13 +72,13 @@ El proyecto Astro, TypeScript, Vitest y Playwright ya está inicializado y no re
 
 ### Tests for User Story 2
 
-- [ ] T011 [US2] Ampliar primero las pruebas E2E con aserciones fallidas para campos completos por tipo, rutas canónicas, sección parcialmente vacía, fallback de imagen, teclado, texto largo y ausencia de overflow a 320 px en tests/e2e/search.spec.ts
+- [X] T011 [US2] Ampliar primero las pruebas E2E con aserciones fallidas para campos completos por tipo, rutas canónicas, sección parcialmente vacía, fallback de imagen, teclado, texto largo y ausencia de overflow a 320 px en tests/e2e/search.spec.ts
 
 ### Implementation for User Story 2
 
-- [ ] T012 [P] [US2] Crear el resultado de categoría prerenderizado con heading, descripción completa, imagen con alternativa contextual, fallback `/category-fallback.svg` y enlace de `categoryUrl` en src/components/SearchCategoryResult.astro
-- [ ] T013 [P] [US2] Crear el resultado de nota prerenderizado con heading, descripción completa, todas las etiquetas como texto, nombre e imagen de categoría, fallback `/category-fallback.svg` y enlace de `noteUrl` en src/components/SearchNoteResult.astro
-- [ ] T014 [US2] Sustituir las entradas mínimas por los componentes de resultado, mantener los campos normalizados separados y completar el layout responsive, wrapping, estados por sección y foco visible usando tokens existentes en src/pages/buscar/index.astro y src/styles/global.css
+- [X] T012 [P] [US2] Crear el resultado de categoría prerenderizado con heading, descripción completa, imagen con alternativa contextual, fallback `/category-fallback.svg` y enlace de `categoryUrl` en src/components/SearchCategoryResult.astro
+- [X] T013 [P] [US2] Crear el resultado de nota prerenderizado con heading, descripción completa, todas las etiquetas como texto, nombre e imagen de categoría, fallback `/category-fallback.svg` y enlace de `noteUrl` en src/components/SearchNoteResult.astro
+- [X] T014 [US2] Sustituir las entradas mínimas por los componentes de resultado, mantener los campos normalizados separados y completar el layout responsive, wrapping, estados por sección y foco visible usando tokens existentes en src/pages/buscar/index.astro y src/styles/global.css
 
 **Checkpoint**: US1 y US2 ofrecen resultados completos, distinguibles, accesibles y navegables en vistas amplias y estrechas.
 
@@ -92,13 +92,13 @@ El proyecto Astro, TypeScript, Vitest y Playwright ya está inicializado y no re
 
 ### Tests for User Story 3
 
-- [ ] T015 [P] [US3] Añadir fixtures con categoría sin descripción y notas sin `tags`, con arreglo vacío y con etiqueta vacía en tests/fixtures/invalid-content/categories/missing-description.json y tests/fixtures/invalid-content/notes/missing-search-metadata.md
-- [ ] T016 [US3] Escribir pruebas fallidas que exijan problemas accionables por `sourcePath` y campo para `description` y `tags`, además de aceptación del grafo completo, en tests/unit/validation.test.ts
+- [X] T015 [P] [US3] Añadir fixtures con categoría sin descripción y notas sin `tags`, con arreglo vacío y con etiqueta vacía en tests/fixtures/invalid-content/categories/missing-description.json y tests/fixtures/invalid-content/notes/missing-search-metadata.md
+- [X] T016 [US3] Escribir pruebas fallidas que exijan problemas accionables por `sourcePath` y campo para `description` y `tags`, además de aceptación del grafo completo, en tests/unit/validation.test.ts
 
 ### Implementation for User Story 3
 
-- [ ] T017 [US3] Ampliar `CategoryInput`, `NoteInput`, `validateCategory` y `validateNote` para exigir descripción de categoría no vacía y tags como arreglo con al menos un string recortado no vacío, acumulando errores sin ocultar los existentes, en src/lib/validation.ts
-- [ ] T018 [US3] Cargar `description` y `tags` desde JSON/frontmatter hacia el validador y conservar mensajes técnicos agrupados por archivo solo en consola en scripts/validate-content.ts
+- [X] T017 [US3] Ampliar `CategoryInput`, `NoteInput`, `validateCategory` y `validateNote` para exigir descripción de categoría no vacía y tags como arreglo con al menos un string recortado no vacío, acumulando errores sin ocultar los existentes, en src/lib/validation.ts
+- [X] T018 [US3] Cargar `description` y `tags` desde JSON/frontmatter hacia el validador y conservar mensajes técnicos agrupados por archivo solo en consola en scripts/validate-content.ts
 
 **Checkpoint**: Las tres historias están completas y `validate:content`, tests y build impiden publicar metadatos incompletos.
 
@@ -108,8 +108,8 @@ El proyecto Astro, TypeScript, Vitest y Playwright ya está inicializado y no re
 
 **Purpose**: Cerrar criterios de rendimiento, accesibilidad y regresión que atraviesan todas las historias.
 
-- [ ] T019 Añadir cobertura E2E para orden completo de teclado, anuncios de estado, temas claro/oscuro/sistema, no-JavaScript comprensible, ausencia de solicitudes externas y una muestra de 50 consultas cuyo p95 desde submit hasta resultado sea menor de 2000 ms en tests/e2e/search.spec.ts
-- [ ] T020 Ejecutar todos los escenarios de specs/004-content-search/quickstart.md y corregir cualquier regresión encontrada en src/, scripts/, tests/unit/ y tests/e2e/ sin introducir backend, base de datos, ranking, sugerencias, filtros, historial ni búsqueda del cuerpo Markdown
+- [X] T019 Añadir cobertura E2E para orden completo de teclado, anuncios de estado, temas claro/oscuro/sistema, no-JavaScript comprensible, ausencia de solicitudes externas y una muestra de 50 consultas cuyo p95 desde submit hasta resultado sea menor de 2000 ms en tests/e2e/search.spec.ts
+- [X] T020 Ejecutar todos los escenarios de specs/004-content-search/quickstart.md y corregir cualquier regresión encontrada en src/, scripts/, tests/unit/ y tests/e2e/ sin introducir backend, base de datos, ranking, sugerencias, filtros, historial ni búsqueda del cuerpo Markdown
 
 ---
 

@@ -1,6 +1,7 @@
 ---
 title: Composición de widgets
 description: Aprende a convertir una pantalla compleja en piezas pequeñas y reutilizables.
+tags: [flutter, widgets, composición]
 category: flutter-basic
 durationMinutes: 12
 position: 2

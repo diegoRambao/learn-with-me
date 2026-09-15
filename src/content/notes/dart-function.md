@@ -1,6 +1,7 @@
 ---
 title: Funciones
 description: Usa funciones para no repetir codigo en tu app de dart.
+tags: [dart, funciones, reutilización]
 category: dart
 durationMinutes: 10
 position: 3

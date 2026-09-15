@@ -4,7 +4,7 @@ export default defineConfig({
   testDir: './tests/e2e',
   fullyParallel: true,
   webServer: {
-    command: 'npm run build && npm run preview -- --background --host 127.0.0.1 && npm run preview -- logs --follow',
+    command: 'npm run build && python3 -m http.server 4321 --bind 127.0.0.1 --directory dist',
     url: 'http://127.0.0.1:4321',
     reuseExistingServer: true,
     timeout: 120_000,

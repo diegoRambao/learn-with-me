@@ -1,6 +1,7 @@
 ---
 title: Primeros pasos con Flutter
 description: Comprende la estructura de un proyecto y prepara tu primera aplicación.
+tags: [flutter, introducción, widgets]
 category: flutter-basic
 durationMinutes: 8
 position: 1

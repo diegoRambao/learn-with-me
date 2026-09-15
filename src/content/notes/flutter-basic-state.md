@@ -1,6 +1,7 @@
 ---
 title: Estado y actualización de la interfaz
 description: Distingue el estado efímero y actualiza solo la parte necesaria de una pantalla.
+tags: [flutter, estado, interfaz]
 category: flutter-basic
 durationMinutes: 14
 position: 3

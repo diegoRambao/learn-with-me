@@ -1,0 +1,26 @@
+---
+import type { SearchNoteRecord } from '@lib/search';
+interface Props { result: SearchNoteRecord }
+const { result } = Astro.props;
+---
+
+<article class="search-result panel overflow-hidden" data-search-result data-search-type="note" data-search-id={result.id} data-search-fields={JSON.stringify(result.searchableFields)} hidden>
+  <a href={result.href} class="grid gap-4 p-4 no-underline sm:grid-cols-[11rem_1fr]">
+    <img src={result.image} alt={`Ilustración de la categoría ${result.categoryName}`} class="h-40 w-full rounded-lg border border-line object-cover sm:h-full" loading="lazy" data-category-image />
+    <div class="min-w-0">
+      <p class="eyebrow">Nota de {result.categoryName}</p>
+      <h3 class="mt-2 text-xl font-bold">{result.title}</h3>
+      <p class="mt-3 leading-7 text-muted">{result.description}</p>
+      <ul class="mt-4 flex list-none flex-wrap gap-2 p-0" aria-label="Etiquetas">
+        {result.tags.map((tag) => <li class="rounded-full border border-line px-3 py-1 text-sm">{tag}</li>)}
+      </ul>
+      <span class="mt-4 inline-block font-bold text-accent">Abrir nota <span aria-hidden="true">→</span></span>
+    </div>
+  </a>
+</article>
+
+<script>
+  for (const image of document.querySelectorAll<HTMLImageElement>('[data-category-image]')) {
+    image.addEventListener('error', () => { image.src = '/category-fallback.svg'; }, { once: true });
+  }
+</script>

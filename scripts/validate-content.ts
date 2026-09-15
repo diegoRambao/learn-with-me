@@ -12,7 +12,7 @@ const loadCategories = async (): Promise<ReadonlyArray<CategoryInput>> => {
   return Promise.all(fileNames.map(async (fileName) => {
     const sourcePath = relative(root, join(directory, fileName));
     const data = JSON.parse(await readFile(join(directory, fileName), 'utf8')) as Record<string, unknown>;
-    return { sourcePath, id: basename(fileName, '.json'), name: data.name, image: data.image, level: data.level };
+    return { sourcePath, id: basename(fileName, '.json'), name: data.name, description: data.description, image: data.image, level: data.level };
   }));
 };
 

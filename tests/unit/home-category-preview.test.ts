@@ -5,6 +5,7 @@ const createCategories = (count: number): ReadonlyArray<Category> =>
   Array.from({ length: count }, (_, index) => ({
     id: `topic-${index + 1}`,
     name: `Topic ${index + 1}`,
+    description: `Descripción de Topic ${index + 1}`,
     image: `/images/categories/topic-${index + 1}.svg`,
     level: 'beginner' as const,
   }));
@@ -45,4 +46,3 @@ describe('createHomeCategoryPreview', () => {
     expect(categories).toEqual(snapshot);
   });
 });
-
