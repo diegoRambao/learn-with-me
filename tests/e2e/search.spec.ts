@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 
 const search = async (page: import('@playwright/test').Page, query: string): Promise<void> => {
   await page.getByRole('searchbox', { name: 'Buscar categorías y notas' }).fill(query);
-  await page.getByRole('button', { name: 'Buscar' }).click();
+  await page.getByRole('searchbox', { name: 'Buscar categorías y notas' }).press('Enter');
 };
 
 test('searches from the shared header and preserves a shareable query URL', async ({ page }) => {
@@ -51,7 +51,7 @@ test('renders contextual result cards, fallback images, keyboard navigation, and
   await expect(category.getByRole('img')).toHaveAttribute('src', '/category-fallback.svg');
   await page.getByRole('searchbox', { name: 'Buscar categorías y notas' }).focus();
   await page.keyboard.press('Tab');
-  await expect(page.getByRole('button', { name: 'Buscar' })).toBeFocused();
+  await expect(page.getByRole('link', { name: 'Categorías' })).toBeFocused();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 

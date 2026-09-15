@@ -8,10 +8,9 @@ import ThemeSelector from '@components/ThemeSelector.astro';
       <span aria-hidden="true" class="brand-mark grid size-9 place-items-center rounded-xl bg-accent">∴</span>
       <span>Learn with Me</span>
     </a>
-    <form action="/buscar/" method="get" class="search-form flex min-h-11 w-full items-center gap-2 sm:w-auto" data-search-form>
+    <form action="/buscar/" method="get" class="search-form flex min-h-11 w-full items-center sm:w-112" data-search-form>
       <label class="sr-only" for="site-search">Buscar categorías y notas</label>
       <input id="site-search" name="q" type="search" class="min-w-0 flex-1 rounded-lg border border-line bg-ink-900 px-3 py-2" placeholder="Buscar categorías y notas" data-search-input />
-      <button type="submit" class="rounded-lg bg-accent px-3 py-2 font-bold text-accent-contrast">Buscar</button>
       <p class="sr-only" aria-live="polite" data-search-error></p>
     </form>
     <nav aria-label="Navegación principal" class="flex w-full flex-wrap items-center justify-between gap-3 sm:w-auto sm:flex-nowrap sm:justify-end">
