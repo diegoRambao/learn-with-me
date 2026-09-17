@@ -75,7 +75,7 @@ const isHttpsUrl = (value: unknown): value is string => {
   }
 };
 
-const validateCategory = (category: CategoryInput): ContentValidationIssue[] => {
+export const validateCategoryInput = (category: CategoryInput): ContentValidationIssue[] => {
   const issues: ContentValidationIssue[] = [];
   if (!isNonEmptyString(category.id) || !slugPattern.test(category.id)) issues.push(issue(category.sourcePath, 'id', 'invalid_id', 'Usa un ID slug URL-safe derivado del archivo.'));
   if (!isNonEmptyString(category.name)) issues.push(issue(category.sourcePath, 'name', 'empty_name', 'Añade un nombre visible no vacío.'));
@@ -104,7 +104,7 @@ const validateCategory = (category: CategoryInput): ContentValidationIssue[] => 
   return issues;
 };
 
-const validateNote = (note: NoteInput): ContentValidationIssue[] => {
+export const validateNoteInput = (note: NoteInput): ContentValidationIssue[] => {
   const issues: ContentValidationIssue[] = [];
   if (note.depth !== 2) {
     issues.push(issue(note.sourcePath, 'location', 'invalid_location', 'Guarda la nota exactamente en src/content/notes/{carpeta}/{id}.md.'));
@@ -152,6 +152,12 @@ const duplicateIssues = <T>(
 
 const validateRelations = (categories: ReadonlyArray<CategoryInput>, notes: ReadonlyArray<NoteInput>): ContentValidationIssue[] => {
   const categoryIds = new Set(categories.map(({ id }) => id));
+  const notesByCategory = new Map<unknown, NoteInput[]>();
+  for (const note of notes) {
+    const categoryNotes = notesByCategory.get(note.category) ?? [];
+    categoryNotes.push(note);
+    notesByCategory.set(note.category, categoryNotes);
+  }
   const issues = duplicateIssues(categories, ({ id }) => id, ({ sourcePath }) => sourcePath, 'id', 'duplicate_id', 'El ID de categoría debe ser único.');
   issues.push(...duplicateIssues(notes, ({ category, id }) => `${String(category)}:${String(id)}`, ({ sourcePath }) => sourcePath, 'id', 'duplicate_route', 'La combinación de categoría e ID de nota debe ser única.'));
   for (const note of notes) {
@@ -159,7 +165,7 @@ const validateRelations = (categories: ReadonlyArray<CategoryInput>, notes: Read
   }
   for (const category of categories) {
     const topics = Array.isArray(category.topics) ? category.topics as ReadonlyArray<TopicInput> : [];
-    const categoryNotes = notes.filter(({ category: noteCategory }) => noteCategory === category.id);
+    const categoryNotes = notesByCategory.get(category.id) ?? [];
     const topicIds = new Set(topics.map(({ id }) => id));
     for (const note of categoryNotes) {
       if (note.topic !== undefined && !topicIds.has(note.topic)) {
@@ -204,8 +210,8 @@ export const validateContent = (
   notes: ReadonlyArray<NoteInput>,
   siteConfig: SiteConfigInput,
 ): ContentValidationIssue[] => [
-  ...categories.flatMap(validateCategory),
-  ...notes.flatMap(validateNote),
+  ...categories.flatMap(validateCategoryInput),
+  ...notes.flatMap(validateNoteInput),
   ...validateRelations(categories, notes),
   ...validateSocialLinks(siteConfig),
 ];

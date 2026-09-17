@@ -318,3 +318,81 @@ problemas frecuentes son:
 
 Cuando `npm run build` termina correctamente, el directorio `dist/` contiene el
 sitio estático listo para desplegar.
+
+## Administrador local de contenido
+
+El repositorio incluye una interfaz opcional para mantener categorías, temas y
+notas sin editar JSON o frontmatter a mano. Se ejecuta como una aplicación Astro
+separada y solo escucha en loopback:
+
+```bash
+npm run admin
+```
+
+Abre la URL `http://127.0.0.1:<puerto>/` indicada por el comando. Mantén el
+proceso abierto mientras trabajas y detenlo con `Ctrl+C` al terminar. El
+administrador no forma parte del build público ni está pensado para desplegarse.
+
+### Límites de seguridad
+
+- Solo acepta hosts y orígenes loopback (`127.0.0.1` o `localhost`).
+- Las mutaciones exigen el token efímero entregado al cargar la aplicación.
+- Los IDs se validan como slugs y todos los destinos se derivan dentro de
+  `src/content/`; no se aceptan rutas arbitrarias ni symlinks.
+- Las imágenes admitidas son PNG, JPEG, WebP, GIF o SVG de hasta 10 MiB. Se
+  preparan en `.content-admin/` y solo pasan al contenido durante un guardado
+  válido.
+- Las revisiones SHA-256 impiden sobrescribir silenciosamente un archivo que
+  cambió fuera de la interfaz.
+
+`.content-admin/` contiene staging, transacciones y papelera local; está
+excluido de Git y del paquete público. No lo compartas ni lo uses como fuente de
+contenido publicada.
+
+### Flujos editoriales
+
+En **Nota** puedes crear o editar una nota escrita o de video, usar la toolbar
+Markdown, adjuntar una imagen y revisar la vista previa antes de guardar. El
+explorador permite combinar búsqueda por título, categoría, tema y etiqueta;
+los archivos inválidos aparecen en una lista separada para corregirlos sin que
+la interfaz los sobrescriba.
+
+En **Estructura** se crean o editan categorías y temas. Los IDs existentes son
+estables. Una eliminación con dependencias se bloquea hasta reasignar o retirar
+las notas relacionadas. En **Orden**, los botones Subir/Bajar mantienen una
+secuencia global única entre temas y notas y el cambio solo se escribe al pulsar
+**Guardar orden**.
+
+**Mover a papelera** retira una nota de contenido activo mediante un bundle
+recuperable. **Restaurar** devuelve Markdown, metadatos y recursos; **Eliminar
+definitivamente** requiere una confirmación separada con el ID exacto. Si hay
+cambios sin guardar, la aplicación pide conservar o descartar el borrador antes
+de cambiar de elemento.
+
+### Recuperación y conflictos
+
+Cada operación multifichero usa staging, backups y un manifest durable. Si el
+proceso se interrumpe durante el commit, el siguiente arranque recupera o revierte
+la transacción antes de cargar el inventario. Ante un conflicto de revisión, no
+recargues de inmediato: copia el borrador visible, compara el archivo cambiado y
+decide qué versión conservar. Los bundles de papelera con una colisión de destino
+permanecen intactos hasta resolverla.
+
+### Guardar no publica
+
+**Guardar** modifica archivos versionables de esta copia de trabajo. No crea un
+commit, no hace push y no despliega el sitio. Antes de publicar, revisa el diff y
+ejecuta:
+
+```bash
+npm run validate:content
+npm run check
+npm run test:unit
+npm run test:admin
+npm run test:e2e
+npm run build
+npm run verify:public-build
+```
+
+`verify:public-build` confirma que `dist/` no incluye rutas, runtime,
+identificadores ni artefactos exclusivos del administrador.

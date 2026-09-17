@@ -1,13 +1,20 @@
 ---
 title: Estado y actualización de la interfaz
-description: Distingue el estado efímero y actualiza solo la parte necesaria de una pantalla.
-tags: [flutter, estado, interfaz]
+description: >-
+  Distingue el estado efímero y actualiza solo la parte necesaria de una
+  pantalla.
+tags:
+  - flutter
+  - estado
+  - interfaz
 category: flutter-basic
-topic: estado
+topic: fundamentos
 durationMinutes: 14
-position: 5
+position: 4
 format: written
 ---
+
+
 
 ## El estado cambia; la descripción se reconstruye
 

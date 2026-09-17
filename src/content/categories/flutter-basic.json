@@ -4,8 +4,15 @@
   "image": "/images/categories/flutter.svg",
   "level": "beginner",
   "topics": [
-    { "id": "fundamentos", "name": "Fundamentos", "position": 1 },
-    { "id": "estado", "name": "Estado", "position": 4 },
-    { "id": "proximamente", "name": "Próximamente", "position": 6 }
+    {
+      "id": "fundamentos",
+      "name": "Fundamentos",
+      "position": 1
+    },
+    {
+      "id": "estado",
+      "name": "Estado",
+      "position": 5
+    }
   ]
 }

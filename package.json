@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
+    "admin": "cd admin && ../node_modules/.bin/astro dev --host 127.0.0.1",
     "validate:content": "node --import tsx scripts/validate-content.ts",
     "precheck": "npm run validate:content",
     "check": "astro check",
@@ -15,10 +16,12 @@
     "test": "npm run test:unit && npm run test:e2e",
     "pretest:unit": "npm run validate:content",
     "test:unit": "vitest run",
+    "test:admin": "vitest run --config vitest.admin.config.ts",
     "pretest:e2e": "npm run validate:content",
     "test:e2e": "playwright test",
     "prebuild": "npm run validate:content",
     "build": "astro build",
+    "verify:public-build": "node --import tsx scripts/verify-public-build.ts",
     "preview": "astro preview"
   },
   "dependencies": {

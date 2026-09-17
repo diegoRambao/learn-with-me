@@ -1,0 +1,12 @@
+<fieldset class="upload-fieldset" id="image-upload-fields">
+  <legend>Imagen de la nota</legend>
+  <label for="note-image">Archivo PNG, JPEG, WebP, GIF o SVG (máx. 10 MiB)</label>
+  <input id="note-image" name="image" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/svg+xml" aria-describedby="image-meta image-error" />
+  <label for="image-alt">Texto alternativo</label>
+  <input id="image-alt" name="imageAlt" type="text" autocomplete="off" />
+  <div class="upload-preview" hidden>
+    <img id="image-local-preview" alt="" />
+    <p id="image-meta"></p>
+  </div>
+  <p id="image-error" class="field-error" data-error-for="image"></p>
+</fieldset>

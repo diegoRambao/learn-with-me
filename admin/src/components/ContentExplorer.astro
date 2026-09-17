@@ -1,0 +1,24 @@
+---
+import { Plus, Search, Trash } from '@lucide/astro';
+---
+
+<div id="content-explorer" class="category-browser">
+  <div class="panel-heading">
+    <div>
+      <p class="eyebrow">Biblioteca</p>
+      <h2 id="explorer-heading">Categorías</h2>
+    </div>
+    <button type="button" id="new-category" class="icon-button" aria-label="Nueva categoría" title="Nueva categoría">
+      <Plus aria-hidden="true" />
+    </button>
+  </div>
+  <label class="search-field" for="category-query">
+    <Search aria-hidden="true" />
+    <span class="sr-only">Buscar categorías</span>
+    <input id="category-query" type="search" placeholder="Buscar categorías" autocomplete="off" />
+  </label>
+  <div id="category-grid" class="category-grid loading-state" aria-live="polite">Cargando categorías…</div>
+  <button type="button" class="secondary-action trash-shortcut" data-workspace="trash">
+    <Trash aria-hidden="true" /> Papelera
+  </button>
+</div>

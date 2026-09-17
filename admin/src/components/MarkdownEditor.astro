@@ -1,0 +1,19 @@
+<fieldset class="editor-fieldset" id="markdown-fields">
+  <legend>Contenido Markdown</legend>
+  <div class="toolbar" role="toolbar" aria-label="Formato Markdown">
+    <button type="button" data-markdown-command="heading" aria-label="Encabezado nivel 2" title="Encabezado nivel 2">H2</button>
+    <button type="button" data-markdown-command="bold" aria-label="Negrita" title="Negrita (Ctrl+B)"><strong>B</strong></button>
+    <button type="button" data-markdown-command="italic" aria-label="Cursiva" title="Cursiva (Ctrl+I)"><em>I</em></button>
+    <button type="button" data-markdown-command="unordered-list" aria-label="Lista con viñetas">• Lista</button>
+    <button type="button" data-markdown-command="ordered-list" aria-label="Lista numerada">1. Lista</button>
+    <button type="button" data-markdown-command="link" aria-label="Enlace">Enlace</button>
+    <button type="button" data-markdown-command="inline-code" aria-label="Código en línea">Código</button>
+    <button type="button" data-markdown-command="code-block" aria-label="Bloque de código">Bloque</button>
+    <button type="button" data-markdown-command="image" aria-label="Imagen">Imagen</button>
+    <button type="button" data-markdown-command="video" aria-label="Enlace de video">Video</button>
+  </div>
+  <label for="note-body">Markdown</label>
+  <textarea id="note-body" name="body" rows="18" aria-describedby="note-body-help note-body-error" required></textarea>
+  <p id="note-body-help" class="field-help">Los comandos conservan la selección y devuelven el foco al editor.</p>
+  <p id="note-body-error" class="field-error" data-error-for="body"></p>
+</fieldset>

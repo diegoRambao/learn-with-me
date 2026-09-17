@@ -1,0 +1,45 @@
+---
+import { GripVertical, ListFilter, Plus, Search } from '@lucide/astro';
+---
+
+<aside class="outline-panel" aria-labelledby="outline-heading">
+  <div class="outline-heading-row">
+    <div>
+      <p class="eyebrow">Estructura</p>
+      <h2 id="outline-heading">Temas y notas</h2>
+    </div>
+    <div class="compact-actions">
+      <button type="button" id="new-topic" class="icon-button" aria-label="Nuevo tema" title="Nuevo tema"><Plus aria-hidden="true" /></button>
+      <button type="button" id="new-note" class="icon-button" aria-label="Nueva nota" title="Nueva nota"><Plus aria-hidden="true" /></button>
+    </div>
+  </div>
+  <form id="content-filters" class="outline-filters" aria-label="Filtros de contenido">
+    <label class="search-field" for="content-query">
+      <Search aria-hidden="true" />
+      <span class="sr-only">Buscar por título</span>
+      <input id="content-query" name="query" type="search" placeholder="Buscar temas y notas" />
+    </label>
+    <details class="filter-menu">
+      <summary><ListFilter aria-hidden="true" /> Filtros</summary>
+      <div class="filter-popover">
+        <label for="filter-category">Categoría</label><select id="filter-category" name="category"><option value="">Todas</option></select>
+        <label for="filter-topic">Tema</label><select id="filter-topic" name="topic"><option value="">Todos</option></select>
+        <label for="filter-tag">Etiqueta</label><select id="filter-tag" name="tag"><option value="">Todas</option></select>
+        <button type="reset">Limpiar filtros</button>
+      </div>
+    </details>
+  </form>
+  <div class="order-helper"><GripVertical aria-hidden="true" /><span>Arrastra para ordenar. Los cambios se guardan al confirmar.</span></div>
+  <label class="sr-only" for="order-category">Categoría del orden</label>
+  <select id="order-category" class="sr-only" aria-label="Categoría del orden"><option value="">Selecciona…</option></select>
+  <ol id="order-items" class="content-outline loading-state" aria-live="polite"></ol>
+  <p id="order-announcement" class="sr-only" aria-live="polite"></p>
+  <div class="order-actions" hidden>
+    <button type="button" id="discard-order" class="secondary-action" disabled>Descartar</button>
+    <button type="button" id="save-order" class="primary-action" disabled>Guardar orden</button>
+  </div>
+  <details class="issues-panel">
+    <summary id="invalid-content-heading">Archivos que requieren atención <span id="issue-count"></span></summary>
+    <ul id="content-issues"></ul>
+  </details>
+</aside>

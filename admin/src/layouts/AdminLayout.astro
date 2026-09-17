@@ -1,0 +1,37 @@
+---
+import '../styles/admin.css';
+
+interface Props {
+  title?: string;
+}
+
+const { title = 'Administrador local' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#editor">Saltar al editor</a>
+    <header class="masthead">
+      <div class="brand-lockup">
+        <p class="eyebrow">Workspace local</p>
+        <h1>Administrador local</h1>
+      </div>
+      <p class="save-boundary"><span aria-hidden="true"></span> Guardar modifica archivos del repositorio. Publicar sigue siendo un paso separado.</p>
+    </header>
+    <div class="admin-shell">
+      <nav class="panel categories-panel" aria-labelledby="explorer-heading">
+        <slot name="explorer" />
+      </nav>
+      <main class="panel workspace-panel" id="editor" tabindex="-1">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>

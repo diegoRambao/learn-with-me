@@ -2,13 +2,23 @@ import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests/e2e',
-  fullyParallel: true,
-  webServer: {
-    command: 'npm run build && python3 -m http.server 4321 --bind 127.0.0.1 --directory dist',
-    url: 'http://127.0.0.1:4321',
-    reuseExistingServer: true,
-    timeout: 120_000,
-  },
+  fullyParallel: false,
+  workers: 1,
+  globalSetup: './tests/e2e/admin-global-setup.ts',
+  webServer: [
+    {
+      command: 'npm run build && node --import tsx scripts/start-public-e2e.ts',
+      url: 'http://127.0.0.1:4321',
+      reuseExistingServer: true,
+      timeout: 120_000,
+    },
+    {
+      command: 'node --import tsx scripts/start-admin-e2e.ts',
+      url: 'http://127.0.0.1:4322',
+      reuseExistingServer: true,
+      timeout: 120_000,
+    },
+  ],
   use: {
     baseURL: 'http://127.0.0.1:4321',
     trace: 'retain-on-failure',
