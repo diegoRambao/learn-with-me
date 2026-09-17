@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import NoteNavigation from '../../src/components/NoteNavigation.astro';
 import type { Note } from '../../src/lib/content';
 
-const category = { id: 'dart', name: 'Dart', description: 'Lenguaje de programación', image: '/dart.svg', level: 'beginner' as const };
+const category = { id: 'dart', name: 'Dart', description: 'Lenguaje de programación', image: '/dart.svg', level: 'beginner' as const, topics: [] };
 const previousNote = { id: 'dart-types', title: 'Tipos que explican la intención', description: '', tags: ['dart'], category: 'dart', durationMinutes: 10, position: 1, format: 'written' as const, body: '' };
 const nextNote = { id: 'dart-video', title: 'Dart en una sesión práctica', description: '', tags: ['dart'], category: 'dart', durationMinutes: 15, position: 2, format: 'video' as const, youtubeVideoId: 'M7lc1UVf-VE', body: '' };
 

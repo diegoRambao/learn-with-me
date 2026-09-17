@@ -3,12 +3,17 @@ title: Funciones
 description: Usa funciones para no repetir codigo en tu app de dart.
 tags: [dart, funciones, reutilización]
 category: dart
+topic: practica
 durationMinutes: 10
-position: 3
+position: 5
 format: written
 ---
 
 Las funciones en Dart son bloques de código reutilizables que realizan una tarea específica. Como las funciones son **objetos de primera clase**, pueden asignarse a variables, enviarse como argumentos y devolverse desde otras funciones.
+
+https://www.youtube.com/watch?v=M7lc1UVf-VE
+
+[Consulta el canal de aprendizaje](https://www.youtube.com/@dartlang)
 
 ### Sintaxis básica
 

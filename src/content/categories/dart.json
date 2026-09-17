@@ -2,5 +2,9 @@
   "name": "Dart",
   "description": "Fundamentos del lenguaje Dart para escribir aplicaciones claras, seguras y mantenibles.",
   "image": "/images/categories/dart.svg",
-  "level": "pro"
+  "level": "pro",
+  "topics": [
+    { "id": "fundamentos", "name": "Fundamentos", "position": 1 },
+    { "id": "practica", "name": "Práctica", "position": 4 }
+  ]
 }

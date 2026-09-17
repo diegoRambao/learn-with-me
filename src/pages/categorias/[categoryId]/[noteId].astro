@@ -29,9 +29,12 @@ const { Content } = await render(noteEntry);
 <BaseLayout title={`${note.title} · ${category.name}`} description={note.description}>
   <div class="shell pt-8 sm:pt-12">
     <a href="/categorias/" class="text-sm font-bold text-accent no-underline">← Todas las categorías</a>
-    <div class="mt-8 grid gap-8 lg:grid-cols-[19rem_minmax(0,1fr)] lg:items-start">
-      <CourseNavigation category={category} notes={route.notes} activeNoteId={note.id} />
-      <div class="min-w-0 lg:px-6">
+    <button type="button" class="sidebar-toggle" aria-controls="course-navigation-panel" aria-expanded="true" data-sidebar-toggle>Ocultar panel</button>
+    <div class="note-workspace mt-4" data-note-workspace data-sidebar-visible="true">
+      <aside id="course-navigation-panel" class="course-navigation-panel panel" aria-label={`Ruta: ${category.name}`}>
+        <CourseNavigation category={category} navigationItems={route.navigationItems} activeNoteId={note.id} activeTopicId={route.activeTopicId} />
+      </aside>
+      <div class="note-workspace-content min-w-0 lg:px-6">
         <NoteContent note={note} Content={Content} />
         <NoteNavigation category={route.category} previousNote={route.previousNote} nextNote={route.nextNote} />
       </div>

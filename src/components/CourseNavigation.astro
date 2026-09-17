@@ -1,39 +1,135 @@
 ---
-import type { Category, Note } from '@lib/content';
+import type { Category, NavigationItem } from '@lib/content';
 import { noteUrl } from '@lib/routes';
-interface Props { category: Category; notes: ReadonlyArray<Note>; activeNoteId?: string }
-const { category, notes, activeNoteId } = Astro.props;
+
+interface Props {
+  category: Category;
+  navigationItems: ReadonlyArray<NavigationItem>;
+  activeNoteId?: string;
+  activeTopicId?: string | null;
+}
+
+const { category, navigationItems, activeNoteId, activeTopicId } = Astro.props;
+const topicIds = category.topics.map(({ id }) => id);
 ---
 
-<details open class="course-navigation panel overflow-hidden lg:sticky lg:top-6">
-  <summary class="flex min-h-14 cursor-pointer items-center justify-between gap-4 px-5 font-bold lg:cursor-default">
-    <span>Ruta: {category.name}</span><span aria-hidden="true" class="text-accent lg:hidden">⌄</span>
-  </summary>
-  <nav aria-label={`Notas de ${category.name}`} class="border-t border-line p-3">
-    <ol class="space-y-1">
-      {notes.map((note, index) => {
-        const active = note.id === activeNoteId;
-        return (
-          <li>
-            <a href={noteUrl(category.id, note.id)} aria-current={active ? 'page' : undefined} class:list={['route-link', { active }]}>
-              <span aria-hidden="true" class="route-number">{String(index + 1).padStart(2, '0')}</span>
-              <span><span class="block font-semibold">{note.title}</span><span class="mt-1 block text-xs text-muted">{note.durationMinutes} min {active && '· Nota actual'}</span></span>
-            </a>
-          </li>
-        );
-      })}
+<div class="course-navigation" data-course-navigation data-category-id={category.id} data-active-topic-id={activeTopicId ?? ''} data-topic-ids={JSON.stringify(topicIds)}>
+  <p class="course-navigation-title">Ruta: {category.name}</p>
+  <nav aria-label={`Notas de ${category.name}`}>
+    <ol class="course-navigation-list">
+      {navigationItems.map((item) => item.kind === 'note' ? (
+        <li>
+          <a href={noteUrl(category.id, item.note.id)} aria-current={item.note.id === activeNoteId ? 'page' : undefined} class:list={['route-link', { active: item.note.id === activeNoteId }]}>
+            <span aria-hidden="true" class="route-number">{String(item.note.position).padStart(2, '0')}</span>
+            <span><span class="block font-semibold">{item.note.title}</span><span class="mt-1 block text-xs text-muted">{item.note.durationMinutes} min {item.note.id === activeNoteId && '· Nota actual'}</span></span>
+          </a>
+        </li>
+      ) : (
+        <li>
+          <details class="topic-disclosure" data-topic-id={item.topic.id} open={item.topic.id === activeTopicId}>
+            <summary>
+              <span class="topic-name">{item.topic.name}</span>
+              <span aria-hidden="true" class="topic-caret">⌄</span>
+            </summary>
+            {item.notes.length > 0 ? (
+              <ol class="topic-notes">
+                {item.notes.map((note, noteIndex) => (
+                  <li>
+                    <a href={noteUrl(category.id, note.id)} aria-current={note.id === activeNoteId ? 'page' : undefined} class:list={['route-link', { active: note.id === activeNoteId }]}>
+                      <span aria-hidden="true" class="route-number">{String(noteIndex + 1).padStart(2, '0')}</span>
+                      <span><span class="block font-semibold">{note.title}</span><span class="mt-1 block text-xs text-muted">{note.durationMinutes} min {note.id === activeNoteId && '· Nota actual'}</span></span>
+                    </a>
+                  </li>
+                ))}
+              </ol>
+            ) : <p class="empty-topic">No hay notas</p>}
+          </details>
+        </li>
+      ))}
     </ol>
   </nav>
-</details>
+</div>
+
+<script>
+  import { createSidebarVisitState, parseSidebarVisitState, restoreSidebarVisitState } from '@lib/sidebar-state';
+
+  const navigation = document.querySelector<HTMLElement>('[data-course-navigation]');
+  const panel = document.querySelector<HTMLElement>('#course-navigation-panel');
+  const workspace = document.querySelector<HTMLElement>('[data-note-workspace]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-sidebar-toggle]');
+
+  if (navigation && panel && workspace && toggle) {
+    const categoryId = navigation.dataset.categoryId ?? '';
+    const activeTopicId = navigation.dataset.activeTopicId || null;
+    const topicIds = JSON.parse(navigation.dataset.topicIds ?? '[]') as string[];
+    const storageKey = `learning-sidebar:v1:${categoryId}`;
+
+    const expandedTopicIds = (): string[] => [...navigation.querySelectorAll<HTMLDetailsElement>('[data-topic-id][open]')]
+      .map((details) => details.dataset.topicId)
+      .filter((id): id is string => Boolean(id));
+
+    const readState = () => {
+      try {
+        return parseSidebarVisitState(sessionStorage.getItem(storageKey), topicIds);
+      } catch {
+        return null;
+      }
+    };
+
+    const currentState = () => ({
+      visible: !panel.hidden,
+      expandedTopicIds: expandedTopicIds(),
+      navigationScrollTop: panel.scrollTop,
+    });
+
+    const saveState = (): void => {
+      try {
+        sessionStorage.setItem(storageKey, JSON.stringify(currentState()));
+      } catch {
+        // The server-rendered navigation remains fully usable without storage.
+      }
+    };
+
+    const applyVisibility = (visible: boolean): void => {
+      panel.hidden = !visible;
+      workspace.dataset.sidebarVisible = String(visible);
+      toggle.setAttribute('aria-expanded', String(visible));
+      toggle.textContent = visible ? 'Ocultar panel' : 'Mostrar panel';
+    };
+
+    const restored = restoreSidebarVisitState(readState() ?? createSidebarVisitState(activeTopicId), activeTopicId, topicIds);
+    applyVisibility(restored.visible);
+    navigation.querySelectorAll<HTMLDetailsElement>('[data-topic-id]').forEach((details) => {
+      details.open = restored.expandedTopicIds.includes(details.dataset.topicId ?? '');
+      details.addEventListener('toggle', saveState);
+    });
+    panel.scrollTop = restored.navigationScrollTop;
+
+    toggle.addEventListener('click', () => {
+      applyVisibility(panel.hidden);
+      saveState();
+    });
+    panel.addEventListener('scroll', saveState, { passive: true });
+    window.addEventListener('pagehide', saveState);
+  }
+</script>
 
 <style>
+  .course-navigation-title { margin: 0; border-bottom: 1px solid var(--border-color); padding: 1rem 1.25rem; font-weight: 800; }
+  .course-navigation nav { padding: .75rem; }
+  .course-navigation-list, .topic-notes { margin: 0; padding: 0; list-style: none; }
+  .course-navigation-list { display: grid; gap: .3rem; }
+  .topic-disclosure { border-radius: .8rem; }
+  .topic-disclosure > summary { display: grid; min-height: 3.5rem; grid-template-columns: 1fr auto; align-items: center; gap: .7rem; border: 1px solid transparent; border-radius: .8rem; padding: .7rem; cursor: pointer; font-weight: 800; list-style: none; }
+  .topic-disclosure > summary::-webkit-details-marker { display: none; }
+  .topic-disclosure > summary:hover { background: var(--interactive-hover); }
+  .topic-caret { color: var(--accent-color); transition: transform 160ms ease; }
+  .topic-disclosure[open] .topic-caret { transform: rotate(180deg); }
+  .topic-notes { display: grid; gap: .25rem; margin: .15rem 0 .55rem 1rem; border-inline-start: 1px solid var(--border-color); padding-inline-start: .45rem; }
+  .empty-topic { margin: .2rem 0 .75rem 3.35rem; color: var(--text-muted); font-size: .85rem; }
   .route-link { display: grid; grid-template-columns: 2.2rem 1fr; gap: .7rem; min-height: 3.5rem; align-items: center; border: 1px solid transparent; border-radius: .8rem; padding: .7rem; text-decoration: none; }
   .route-link:hover { background: var(--interactive-hover); }
   .route-link.active { border-color: var(--accent-color); background: var(--interactive-active); color: var(--interactive-active-text); }
   .route-number { color: var(--accent-color); font-size: .75rem; font-weight: 800; }
-  @media (min-width: 64rem) {
-    .course-navigation:not([open]) > nav { display: block; }
-    .course-navigation summary { list-style: none; pointer-events: none; }
-    .course-navigation summary::-webkit-details-marker { display: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { .topic-caret { transition: none; } }
 </style>

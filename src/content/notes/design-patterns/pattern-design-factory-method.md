@@ -3,8 +3,9 @@ title: Factory Method Pattern
 description: Conoce el patrón Factory Method, un patrón de diseño creacional que define una interfaz para crear objetos, pero deja a las subclases decidir qué clase instanciar.
 tags: [design-patterns, factory-method, patrones-de-diseno, patrones]
 category: design-patterns
+topic: creacionales
 durationMinutes: 15
-position: 3
+position: 4
 format: written
 ---
 

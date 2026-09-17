@@ -3,8 +3,9 @@ title: Tipos que explican la intención
 description: Usa el sistema de tipos de Dart para expresar estados válidos con claridad.
 tags: [dart, tipos, null-safety]
 category: dart
+topic: fundamentos
 durationMinutes: 10
-position: 1
+position: 2
 format: written
 ---
 

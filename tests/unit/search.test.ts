@@ -3,8 +3,8 @@ import { buildSearchIndex, parseSearchQuery, search } from '../../src/lib/search
 
 const index = buildSearchIndex(
   [
-    { id: 'css', name: 'Categoría CSS', description: 'Diseño y animaciones', image: '/css.svg', level: 'beginner' },
-    { id: 'dart', name: 'Dart', description: 'Lenguaje de programación', image: '/dart.svg', level: 'beginner' },
+    { id: 'css', name: 'Categoría CSS', description: 'Diseño y animaciones', image: '/css.svg', level: 'beginner', topics: [] },
+    { id: 'dart', name: 'Dart', description: 'Lenguaje de programación', image: '/dart.svg', level: 'beginner', topics: [] },
   ],
   [
     { id: 'intro', title: 'Animaciones con CSS', description: 'Una introducción visual', tags: ['css', 'diseño'], category: 'css', durationMinutes: 5, position: 1, format: 'written', body: 'contenido no buscable' },

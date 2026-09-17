@@ -3,8 +3,9 @@ title: ¿Qué es AWS?
 description: "Descubre AWS como un proveedor líder de servicios en la nube y cómo funciona esta plataforma de escalabilidad global."
 tags: [aws, practitioner, introduction, what-is]
 category: aws-practitioner
+topic: fundamentos-cloud
 durationMinutes: 8
-position: 1
+position: 2
 format: written
 ---
 

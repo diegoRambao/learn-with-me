@@ -10,6 +10,13 @@ export type Category = Readonly<{
   description: string;
   image: string;
   level: CategoryLevel;
+  topics: ReadonlyArray<NavigationTopic>;
+}>;
+
+export type NavigationTopic = Readonly<{
+  id: string;
+  name: string;
+  position: number;
 }>;
 
 type NoteBase = Readonly<{
@@ -20,6 +27,7 @@ type NoteBase = Readonly<{
   category: string;
   durationMinutes: number;
   position: number;
+  topic?: string;
   body: string;
 }>;
 
@@ -51,7 +59,22 @@ export type LearningRoute = Readonly<{
   activeNote: Note | null;
   previousNote: Note | null;
   nextNote: Note | null;
+  navigationItems: ReadonlyArray<NavigationItem>;
+  activeTopicId: string | null;
 }>;
+
+export type TopicNavigationItem = Readonly<{
+  kind: 'topic';
+  topic: NavigationTopic;
+  notes: ReadonlyArray<Note>;
+}>;
+
+export type UngroupedNoteNavigationItem = Readonly<{
+  kind: 'note';
+  note: Note;
+}>;
+
+export type NavigationItem = TopicNavigationItem | UngroupedNoteNavigationItem;
 
 export type CategoryFilter = Readonly<{
   selectedLevel: 'all' | CategoryLevel;
@@ -102,8 +125,31 @@ export const createLearningRoute = (
   const activeNoteIndex = activeNote ? routeNotes.findIndex(({ id }) => id === activeNote.id) : -1;
   const previousNote = activeNoteIndex > 0 ? routeNotes[activeNoteIndex - 1] : null;
   const nextNote = activeNoteIndex >= 0 ? routeNotes[activeNoteIndex + 1] ?? null : null;
+  const navigationItems: ReadonlyArray<NavigationItem> = [
+    ...category.topics.map((topic): TopicNavigationItem => ({
+      kind: 'topic',
+      topic,
+      notes: routeNotes.filter((note) => note.topic === topic.id),
+    })),
+    ...routeNotes.filter((note) => !note.topic).map((note): UngroupedNoteNavigationItem => ({ kind: 'note', note })),
+  ].sort((left, right) => {
+    const leftPosition = left.kind === 'topic' ? left.topic.position : left.note.position;
+    const rightPosition = right.kind === 'topic' ? right.topic.position : right.note.position;
+    if (leftPosition !== rightPosition) return leftPosition - rightPosition;
+    const leftId = left.kind === 'topic' ? left.topic.id : left.note.id;
+    const rightId = right.kind === 'topic' ? right.topic.id : right.note.id;
+    return leftId.localeCompare(rightId);
+  });
 
-  return { category, notes: routeNotes, activeNote, previousNote, nextNote };
+  return {
+    category,
+    notes: routeNotes,
+    activeNote,
+    previousNote,
+    nextNote,
+    navigationItems,
+    activeTopicId: activeNote?.topic ?? null,
+  };
 };
 
 export const categoryFromEntry = (entry: Readonly<{ id: string; data: Omit<Category, 'id'> }>): Category =>

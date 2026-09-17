@@ -8,6 +8,7 @@ const createCategories = (count: number): ReadonlyArray<Category> =>
     description: `Descripción de Topic ${index + 1}`,
     image: `/images/categories/topic-${index + 1}.svg`,
     level: 'beginner' as const,
+    topics: [],
   }));
 
 describe('createHomeCategoryPreview', () => {

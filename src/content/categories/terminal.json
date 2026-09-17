@@ -2,5 +2,8 @@
   "name": "Terminal",
   "description": "Comandos y herramientas de terminal para navegar, buscar y automatizar tareas del sistema.",
   "image": "https://i.blogs.es/56c9ee/cd/650_1200.webp",
-  "level": "beginner"
+  "level": "beginner",
+  "topics": [
+    { "id": "fundamentos", "name": "Fundamentos", "position": 1 }
+  ]
 }

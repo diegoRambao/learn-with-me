@@ -32,7 +32,7 @@ test('communicates initial, invalid, partial, and empty states', async ({ page }
   await expect(page.getByRole('status')).toContainText('Escribe un término');
   await page.goto('/buscar/?q=%20%20');
   await expect(page.getByRole('status')).toContainText('Escribe un término');
-  await page.goto('/buscar/?q=aws');
+  await page.goto('/buscar/?q=dirigido%20especificaciones');
   await expect(page.getByText('No hay notas que coincidan con la búsqueda.')).toBeVisible();
   await page.goto('/buscar/?q=sin-coincidencias');
   await expect(page.getByRole('status')).toContainText('No hubo coincidencias');
@@ -44,7 +44,7 @@ test('renders contextual result cards, fallback images, keyboard navigation, and
   const category = page.locator('[data-search-type="category"]:not([hidden])');
   const note = page.locator('[data-search-type="note"]:not([hidden])').first();
   await expect(category.getByRole('img')).toHaveAttribute('alt', /Dart/);
-  await expect(category.getByRole('link')).toHaveAttribute('href', '/categorias/dart/');
+  await expect(category.getByRole('link')).toHaveAttribute('href', '/categorias/dart/dart-types/');
   await expect(note.getByRole('list', { name: 'Etiquetas' })).toBeVisible();
   await expect(note.getByRole('link')).toHaveAttribute('href', /\/categorias\/dart\//);
   await category.getByRole('img').evaluate((image: HTMLImageElement) => { image.src = '/missing.svg'; });

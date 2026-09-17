@@ -13,7 +13,7 @@ const loadCategories = async (): Promise<ReadonlyArray<CategoryInput>> => {
   return Promise.all(fileNames.map(async (fileName) => {
     const sourcePath = relative(root, join(directory, fileName));
     const data = JSON.parse(await readFile(join(directory, fileName), 'utf8')) as Record<string, unknown>;
-    return { sourcePath, id: basename(fileName, '.json'), name: data.name, description: data.description, image: data.image, level: data.level };
+    return { sourcePath, id: basename(fileName, '.json'), name: data.name, description: data.description, image: data.image, level: data.level, topics: data.topics };
   }));
 };
 
@@ -31,6 +31,7 @@ const loadNotes = async (): Promise<ReadonlyArray<NoteInput>> => {
       depth: pathSegments.length,
       id: noteIdFromEntryId(entryId),
       ...parsed.data,
+      topic: parsed.data.topic,
       body: parsed.content,
     } as NoteInput;
   }));

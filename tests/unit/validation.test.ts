@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import matter from 'gray-matter';
 import { validateContent, type NoteInput } from '../../src/lib/validation';
 
-const validCategory = { sourcePath: 'categories/flutter.json', id: 'flutter', name: 'Flutter', description: 'Widgets para aplicaciones', image: '/images/categories/flutter.svg', level: 'beginner' };
+const validCategory = { sourcePath: 'categories/flutter.json', id: 'flutter', name: 'Flutter', description: 'Widgets para aplicaciones', image: '/images/categories/flutter.svg', level: 'beginner', topics: [] };
 const validWritten = { sourcePath: 'notes/guides/intro.md', folder: 'guides', depth: 2, id: 'intro', title: 'Intro', description: 'Introducción', tags: ['flutter'], category: 'flutter', durationMinutes: 5, position: 1, format: 'written', body: '# Hola' };
 
 describe('validateContent', () => {
@@ -32,6 +32,38 @@ describe('validateContent', () => {
     ];
 
     expect(validateContent([validCategory, dartCategory], notes, { socialLinks: [] })).toEqual([]);
+  });
+
+  it('validates topic fields, duplicate ids, references, and shared positions', () => {
+    const category = {
+      ...validCategory,
+      topics: [
+        { id: 'fundamentos', name: 'Fundamentos', position: 1 },
+        { id: 'fundamentos', name: ' ', position: 2 },
+        { id: 'No válido', name: 'Avanzado', position: 0 },
+      ],
+    };
+    const issues = validateContent([category], [
+      { ...validWritten, topic: 'ausente', position: 1 },
+      { ...validWritten, id: 'second', sourcePath: 'notes/guides/second.md', position: 2 },
+    ], { socialLinks: [] });
+
+    expect(issues.map(({ code }) => code)).toEqual(expect.arrayContaining([
+      'duplicate_topic_id',
+      'empty_topic_name',
+      'invalid_topic_id',
+      'invalid_topic_position',
+      'unknown_topic',
+      'duplicate_position',
+    ]));
+    expect(issues.find(({ code }) => code === 'duplicate_position')?.message).toContain('categories/flutter.json');
+  });
+
+  it('does not resolve a topic declared by another category', () => {
+    const dartCategory = { ...validCategory, sourcePath: 'categories/dart.json', id: 'dart', topics: [{ id: 'language', name: 'Lenguaje', position: 1 }] };
+    const issues = validateContent([validCategory, dartCategory], [{ ...validWritten, topic: 'language' }], { socialLinks: [] });
+
+    expect(issues.map(({ code }) => code)).toContain('unknown_topic');
   });
 
   it('requires exactly one slug folder for every note', () => {

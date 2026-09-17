@@ -1,0 +1,11 @@
+{
+  "id": "testing",
+  "name": "Testing",
+  "description": "Fixture para temas y notas",
+  "image": "/images/categories/testing.svg",
+  "level": "beginner",
+  "topics": [
+    { "id": "fundamentos", "name": "Fundamentos", "position": 1 },
+    { "id": "vacio", "name": "Tema vacío", "position": 4 }
+  ]
+}

@@ -2,8 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { createHomeCategoryIndex, createLearningRoute, noteFromEntry } from '../../src/lib/content';
 
 const categories = [
-  { id: 'zeta', name: 'Álgebra', description: 'Álgebra avanzada', image: '/images/categories/zeta.svg', level: 'advanced' as const },
-  { id: 'algebra', name: 'Algebra', description: 'Álgebra inicial', image: '/images/categories/algebra.svg', level: 'beginner' as const },
+  { id: 'zeta', name: 'Álgebra', description: 'Álgebra avanzada', image: '/images/categories/zeta.svg', level: 'advanced' as const, topics: [] },
+  { id: 'algebra', name: 'Algebra', description: 'Álgebra inicial', image: '/images/categories/algebra.svg', level: 'beginner' as const, topics: [
+    { id: 'basics', name: 'Fundamentos', position: 2 },
+    { id: 'empty', name: 'Vacío', position: 5 },
+  ] },
 ];
 
 const notes = [
@@ -66,5 +69,20 @@ describe('content ordering', () => {
     expect(route.previousNote?.format).toBe('video');
     expect(route.nextNote?.id).toBe('third');
     expect(sourceNotes.map(({ id }) => id)).toEqual(originalOrder);
+  });
+
+  it('projects topics, children, empty topics, and ungrouped notes without changing flat order', () => {
+    const groupedNotes = [
+      { ...notes[0], position: 4, topic: 'basics' },
+      { ...notes[1], position: 1 },
+      { ...notes[2], position: 3, topic: 'basics' },
+    ];
+    const route = createLearningRoute(categories[1], groupedNotes, 'third');
+
+    expect(route.notes.map(({ id }) => id)).toEqual(['first-b', 'first-a', 'third']);
+    expect(route.navigationItems.map((item) => item.kind === 'topic' ? `${item.topic.id}:${item.notes.map(({ id }) => id).join(',')}` : item.note.id))
+      .toEqual(['first-b', 'basics:first-a,third', 'empty:']);
+    expect(route.activeTopicId).toBe('basics');
+    expect(route.previousNote?.id).toBe('first-a');
   });
 });

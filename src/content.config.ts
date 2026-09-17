@@ -5,6 +5,12 @@ import { noteEntryIdFromPath } from './lib/note-path';
 
 const nonEmptyText = z.string().trim().min(1);
 const positiveInteger = z.number().int().positive();
+const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+const topicSchema = z.object({
+  id: slug,
+  name: nonEmptyText,
+  position: positiveInteger,
+});
 const imageReference = z.string().refine((value) => {
   if (value.startsWith('/images/categories/')) return value.length > '/images/categories/'.length;
   try {
@@ -21,6 +27,7 @@ const categories = defineCollection({
     description: nonEmptyText,
     image: imageReference,
     level: z.enum(['beginner', 'intermediate', 'advanced', 'pro']),
+    topics: z.array(topicSchema),
   }),
 });
 
@@ -39,6 +46,7 @@ const notes = defineCollection({
       durationMinutes: positiveInteger,
       position: positiveInteger,
       format: z.literal('written'),
+      topic: slug.optional(),
       youtubeVideoId: z.never().optional(),
     }),
     z.object({
@@ -49,6 +57,7 @@ const notes = defineCollection({
       durationMinutes: positiveInteger,
       position: positiveInteger,
       format: z.literal('video'),
+      topic: slug.optional(),
       youtubeVideoId: z.string().regex(/^[A-Za-z0-9_-]{11}$/),
     }),
   ]),

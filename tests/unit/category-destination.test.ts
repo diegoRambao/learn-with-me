@@ -3,10 +3,13 @@ import { categoryDestination } from '../../src/lib/routes';
 
 describe('categoryDestination', () => {
   it('links a category to its first note', () => {
-    expect(categoryDestination('dart', [
+    const notes = [
       { id: 'second', category: 'dart', position: 2 },
       { id: 'first', category: 'dart', position: 1 },
-    ])).toBe('/categorias/dart/first/');
+    ];
+
+    expect(categoryDestination('dart', notes)).toBe('/categorias/dart/first/');
+    expect(notes.map(({ id }) => id)).toEqual(['second', 'first']);
   });
 
   it('uses the note id to break ties and keeps empty categories reachable', () => {

@@ -3,8 +3,9 @@ title: Comandos GREP y FIND para busquedas avanzadas.
 description: Algunos de los comandos mas utilizados para realizar busquedas avanzadas en la terminal.
 tags: [terminal, grep, find, búsqueda]
 category: terminal
+topic: fundamentos
 durationMinutes: 5
-position: 2
+position: 3
 format: written
 ---
 

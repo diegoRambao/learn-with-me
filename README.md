@@ -2,44 +2,84 @@
 
 Sitio estático de notas y rutas de aprendizaje construido con Astro, TypeScript y Tailwind CSS.
 
-## Requisitos y comandos
+## Qué permite hacer
 
-Usa Node.js LTS 22 o superior.
+- Organizar notas dentro de categorías y temas.
+- Publicar notas escritas en Markdown o notas basadas en un video de YouTube.
+- Recorrer cada ruta de aprendizaje en un orden definido.
+- Buscar categorías y notas por nombre, descripción o etiquetas.
+- Filtrar categorías por nivel y elegir tema claro, oscuro o el del sistema.
+
+## Ejecutar el proyecto
+
+Necesitas Node.js 22.12 o una versión posterior.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Antes de publicar, ejecuta el gate completo:
+Astro mostrará en la terminal la dirección local del sitio, normalmente
+`http://localhost:4321`.
+
+Para probar la versión de producción:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Crear y administrar contenido
+
+La guía [Uso y administración del sitio](docs/GUIA_DE_USO.md) explica:
+
+- cómo navegar y buscar contenido;
+- cómo crear una categoría;
+- cómo agregar y ordenar temas;
+- cómo escribir notas Markdown;
+- cómo publicar notas de video y videos complementarios;
+- cómo usar imágenes y otros recursos;
+- cómo configurar redes sociales;
+- cómo validar los cambios y resolver errores frecuentes.
+
+Todos los archivos válidos dentro de `src/content/` se incorporan
+automáticamente en el siguiente build; no es necesario registrar rutas a mano.
+
+## Comandos disponibles
+
+| Comando | Uso |
+| --- | --- |
+| `npm run dev` | Inicia el servidor de desarrollo. |
+| `npm run validate:content` | Revisa la estructura y las relaciones del contenido. |
+| `npm run check` | Ejecuta las comprobaciones de Astro y TypeScript. |
+| `npm run test:unit` | Ejecuta las pruebas unitarias. |
+| `npm run test:e2e` | Ejecuta las pruebas de navegador. |
+| `npm run test` | Ejecuta todas las pruebas. |
+| `npm run build` | Genera el sitio para producción. |
+| `npm run preview` | Sirve localmente el build de producción. |
+
+Antes de publicar, ejecuta:
 
 ```bash
 npm run validate:content
 npm run check
-npm run test:unit
-npm run test:e2e
+npm run test
 npm run build
 ```
 
-Los comandos `check`, `test:unit`, `test:e2e` y `build` ejecutan primero la validación de contenido. Cualquier problema bloquea el proceso e informa el archivo y el campo que se debe corregir.
+Los comandos de comprobación, pruebas y build también validan el contenido de
+forma automática. Si encuentran un problema, informan el archivo y el campo que
+se debe corregir.
 
-## Añadir una categoría
+## Estructura principal
 
-Crea `src/content/categories/{id}.json`. El nombre del archivo es el ID canónico: usa minúsculas, números y guiones. Declara `name`, una imagen local bajo `/images/categories/` o una URL HTTPS, y uno de los niveles `beginner`, `intermediate`, `advanced` o `pro`. Guarda las ilustraciones locales en `public/images/categories/`.
+```text
+public/images/categories/   Imágenes públicas de las categorías
+src/content/categories/     Definición de categorías y temas
+src/content/notes/          Notas escritas y de video
+src/data/site.ts            Configuración general y redes sociales
+docs/GUIA_DE_USO.md         Manual completo de uso y contenido
+```
 
-## Añadir una nota
-
-Crea `src/content/notes/{carpeta}/{id}.md` con `title`, `description`, `category`, `durationMinutes`, `position` y `format`. La nota debe estar exactamente dentro de una carpeta: no se admiten archivos Markdown sueltos ni carpetas más profundas. Tanto `{carpeta}` como `{id}` usan minúsculas, números y guiones.
-
-La carpeta solo organiza los archivos y no tiene que coincidir con `category`. La categoría debe existir y la posición no puede repetirse dentro de ella. La URL pública se deriva de `category` y `{id}`, por lo que mover una nota entre carpetas no cambia su dirección. Un mismo `{id}` puede repetirse en categorías distintas, pero no dentro de la misma categoría.
-
-- Una nota `written` contiene Markdown no vacío después del frontmatter y no declara `youtubeVideoId`.
-- Una nota `video` deja vacío el cuerpo y declara un ID válido de YouTube de 11 caracteres, no una URL.
-
-Guarda recursos relativos en una carpeta `assets` junto al grupo de notas que los utiliza; por ejemplo, `src/content/notes/design-patterns/assets/diagram.png` se referencia desde una nota del mismo grupo como `assets/diagram.png`.
-
-Cada nota usa exactamente uno de esos formatos. Todo contenido válido se publica automáticamente en el siguiente build.
-
-## Configurar redes sociales
-
-Edita `src/data/site.ts` únicamente con perfiles reales del autor. Cada entrada requiere una clave `network` única, una `label` descriptiva y una `url` HTTPS única. Conserva `socialLinks: []` si todavía no hay perfiles confirmados; la portada omitirá la región completa.
+Los contratos técnicos detallados están en
+[`specs/006-note-topics-media/contracts/`](specs/006-note-topics-media/contracts/).

@@ -4,7 +4,7 @@ description: Aprende a convertir una pantalla compleja en piezas pequeñas y reu
 tags: [flutter, widgets, composición]
 category: flutter-basic
 durationMinutes: 12
-position: 2
+position: 3
 format: written
 ---
 

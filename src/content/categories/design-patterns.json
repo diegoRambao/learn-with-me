@@ -2,5 +2,8 @@
     "name": "Patrones de diseño",
     "description": "Aprende los patrones de diseño más comunes para escribir código más limpio, organizado y mantenible.",
     "image": "/images/categories/design-patterns.png",
-    "level": "pro"
+    "level": "pro",
+    "topics": [
+      { "id": "creacionales", "name": "Patrones creacionales", "position": 1 }
+    ]
 }

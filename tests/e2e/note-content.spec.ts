@@ -55,6 +55,25 @@ test('renders a safe lazy video and an external fallback', async ({ page }) => {
   await expect(page.getByRole('link', { name: /directamente en YouTube/ })).toHaveAttribute('href', 'https://www.youtube.com/watch?v=M7lc1UVf-VE');
 });
 
+test('renders a safe responsive complementary YouTube video without changing ordinary links', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 720 });
+  await page.goto('/categorias/dart/dart-function/');
+  const embed = page.locator('.youtube-embed');
+  const frame = embed.getByTitle('Video complementario de YouTube');
+
+  await expect(embed).toHaveCount(1);
+  await expect(frame).toHaveAttribute('src', 'https://www.youtube-nocookie.com/embed/M7lc1UVf-VE');
+  await expect(frame).toHaveAttribute('loading', 'lazy');
+  await expect(frame).toHaveAttribute('allowfullscreen', '');
+  await expect(embed.getByRole('link', { name: /directamente en YouTube/ })).toHaveAttribute('href', 'https://www.youtube.com/watch?v=M7lc1UVf-VE');
+  await expect(page.getByRole('link', { name: 'Consulta el canal de aprendizaje' })).toBeVisible();
+  expect(await embed.locator('.youtube-embed-frame').evaluate((element) => {
+    const box = element.getBoundingClientRect();
+    return Math.abs(box.width / box.height - 16 / 9) < 0.05;
+  })).toBe(true);
+  expect(await page.locator('html').evaluate((element) => element.scrollWidth <= element.clientWidth)).toBe(true);
+});
+
 test('redirects an unrelated category and note pair without exposing content', async ({ page }) => {
   await page.goto('/categorias/flutter/dart-types/');
   await expect(page).toHaveURL(/\/categorias\/\?notice=invalid-note-context$/);
@@ -111,7 +130,7 @@ test('adds independent accessible copy controls and selects intact code when cop
 
 test('keeps Markdown links visibly interactive in both themes', async ({ page }) => {
   await page.goto('/categorias/dart/dart-function/');
-  const link = page.locator('.note-prose a').first();
+  const link = page.locator('.note-prose a[href="https://dart.dev/language/functions"]');
   await expect(link).toHaveAttribute('href', 'https://dart.dev/language/functions');
   await expect(link).toHaveAttribute('target', '_blank');
   await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
