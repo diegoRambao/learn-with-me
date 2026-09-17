@@ -6,6 +6,7 @@ import rehypeYouTubeEmbeds from './src/lib/rehype-youtube-embeds';
 export default defineConfig({
   output: 'static',
   trailingSlash: 'always',
+  devToolbar: { enabled: false },
   markdown: {
     processor: unified({ gfm: true, rehypePlugins: [rehypeYouTubeEmbeds] }),
   },

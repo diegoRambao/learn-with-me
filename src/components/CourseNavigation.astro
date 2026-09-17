@@ -1,4 +1,5 @@
 ---
+import { ChevronDown } from '@lucide/astro';
 import type { Category, NavigationItem } from '@lib/content';
 import { noteUrl } from '@lib/routes';
 
@@ -29,7 +30,7 @@ const topicIds = category.topics.map(({ id }) => id);
           <details class="topic-disclosure" data-topic-id={item.topic.id} open={item.topic.id === activeTopicId}>
             <summary>
               <span class="topic-name">{item.topic.name}</span>
-              <span aria-hidden="true" class="topic-caret">⌄</span>
+              <ChevronDown aria-hidden="true" class="ui-icon topic-caret" />
             </summary>
             {item.notes.length > 0 ? (
               <ol class="topic-notes">
@@ -63,6 +64,9 @@ const topicIds = category.topics.map(({ id }) => id);
     const activeTopicId = navigation.dataset.activeTopicId || null;
     const topicIds = JSON.parse(navigation.dataset.topicIds ?? '[]') as string[];
     const storageKey = `learning-sidebar:v1:${categoryId}`;
+    const toggleLabel = toggle.querySelector<HTMLElement>('[data-sidebar-toggle-label]');
+    const hideIcon = toggle.querySelector<SVGElement>('[data-sidebar-icon="hide"]');
+    const showIcon = toggle.querySelector<SVGElement>('[data-sidebar-icon="show"]');
 
     const expandedTopicIds = (): string[] => [...navigation.querySelectorAll<HTMLDetailsElement>('[data-topic-id][open]')]
       .map((details) => details.dataset.topicId)
@@ -94,7 +98,9 @@ const topicIds = category.topics.map(({ id }) => id);
       panel.hidden = !visible;
       workspace.dataset.sidebarVisible = String(visible);
       toggle.setAttribute('aria-expanded', String(visible));
-      toggle.textContent = visible ? 'Ocultar panel' : 'Mostrar panel';
+      if (toggleLabel) toggleLabel.textContent = visible ? 'Ocultar panel' : 'Mostrar panel';
+      hideIcon?.classList.toggle('is-hidden', !visible);
+      showIcon?.classList.toggle('is-hidden', visible);
     };
 
     const restored = restoreSidebarVisitState(readState() ?? createSidebarVisitState(activeTopicId), activeTopicId, topicIds);

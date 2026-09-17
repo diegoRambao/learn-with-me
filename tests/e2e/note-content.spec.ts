@@ -25,6 +25,7 @@ test('opens note images in an accessible dialog and restores focus when it close
   await expect(dialog.locator('[data-note-image-preview]')).toHaveAttribute('src', /20260915_085815_factory-method/);
   await expect(page.locator('html')).toHaveClass(/has-open-dialog/);
   await expect(page.getByRole('button', { name: 'Cerrar imagen ampliada' })).toBeFocused();
+  await expect(page.getByRole('button', { name: 'Cerrar imagen ampliada' }).locator('svg.ui-icon')).toHaveCount(1);
 
   await page.keyboard.press('Escape');
   await expect(dialog).not.toBeVisible();
@@ -120,6 +121,7 @@ test('adds independent accessible copy controls and selects intact code when cop
   const codeBlocks = page.locator('.note-prose pre > code');
   const copyButtons = page.getByRole('button', { name: /Copiar bloque de código/ });
   await expect(copyButtons).toHaveCount(await codeBlocks.count());
+  await expect(copyButtons.first().locator('svg.ui-icon')).toHaveCount(1);
   await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw new Error('denied'); } } }));
   await copyButtons.first().focus();
   await page.keyboard.press('Enter');

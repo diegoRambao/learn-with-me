@@ -1,4 +1,5 @@
 ---
+import { ArrowRight, Library } from '@lucide/astro';
 import CategoryCard from '@components/CategoryCard.astro';
 import type { HomeCategoryPreview, Note } from '@lib/content';
 import { categoryDestination } from '@lib/routes';
@@ -18,7 +19,7 @@ const visibleCount = preview.primary.length + preview.teaser.length;
 
   {visibleCount === 0 ? (
     <div class="panel mx-auto mt-10 max-w-2xl px-6 py-12 text-center">
-      <span aria-hidden="true" class="benefit-glyph">◇</span>
+      <Library aria-hidden="true" class="ui-icon benefit-glyph mx-auto" />
       <h3 class="mt-5 text-xl font-bold">Las primeras rutas están tomando forma</h3>
       <p class="mx-auto mt-3 max-w-lg text-muted">Aún no hay temas publicados. El catálogo será el primer lugar en mostrar los nuevos apuntes.</p>
     </div>
@@ -41,7 +42,7 @@ const visibleCount = preview.primary.length + preview.teaser.length;
 
   <div class:list={['route-more', { 'route-more-overlay': preview.teaser.length > 0 }]}>
     <a href="/categorias/" class="secondary-cta relative z-[3] inline-flex min-h-12 items-center gap-3 rounded-full border border-line px-6 font-bold no-underline">
-      Explorar más rutas <span aria-hidden="true">→</span>
+      Explorar más rutas <ArrowRight aria-hidden="true" class="ui-icon" />
     </a>
   </div>
 </section>

@@ -53,7 +53,12 @@ test('toggles the panel, keeps focus, changes content width, and restores per-ca
   const toggle = page.locator('[data-sidebar-toggle]');
   const panel = page.locator('#course-navigation-panel');
   const content = page.locator('.note-workspace-content');
+  const hideIcon = toggle.locator('[data-sidebar-icon="hide"]');
+  const showIcon = toggle.locator('[data-sidebar-icon="show"]');
   const visibleWidth = (await content.boundingBox())?.width ?? 0;
+
+  await expect(hideIcon).not.toHaveClass(/is-hidden/);
+  await expect(showIcon).toHaveClass(/is-hidden/);
 
   await toggle.focus();
   await page.keyboard.press('Enter');
@@ -61,6 +66,8 @@ test('toggles the panel, keeps focus, changes content width, and restores per-ca
   await expect(toggle).toHaveText('Mostrar panel');
   await expect(toggle).toHaveAttribute('aria-controls', 'course-navigation-panel');
   await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+  await expect(hideIcon).toHaveClass(/is-hidden/);
+  await expect(showIcon).not.toHaveClass(/is-hidden/);
   await expect(panel).toBeHidden();
   expect((await content.boundingBox())?.width ?? 0).toBeGreaterThan(visibleWidth);
   expect(await page.evaluate(() => window.scrollX)).toBe(0);

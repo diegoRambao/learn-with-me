@@ -15,6 +15,16 @@ test('presents personal study notes without academy language', async ({ page }) 
   }
 });
 
+test('uses a consistent decorative icon system without changing accessible names', async ({ page }) => {
+  const header = page.getByRole('banner');
+  await expect(header.locator('svg.ui-icon')).toHaveCount(4);
+  await expect(header.locator('svg.ui-icon[aria-hidden="true"]')).toHaveCount(4);
+  await expect(page.getByRole('link', { name: 'Explorar categorías' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Explorar más rutas' })).toBeVisible();
+  await expect(page.locator('.benefit-card svg.benefit-glyph')).toHaveCount(3);
+  await expect(page.locator('main')).not.toContainText(/[←→↗⌄×⌁↺∴◇]/);
+});
+
 test('replaces the sidebar with a central route to the category catalog', async ({ page }) => {
   await expect(page.getByRole('navigation', { name: 'Navegación principal' }).getByRole('link', { name: 'Categorías' })).toHaveAttribute('href', '/categorias/');
   await expect(page.locator('main aside')).toHaveCount(0);

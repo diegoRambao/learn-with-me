@@ -1,4 +1,5 @@
 ---
+import { ArrowRight } from '@lucide/astro';
 import { levelLabels, type Category } from '@lib/content';
 import { categoryUrl } from '@lib/routes';
 interface Props { category: Category; destination?: string; headingLevel?: 'h2' | 'h3' }
@@ -14,7 +15,7 @@ const Heading = headingLevel;
     <div class="p-5">
       <span class="inline-flex rounded-full border border-line px-3 py-1 text-xs font-bold text-accent">{levelLabels[category.level]}</span>
       <Heading class="mt-5 text-xl font-bold">{category.name}</Heading>
-      <p class="mt-2 text-sm text-muted">Explorar ruta <span aria-hidden="true">→</span></p>
+      <p class="mt-2 inline-flex items-center gap-2 text-sm text-muted">Explorar ruta <ArrowRight aria-hidden="true" class="ui-icon" /></p>
     </div>
   </a>
 </article>

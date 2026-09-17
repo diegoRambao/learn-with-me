@@ -1,3 +1,7 @@
+---
+import { ArchiveRestore, ArrowUpRight, ListTree, UsersRound } from '@lucide/astro';
+---
+
 <div class="space-y-24 sm:space-y-32">
   <section aria-labelledby="proposito" class="hero-notes mx-auto max-w-5xl pt-12 text-center sm:pt-20">
     <div class="notebook-mark mx-auto" aria-hidden="true">
@@ -15,7 +19,7 @@
     <div class="mt-10 flex justify-center">
       <a href="/categorias/" data-primary-cta class="primary-cta group inline-flex min-h-12 items-center gap-3 rounded-full bg-accent px-6 font-bold text-accent-contrast no-underline">
         Explorar categorías
-        <span aria-hidden="true" class="transition-transform group-hover:translate-x-1">↗</span>
+        <ArrowUpRight aria-hidden="true" class="ui-icon transition-transform group-hover:translate-x-1" />
       </a>
     </div>
     <p class="mx-auto mt-8 max-w-xl text-sm leading-6 text-muted">
@@ -56,17 +60,17 @@
     </div>
     <div class="mt-10 grid gap-px overflow-hidden rounded-[1.25rem] border border-line bg-line md:grid-cols-3">
       <article class="benefit-card p-7 sm:p-9">
-        <span aria-hidden="true" class="benefit-glyph">⌁</span>
+        <ListTree aria-hidden="true" class="ui-icon benefit-glyph" />
         <h3 class="mt-14 text-xl font-bold">Ideas ordenadas</h3>
         <p class="mt-3 text-sm leading-6 text-muted">Los hallazgos dejan de vivir dispersos y ganan un lugar fácil de recorrer.</p>
       </article>
       <article class="benefit-card p-7 sm:p-9">
-        <span aria-hidden="true" class="benefit-glyph">↺</span>
+        <ArchiveRestore aria-hidden="true" class="ui-icon benefit-glyph" />
         <h3 class="mt-14 text-xl font-bold">Un archivo para volver</h3>
         <p class="mt-3 text-sm leading-6 text-muted">Cada apunte queda disponible para recuperar contexto y refrescar una idea.</p>
       </article>
       <article class="benefit-card p-7 sm:p-9">
-        <span aria-hidden="true" class="benefit-glyph">∴</span>
+        <UsersRound aria-hidden="true" class="ui-icon benefit-glyph" />
         <h3 class="mt-14 text-xl font-bold">Aprendizaje compartido</h3>
         <p class="mt-3 text-sm leading-6 text-muted">Lo que me ayuda a entender también puede abrirle una puerta a otra persona.</p>
       </article>

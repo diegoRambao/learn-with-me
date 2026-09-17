@@ -1,4 +1,5 @@
 ---
+import { X } from '@lucide/astro';
 import { getCollection } from 'astro:content';
 import CategoryCard from '@components/CategoryCard.astro';
 import CategoryFilters from '@components/CategoryFilters.astro';
@@ -22,7 +23,7 @@ const notes = (await getCollection('notes')).map(noteFromEntry);
     <aside data-invalid-notice hidden class="notice mt-10 rounded-xl border p-5" role="status">
       <div class="flex items-start justify-between gap-5">
         <p>No pudimos abrir esa nota porque la categoría no es válida. Elige una categoría para continuar.</p>
-        <button type="button" data-dismiss-notice class="notice-dismiss min-h-8 shrink-0 rounded-lg px-2 font-bold" aria-label="Descartar aviso">×</button>
+        <button type="button" data-dismiss-notice class="notice-dismiss grid min-h-8 shrink-0 place-items-center rounded-lg px-2 font-bold" aria-label="Descartar aviso"><X aria-hidden="true" class="ui-icon" /></button>
       </div>
     </aside>
 

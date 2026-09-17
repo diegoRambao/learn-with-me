@@ -1,4 +1,5 @@
 ---
+import { ArrowLeft, ArrowRight } from '@lucide/astro';
 import type { Category, Note } from '@lib/content';
 import { noteUrl } from '@lib/routes';
 
@@ -15,13 +16,13 @@ const { category, previousNote, nextNote } = Astro.props;
   <nav class="note-navigation" aria-label="Navegación entre notas">
     {previousNote && (
       <a class="note-navigation-link note-navigation-previous" href={noteUrl(category.id, previousNote.id)}>
-        <span class="note-navigation-direction">Anterior</span>
+        <span class="note-navigation-direction"><ArrowLeft aria-hidden="true" class="ui-icon" />Anterior</span>
         <span>{previousNote.title}</span>
       </a>
     )}
     {nextNote && (
       <a class="note-navigation-link note-navigation-next" href={noteUrl(category.id, nextNote.id)}>
-        <span class="note-navigation-direction">Siguiente</span>
+        <span class="note-navigation-direction">Siguiente<ArrowRight aria-hidden="true" class="ui-icon" /></span>
         <span>{nextNote.title}</span>
       </a>
     )}

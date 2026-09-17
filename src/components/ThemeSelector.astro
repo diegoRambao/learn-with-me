@@ -1,4 +1,9 @@
+---
+import { SunMoon } from '@lucide/astro';
+---
+
 <div class="theme-control">
+  <SunMoon aria-hidden="true" class="ui-icon" />
   <label for="theme-selector">Tema</label>
   <select id="theme-selector" name="theme" data-theme-selector>
     <option value="system">Sistema</option>
@@ -26,4 +31,3 @@
     });
   }
 </script>
-

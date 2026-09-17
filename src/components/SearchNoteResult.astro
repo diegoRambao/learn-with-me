@@ -1,4 +1,5 @@
 ---
+import { ArrowRight } from '@lucide/astro';
 import type { SearchNoteRecord } from '@lib/search';
 interface Props { result: SearchNoteRecord }
 const { result } = Astro.props;
@@ -14,7 +15,7 @@ const { result } = Astro.props;
       <ul class="mt-4 flex list-none flex-wrap gap-2 p-0" aria-label="Etiquetas">
         {result.tags.map((tag) => <li class="rounded-full border border-line px-3 py-1 text-sm">{tag}</li>)}
       </ul>
-      <span class="mt-4 inline-block font-bold text-accent">Abrir nota <span aria-hidden="true">→</span></span>
+      <span class="mt-4 inline-flex items-center gap-2 font-bold text-accent">Abrir nota <ArrowRight aria-hidden="true" class="ui-icon" /></span>
     </div>
   </a>
 </article>

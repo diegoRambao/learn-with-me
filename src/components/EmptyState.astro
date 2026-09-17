@@ -1,4 +1,6 @@
 ---
+import { Library, RotateCcw } from '@lucide/astro';
+
 interface Props { kind: 'categories' | 'route' | 'matches' }
 const { kind } = Astro.props;
 const content = {
@@ -9,8 +11,8 @@ const content = {
 ---
 
 <section class="panel px-6 py-12 text-center" data-no-matches={kind === 'matches' ? '' : undefined} hidden={kind === 'matches'}>
-  <p aria-hidden="true" class="text-3xl text-accent">◇</p>
+  <Library aria-hidden="true" class="ui-icon empty-state-icon mx-auto text-accent" />
   <h2 class="mt-4 text-xl font-bold">{content.title}</h2>
   <p class="mx-auto mt-3 max-w-lg text-muted">{content.description}</p>
-  {kind === 'matches' && <button type="button" data-show-all class="mt-6 min-h-11 rounded-full border border-accent px-5 font-bold text-accent">Ver todas</button>}
+  {kind === 'matches' && <button type="button" data-show-all class="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-accent px-5 font-bold text-accent"><RotateCcw aria-hidden="true" class="ui-icon" />Ver todas</button>}
 </section>

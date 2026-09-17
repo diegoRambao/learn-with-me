@@ -1,4 +1,5 @@
 ---
+import { ArrowLeft } from '@lucide/astro';
 import { getCollection } from 'astro:content';
 import EmptyState from '@components/EmptyState.astro';
 import BaseLayout from '@layouts/BaseLayout.astro';
@@ -20,7 +21,7 @@ if (initialNoteUrl) return Astro.redirect(initialNoteUrl);
 
 <BaseLayout title={`${category.name} · Learn with Me`}>
   <div class="shell pt-12">
-    <a href="/categorias/" class="text-sm font-bold text-accent no-underline">← Todas las categorías</a>
+    <a href="/categorias/" class="inline-flex items-center gap-2 text-sm font-bold text-accent no-underline"><ArrowLeft aria-hidden="true" class="ui-icon" />Todas las categorías</a>
     <p class="eyebrow mt-10">Ruta de aprendizaje</p>
     <h1 class="mt-4 text-4xl font-bold">{category.name}</h1>
     <div class="mt-10"><EmptyState kind="route" /></div>
