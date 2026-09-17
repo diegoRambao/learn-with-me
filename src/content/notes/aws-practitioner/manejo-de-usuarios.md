@@ -14,7 +14,7 @@ tags:
 category: aws-practitioner
 topic: fundamentos-cloud
 durationMinutes: 5
-position: 4
+position: 3
 format: written
 body: >
 
@@ -133,6 +133,8 @@ body: >
 uploadTokens: []
 revision: 7a437dc94347d3f13bf15a60daca07cf501ddaba92b31b810f9b98d4be37a366
 ---
+
+
 
 
 

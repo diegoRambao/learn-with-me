@@ -4,7 +4,10 @@
   "image": "/images/categories/dart.svg",
   "level": "pro",
   "topics": [
-    { "id": "fundamentos", "name": "Fundamentos", "position": 1 },
-    { "id": "practica", "name": "Práctica", "position": 4 }
+    {
+      "id": "fundamentos",
+      "name": "Fundamentos",
+      "position": 1
+    }
   ]
 }
