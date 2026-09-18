@@ -12,7 +12,6 @@ position: 3
 format: written
 id: dart-function
 body: >
-
   Las funciones en Dart son bloques de código reutilizables que realizan una
   tarea específica. Como las funciones son **objetos de primera clase**, pueden
   asignarse a variables, enviarse como argumentos y devolverse desde otras
@@ -437,10 +436,8 @@ body: >
 
   - [DartPad](https://dartpad.dev/)
 uploadTokens: []
-revision: 7db89e4f448441e946dc35514d3b814bd043900337a21dd6691de2edff242763
+revision: af50c198ccdcade2518ed7a5b5b21027794f6b8a4d1da61c318f088dc3b9afce
 ---
-
-
 
 Las funciones en Dart son bloques de código reutilizables que realizan una tarea específica. Como las funciones son **objetos de primera clase**, pueden asignarse a variables, enviarse como argumentos y devolverse desde otras funciones.
 

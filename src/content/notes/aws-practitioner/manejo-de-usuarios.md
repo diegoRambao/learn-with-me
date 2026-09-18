@@ -17,10 +17,6 @@ durationMinutes: 5
 position: 3
 format: written
 body: >
-
-
-
-
   La gestión de identidades y accesos (IAM) en Amazon Web Services (AWS) es el
   pilar fundamental para proteger los recursos y datos en la nube. AWS IAM
   permite controlar quién está autenticado y tiene autorización para utilizar
@@ -131,14 +127,8 @@ body: >
   basadas en recursos*. Guía del usuario de IAM.
   https://docs.aws.amazon.com/es_es/IAM/latest/UserGuide/access_policies_identity-vs-resource.html
 uploadTokens: []
-revision: 7a437dc94347d3f13bf15a60daca07cf501ddaba92b31b810f9b98d4be37a366
+revision: 4256d43973d3c8f04cf1fd855462f51a924c0b5e7c86e132a957a5813b308b09
 ---
-
-
-
-
-
-
 
 La gestión de identidades y accesos (IAM) en Amazon Web Services (AWS) es el pilar fundamental para proteger los recursos y datos en la nube. AWS IAM permite controlar quién está autenticado y tiene autorización para utilizar los servicios, asegurando que cada componente del equipo o sistema tenga exactamente el nivel de acceso que necesita.
 
