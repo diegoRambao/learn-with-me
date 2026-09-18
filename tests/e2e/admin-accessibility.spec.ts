@@ -18,6 +18,7 @@ test('supports the critical keyboard, focus, announcement, and minimum-width flo
   await page.keyboard.press('Enter');
   await expect(page.locator('#editor')).toBeFocused();
 
+  await page.getByRole('button', { name: 'Nueva nota' }).click();
   const title = page.getByLabel('Título', { exact: true });
   await title.focus();
   await page.keyboard.type('Borrador accesible');
@@ -39,7 +40,7 @@ test('supports the critical keyboard, focus, announcement, and minimum-width flo
   await page.keyboard.press('Enter');
   const summary = page.getByRole('alert').filter({ hasText: 'Revisa el borrador' });
   await expect(summary).toBeFocused();
-  await expect(page.locator('#note-category')).toHaveAttribute('aria-invalid', 'true');
+  await expect(page.locator('#note-description')).toHaveAttribute('aria-invalid', 'true');
 
   await page.reload();
   await expect(page.getByRole('status').first()).toContainText('Inventario listo');
@@ -49,6 +50,7 @@ test('supports the critical keyboard, focus, announcement, and minimum-width flo
   await intro.focus();
   await page.keyboard.press('Enter');
   await markdown.fill('# Cambio sin guardar');
+  await page.getByRole('button', { name: 'Orden' }).click();
   const types = page.getByRole('button', { name: /Tipos/ });
   await types.focus();
   await page.keyboard.press('Enter');

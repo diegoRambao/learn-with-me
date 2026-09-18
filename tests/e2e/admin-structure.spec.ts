@@ -9,6 +9,7 @@ test.beforeEach(async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'Mutating structure journeys run once against the isolated fixture.');
   await setupAdminRepository();
   await page.goto(adminUrl);
+  await expect(page.locator('#category-existing option[value="dart"]')).toHaveCount(1);
 });
 
 test('creates and edits categories/topics, blocks dependencies, and reorders with buttons', async ({ page }) => {
@@ -52,6 +53,14 @@ test('creates and edits categories/topics, blocks dependencies, and reorders wit
 test('moves a note to another topic with drag and drop, then persists the assignment', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'desktop', 'The drag journey runs once against the isolated fixture.');
   await page.getByRole('button', { name: /^Dart / }).click();
+  await page.getByRole('button', { name: 'Nuevo tema' }).click();
+  const topicForm = page.locator('#topic-form');
+  await topicForm.getByLabel('ID estable').fill('practica');
+  await topicForm.getByLabel('Nombre').fill('Práctica');
+  await topicForm.getByLabel('Posición global').fill('4');
+  await topicForm.getByRole('button', { name: 'Guardar tema' }).click();
+  await expect(page.getByRole('status').first()).toContainText('Tema creado');
+  await page.getByRole('button', { name: 'Orden' }).click();
   const note = page.locator('.note-order-row').filter({ hasText: 'Nota · Tipos' });
   const destination = page.locator('.topic-group[data-topic-id="practica"]');
   await note.dragTo(destination);

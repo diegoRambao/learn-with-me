@@ -25,7 +25,7 @@ const { title = 'Administrador local' } = Astro.props;
       </div>
       <p class="save-boundary"><span aria-hidden="true"></span> Guardar modifica archivos del repositorio. Publicar sigue siendo un paso separado.</p>
     </header>
-    <div class="admin-shell">
+    <div class="admin-shell" data-categories-expanded="true">
       <nav class="panel categories-panel" aria-labelledby="explorer-heading">
         <slot name="explorer" />
       </nav>
