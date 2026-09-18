@@ -54,3 +54,25 @@ test('keeps the draft and focuses an actionable summary when validation fails', 
   await expect(noteForm.getByLabel('Título', { exact: true })).toHaveValue('Borrador sin datos');
   await expect(noteForm.getByLabel('Descripción')).toHaveAttribute('aria-invalid', 'true');
 });
+
+test('opens a full focus workspace with live editor and preview', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'The desktop focus layout runs once.');
+  await page.goto(adminUrl);
+  await expect(page.getByRole('status').first()).toContainText('Inventario listo');
+  await page.getByLabel('Título', { exact: true }).fill('Nota enfocada');
+  await page.getByRole('textbox', { name: 'Markdown', exact: true }).fill('## Primer borrador');
+
+  const focusButton = page.getByRole('button', { name: 'Modo enfoque' });
+  await focusButton.click();
+  await expect(page.locator('body')).toHaveClass(/focus-mode/);
+  await expect(page.getByRole('navigation', { name: 'Categorías' })).toBeHidden();
+  await expect(page.getByRole('textbox', { name: 'Markdown', exact: true })).toBeVisible();
+  await expect(page.locator('#note-preview')).toBeVisible();
+  await expect(page.locator('#note-preview').contentFrame().getByRole('heading', { name: 'Nota enfocada' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Salir del modo enfoque' })).toBeVisible();
+
+  await page.keyboard.press('Escape');
+  await expect(page.locator('body')).not.toHaveClass(/focus-mode/);
+  await expect(focusButton).toBeFocused();
+  await expect(page.getByRole('textbox', { name: 'Markdown', exact: true })).toHaveValue('## Primer borrador');
+});

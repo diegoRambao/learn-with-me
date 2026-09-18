@@ -1,5 +1,5 @@
 ---
-import { PanelLeftClose, PanelLeftOpen, Plus, Search, Trash } from '@lucide/astro';
+import { FolderPlus, PanelLeftClose, PanelLeftOpen, Search, Trash } from '@lucide/astro';
 ---
 
 <div id="content-explorer" class="category-browser">
@@ -21,8 +21,8 @@ import { PanelLeftClose, PanelLeftOpen, Plus, Search, Trash } from '@lucide/astr
         <PanelLeftOpen aria-hidden="true" class="category-toggle-icon-hidden" data-category-toggle-icon="show" />
         <span class="sr-only" data-category-toggle-label>Ocultar categorías</span>
       </button>
-      <button type="button" id="new-category" class="icon-button" aria-label="Nueva categoría" title="Nueva categoría">
-        <Plus aria-hidden="true" />
+      <button type="button" id="new-category" class="secondary-action create-action">
+        <FolderPlus aria-hidden="true" /> Nueva categoría
       </button>
     </div>
   </div>

@@ -22,7 +22,7 @@ test('supports the critical keyboard, focus, announcement, and minimum-width flo
   const title = page.getByLabel('Título', { exact: true });
   await title.focus();
   await page.keyboard.type('Borrador accesible');
-  await expect(page.getByText('Sin guardar', { exact: true })).toBeVisible();
+  await expect(page.locator('#dirty-badge')).toBeVisible();
 
   const markdown = page.getByRole('textbox', { name: 'Markdown', exact: true });
   await markdown.fill('texto seleccionado');
@@ -32,6 +32,16 @@ test('supports the critical keyboard, focus, announcement, and minimum-width flo
   await page.keyboard.press('Enter');
   await expect(markdown).toBeFocused();
   await expect(markdown).toHaveValue('**texto seleccionado**');
+
+  await page.getByRole('button', { name: 'Modo enfoque' }).click();
+  await expect(page.locator('body')).toHaveClass(/focus-mode/);
+  await expect(markdown).toBeVisible();
+  await expect(page.locator('#note-preview')).toBeHidden();
+  await page.getByRole('button', { name: 'Vista previa' }).click();
+  await expect(page.locator('#note-preview')).toBeVisible();
+  await expect(markdown).toBeHidden();
+  await page.keyboard.press('Escape');
+  await expect(page.getByRole('button', { name: 'Modo enfoque' })).toBeFocused();
 
   const save = page.getByRole('button', { name: 'Guardar nota' });
   await save.focus();

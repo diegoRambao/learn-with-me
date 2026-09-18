@@ -1,5 +1,5 @@
 ---
-import { GripVertical, ListFilter, Plus, Search } from '@lucide/astro';
+import { FilePlus, GripVertical, ListFilter, ListPlus, Search } from '@lucide/astro';
 ---
 
 <aside class="outline-panel" aria-labelledby="outline-heading">
@@ -9,8 +9,8 @@ import { GripVertical, ListFilter, Plus, Search } from '@lucide/astro';
       <h2 id="outline-heading">Temas y notas</h2>
     </div>
     <div class="compact-actions">
-      <button type="button" id="new-topic" class="icon-button" aria-label="Nuevo tema" title="Nuevo tema"><Plus aria-hidden="true" /></button>
-      <button type="button" id="new-note" class="icon-button" aria-label="Nueva nota" title="Nueva nota"><Plus aria-hidden="true" /></button>
+      <button type="button" id="new-topic" class="secondary-action create-action"><ListPlus aria-hidden="true" /> Nuevo tema</button>
+      <button type="button" id="new-note" class="secondary-action create-action"><FilePlus aria-hidden="true" /> Nueva nota</button>
     </div>
   </div>
   <form id="content-filters" class="outline-filters" aria-label="Filtros de contenido">

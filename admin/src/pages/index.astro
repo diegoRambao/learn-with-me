@@ -1,5 +1,5 @@
 ---
-import { Eye, FilePenLine, Menu, Save, Settings2, Trash, TriangleAlert } from '@lucide/astro';
+import { Eye, FilePenLine, Maximize2, Menu, Minimize2, Save, Trash, TriangleAlert } from '@lucide/astro';
 import AdminLayout from '../layouts/AdminLayout.astro';
 import ContentExplorer from '../components/ContentExplorer.astro';
 import ContentOutline from '../components/ContentOutline.astro';
@@ -18,14 +18,12 @@ import TrashPanel from '../components/TrashPanel.astro';
     <header class="workspace-header">
       <button type="button" id="mobile-back" class="icon-button mobile-only" aria-label="Volver a categorías"><Menu aria-hidden="true" /></button>
       <div class="category-title-field">
-        <label for="active-category-name">Categoría seleccionada</label>
-        <input id="active-category-name" type="text" autocomplete="off" placeholder="Selecciona una categoría" disabled />
+        <p>Categoría seleccionada</p>
+        <h2 id="active-category-name">Selecciona una categoría</h2>
       </div>
       <div class="workspace-actions" role="group" aria-label="Acciones de la categoría">
-        <button type="button" id="save-category-name" class="secondary-action" hidden><Save aria-hidden="true" /> Guardar nombre</button>
         <button type="button" data-workspace="note" class="secondary-action">Nota</button>
         <button type="button" data-workspace="order" class="secondary-action">Orden</button>
-        <button type="button" data-workspace="structure" class="secondary-action" aria-label="Estructura"><Settings2 aria-hidden="true" /> Ajustes</button>
         <button type="button" data-workspace="trash" class="icon-button" aria-label="Abrir papelera" title="Papelera"><Trash aria-hidden="true" /></button>
       </div>
     </header>
@@ -34,14 +32,30 @@ import TrashPanel from '../components/TrashPanel.astro';
       <ContentOutline />
       <section class="content-panel">
         <div class="editor-toolbar">
-          <div class="view-switcher" role="group" aria-label="Vista de la nota">
-            <button type="button" id="show-editor" aria-pressed="true"><FilePenLine aria-hidden="true" /> Editor</button>
-            <button type="button" id="show-preview" aria-pressed="false"><Eye aria-hidden="true" /> Vista previa</button>
+          <div class="editor-toolbar-start">
+            <div class="view-switcher" role="group" aria-label="Vista de la nota">
+              <button type="button" id="show-editor" aria-pressed="true"><FilePenLine aria-hidden="true" /> Editor</button>
+              <button type="button" id="show-preview" aria-pressed="false"><Eye aria-hidden="true" /> Vista previa</button>
+            </div>
+            <div class="focus-heading" hidden>
+              <span>Escribiendo</span>
+              <strong id="focus-note-title">Nueva nota</strong>
+              <span class="dirty-badge" id="focus-dirty-badge" hidden>Sin guardar</span>
+            </div>
           </div>
-          <button id="save-note" class="primary-action" type="submit" form="note-form" disabled><Save aria-hidden="true" /> Guardar nota</button>
+          <div class="editor-toolbar-actions">
+            <button type="button" id="toggle-focus" class="secondary-action" aria-pressed="false">
+              <Maximize2 aria-hidden="true" data-focus-icon="enter" />
+              <Minimize2 aria-hidden="true" data-focus-icon="exit" class="focus-icon-hidden" />
+              <span data-focus-label>Modo enfoque</span>
+            </button>
+            <button id="save-note" class="primary-action" type="submit" form="note-form" disabled><Save aria-hidden="true" /> Guardar nota</button>
+          </div>
         </div>
-        <section id="note-workspace" class="workspace-view"><NoteForm /></section>
-        <section id="preview-workspace" class="workspace-view preview-workspace" hidden><NotePreview /></section>
+        <div id="note-layout" class="note-layout">
+          <section id="note-workspace" class="workspace-view"><NoteForm /></section>
+          <section id="preview-workspace" class="workspace-view preview-workspace" hidden><NotePreview /></section>
+        </div>
         <StructureForms />
         <TrashPanel />
         <section id="empty-workspace" class="empty-workspace" hidden>

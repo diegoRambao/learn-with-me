@@ -1,27 +1,59 @@
-<section id="structure-workspace" class="workspace-view" hidden aria-labelledby="structure-heading">
-  <div class="form-heading">
-    <div><p class="eyebrow">Estructura editorial</p><h2 id="structure-heading">Categorías y temas</h2></div>
-  </div>
-  <div class="structure-grid">
-    <form id="category-form" class="subpanel" novalidate>
-      <h3>Categoría</h3>
-      <label for="category-existing">Editar existente</label>
-      <select id="category-existing" name="existing"><option value="">Nueva categoría</option></select>
-      <label for="category-id">ID estable</label><input id="category-id" name="id" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" />
-      <label for="category-name">Nombre</label><input id="category-name" name="name" required />
-      <label for="category-description">Descripción</label><textarea id="category-description" name="description" required></textarea>
-      <label for="category-image">Imagen</label><input id="category-image" name="image" value="/images/categories/" required />
-      <label for="category-level">Nivel</label><select id="category-level" name="level"><option value="beginner">Principiante</option><option value="intermediate">Intermedio</option><option value="advanced">Avanzado</option><option value="pro">Pro</option></select>
-      <div class="button-row"><button type="submit">Guardar categoría</button><button type="button" id="delete-category" class="danger" hidden>Eliminar categoría</button></div>
-    </form>
-    <form id="topic-form" class="subpanel" novalidate>
-      <h3>Tema</h3>
-      <label for="topic-category">Categoría</label><select id="topic-category" name="category" required><option value="">Selecciona…</option></select>
-      <label for="topic-existing">Editar existente</label><select id="topic-existing" name="existing"><option value="">Nuevo tema</option></select>
-      <label for="topic-id">ID estable</label><input id="topic-id" name="id" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" />
-      <label for="topic-name">Nombre</label><input id="topic-name" name="name" required />
-      <label for="topic-position">Posición global</label><input id="topic-position" name="position" type="number" min="1" step="1" required />
-      <div class="button-row"><button type="submit">Guardar tema</button><button type="button" id="delete-topic" class="danger" hidden>Eliminar tema</button></div>
-    </form>
-  </div>
-</section>
+---
+import { X } from '@lucide/astro';
+---
+
+<dialog id="category-dialog" class="structure-dialog" aria-labelledby="category-dialog-title">
+  <form id="category-form" novalidate>
+    <div class="dialog-heading">
+      <div><p class="eyebrow">Estructura editorial</p><h2 id="category-dialog-title">Nueva categoría</h2></div>
+      <button type="button" class="icon-button" data-close-dialog aria-label="Cerrar"><X aria-hidden="true" /></button>
+    </div>
+    <div id="category-form-error" class="dialog-error" role="alert" hidden></div>
+    <div class="dialog-fields">
+      <div class="field"><label for="category-id">ID estable</label><input id="category-id" name="id" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" /><p class="field-help">Se propone desde el nombre y queda fijo después de crear.</p></div>
+      <div class="field"><label for="category-name">Nombre</label><input id="category-name" name="name" required autocomplete="off" /></div>
+      <div class="field span-2"><label for="category-description">Descripción</label><textarea id="category-description" name="description" rows="4" required></textarea></div>
+      <div class="field span-2"><label for="category-image">Imagen</label><input id="category-image" name="image" value="/images/categories/" required /></div>
+      <div class="field"><label for="category-level">Nivel</label><select id="category-level" name="level"><option value="beginner">Principiante</option><option value="intermediate">Intermedio</option><option value="advanced">Avanzado</option><option value="pro">Pro</option></select></div>
+    </div>
+    <div class="dialog-actions"><button type="button" class="secondary-action" data-close-dialog>Cancelar</button><button type="submit" id="save-category" class="primary-action">Crear categoría</button></div>
+  </form>
+</dialog>
+
+<dialog id="topic-dialog" class="structure-dialog" aria-labelledby="topic-dialog-title">
+  <form id="topic-form" novalidate>
+    <div class="dialog-heading">
+      <div><p class="eyebrow">Estructura editorial</p><h2 id="topic-dialog-title">Nuevo tema</h2></div>
+      <button type="button" class="icon-button" data-close-dialog aria-label="Cerrar"><X aria-hidden="true" /></button>
+    </div>
+    <p class="dialog-context">Categoría: <strong id="topic-category-name"></strong></p>
+    <div id="topic-form-error" class="dialog-error" role="alert" hidden></div>
+    <div class="dialog-fields">
+      <div class="field"><label for="topic-id">ID estable</label><input id="topic-id" name="id" required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" /><p class="field-help">Se propone desde el nombre y queda fijo después de crear.</p></div>
+      <div class="field"><label for="topic-name">Nombre</label><input id="topic-name" name="name" required autocomplete="off" /></div>
+    </div>
+    <p class="field-help">Los temas nuevos se añaden al final. Usa Orden para moverlos.</p>
+    <div class="dialog-actions"><button type="button" class="secondary-action" data-close-dialog>Cancelar</button><button type="submit" id="save-topic" class="primary-action">Crear tema</button></div>
+  </form>
+</dialog>
+
+<dialog id="delete-category-dialog" class="confirm-dialog" aria-labelledby="delete-category-title">
+  <form id="delete-category-form" novalidate>
+    <p class="eyebrow">Acción irreversible</p>
+    <h2 id="delete-category-title">Eliminar categoría</h2>
+    <p id="delete-category-description"></p>
+    <div id="delete-category-error" class="dialog-error" role="alert" hidden></div>
+    <div class="field"><label for="confirm-category-id">Escribe el ID <strong id="category-id-to-confirm"></strong></label><input id="confirm-category-id" autocomplete="off" /></div>
+    <div class="dialog-actions"><button type="button" class="secondary-action" data-close-dialog>Cancelar</button><button type="submit" id="confirm-delete-category" class="danger" disabled>Eliminar categoría</button></div>
+  </form>
+</dialog>
+
+<dialog id="delete-topic-dialog" class="confirm-dialog" aria-labelledby="delete-topic-title">
+  <form id="delete-topic-form">
+    <p class="eyebrow">Acción irreversible</p>
+    <h2 id="delete-topic-title">Eliminar tema</h2>
+    <p id="delete-topic-description"></p>
+    <div id="delete-topic-error" class="dialog-error" role="alert" hidden></div>
+    <div class="dialog-actions"><button type="button" class="secondary-action" data-close-dialog>Cancelar</button><button type="submit" class="danger">Eliminar tema</button></div>
+  </form>
+</dialog>

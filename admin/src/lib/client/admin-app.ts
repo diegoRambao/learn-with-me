@@ -36,8 +36,7 @@ const orderAnnouncement = required<HTMLElement>('#order-announcement');
 const orderActions = required<HTMLElement>('.order-actions');
 const saveOrderButton = required<HTMLButtonElement>('#save-order');
 const discardOrderButton = required<HTMLButtonElement>('#discard-order');
-const activeCategoryName = required<HTMLInputElement>('#active-category-name');
-const saveCategoryName = required<HTMLButtonElement>('#save-category-name');
+const activeCategoryName = required<HTMLElement>('#active-category-name');
 const imageInput = required<HTMLInputElement>('#note-image');
 const imageAlt = required<HTMLInputElement>('#image-alt');
 const imagePreview = required<HTMLImageElement>('#image-local-preview');
@@ -45,6 +44,9 @@ const imageMeta = required<HTMLElement>('#image-meta');
 const uploadPreview = required<HTMLElement>('.upload-preview');
 const adminShell = required<HTMLElement>('.admin-shell');
 const categoryWorkspace = required<HTMLElement>('.category-workspace');
+const focusButton = required<HTMLButtonElement>('#toggle-focus');
+const focusTitle = required<HTMLElement>('#focus-note-title');
+const focusDirtyBadge = required<HTMLElement>('#focus-dirty-badge');
 const guard = createUnsavedChangesGuard(required<HTMLDialogElement>('#unsaved-dialog'));
 
 let bootstrap: BootstrapData;
@@ -53,10 +55,11 @@ let currentCategoryId = '';
 let activeNotePath = '';
 let currentOrder: ReturnType<typeof createOrderDraft> | null = null;
 let orderDirty = false;
-let categoryNameDirty = false;
 let previewTimer: number | undefined;
 let idWasEdited = false;
 let draggedKey = '';
+let currentView: 'editor' | 'preview' = 'editor';
+let focusScrollPosition = 0;
 
 const slugFromTitle = (value: string): string => value
   .normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
@@ -69,7 +72,13 @@ const noteForItem = (item: OrderItem): NoteDocument | undefined => item.kind ===
   ? bootstrap.snapshot.notes.find(({ id, folder }) => id === item.id && folder === item.folder)
   : undefined;
 
-const syncDirtyGuard = (): void => guard.setDirty(draft.dirty || orderDirty || categoryNameDirty);
+const syncDirtyGuard = (): void => guard.setDirty(draft.dirty || orderDirty);
+
+const syncDraftIndicators = (): void => {
+  dirtyBadge.hidden = !draft.dirty;
+  focusDirtyBadge.hidden = !draft.dirty;
+  focusTitle.textContent = draft.values.title.trim() || 'Nueva nota';
+};
 
 const valuesFromForm = (): NoteDraft['values'] => {
   const data = new FormData(form);
@@ -127,6 +136,8 @@ const showIssues = (fieldIssues: Readonly<Record<string, ReadonlyArray<string>>>
   }
   summary.hidden = Object.keys(fieldIssues).length === 0;
   if (!summary.hidden) {
+    if (document.body.classList.contains('focus-mode')) exitFocusMode(false);
+    showView('editor');
     required<HTMLDetailsElement>('#note-settings').open = true;
     summary.focus();
   }
@@ -158,7 +169,7 @@ const schedulePreview = (): void => {
 
 const syncDraft = (): void => {
   draft = updateNoteDraft(draft, valuesFromForm());
-  dirtyBadge.hidden = !draft.dirty;
+  syncDraftIndicators();
   syncDirtyGuard();
   schedulePreview();
 };
@@ -170,21 +181,59 @@ const syncFormat = (): void => {
   uploadFields.hidden = !written;
   bodyInput.required = written;
   required<HTMLInputElement>('#youtube-video-id').required = !written;
+  focusButton.hidden = !written;
 };
 
 const showView = (view: 'editor' | 'preview'): void => {
-  required<HTMLElement>('#note-workspace').hidden = view !== 'editor';
-  required<HTMLElement>('#preview-workspace').hidden = view !== 'preview';
+  currentView = view;
+  document.body.dataset.focusPane = view;
+  required<HTMLElement>('#note-layout').hidden = false;
+  required<HTMLElement>('#trash-workspace').hidden = true;
+  const focusing = document.body.classList.contains('focus-mode');
+  required<HTMLElement>('#note-workspace').hidden = focusing ? false : view !== 'editor';
+  required<HTMLElement>('#preview-workspace').hidden = focusing ? false : view !== 'preview';
   required<HTMLButtonElement>('#show-editor').setAttribute('aria-pressed', String(view === 'editor'));
   required<HTMLButtonElement>('#show-preview').setAttribute('aria-pressed', String(view === 'preview'));
   categoryWorkspace.classList.add('show-editor');
   if (view === 'preview') refreshPreview().catch(() => undefined);
 };
 
-const showWorkspace = (workspace: 'note' | 'structure' | 'trash'): void => {
-  for (const view of document.querySelectorAll<HTMLElement>('.content-panel > .workspace-view')) view.hidden = true;
+const updateFocusControl = (active: boolean): void => {
+  focusButton.setAttribute('aria-pressed', String(active));
+  required<HTMLElement>('[data-focus-label]').textContent = active ? 'Salir del modo enfoque' : 'Modo enfoque';
+  required<SVGElement>('[data-focus-icon="enter"]').classList.toggle('focus-icon-hidden', active);
+  required<SVGElement>('[data-focus-icon="exit"]').classList.toggle('focus-icon-hidden', !active);
+  required<HTMLElement>('.focus-heading').hidden = !active;
+};
+
+const enterFocusMode = (): void => {
+  if (formatSelect.value !== 'written') return;
+  focusScrollPosition = window.scrollY;
+  currentView = 'editor';
+  document.body.dataset.focusPane = currentView;
+  document.body.classList.add('focus-mode');
+  updateFocusControl(true);
+  showView('editor');
+  syncDraftIndicators();
+  refreshPreview().catch(() => undefined);
+  bodyInput.focus();
+};
+
+const exitFocusMode = (restoreFocus = true): void => {
+  if (!document.body.classList.contains('focus-mode')) return;
+  document.body.classList.remove('focus-mode');
+  document.body.removeAttribute('data-focus-pane');
+  updateFocusControl(false);
+  showView(currentView);
+  window.scrollTo({ top: focusScrollPosition });
+  if (restoreFocus) focusButton.focus();
+};
+
+const showWorkspace = (workspace: 'note' | 'trash'): void => {
+  if (workspace !== 'note') exitFocusMode(false);
+  required<HTMLElement>('#note-layout').hidden = workspace !== 'note';
+  required<HTMLElement>('#trash-workspace').hidden = workspace !== 'trash';
   if (workspace === 'note') showView('editor');
-  if (workspace === 'structure') required<HTMLElement>('#structure-workspace').hidden = false;
   if (workspace === 'trash') required<HTMLElement>('#trash-workspace').hidden = false;
   categoryWorkspace.classList.add('show-editor');
 };
@@ -199,7 +248,7 @@ const resetNote = (): void => {
   setFormValue('position', (currentOrder?.items.length ?? 0) + 1);
   syncFormat();
   draft = createNoteDraft(valuesFromForm());
-  dirtyBadge.hidden = true;
+  syncDraftIndicators();
   required<HTMLElement>('#note-form-heading').textContent = 'Nueva nota';
   required<HTMLButtonElement>('#trash-note').hidden = true;
   required<HTMLDetailsElement>('#note-settings').open = true;
@@ -229,7 +278,7 @@ const loadNote = (sourcePath: string): void => {
   idWasEdited = true;
   syncFormat();
   draft = createNoteDraft(valuesFromForm(), { identity: { folder: note.folder, id: note.id }, baseRevision: note.revision });
-  dirtyBadge.hidden = true;
+  syncDraftIndicators();
   required<HTMLElement>('#note-form-heading').textContent = `Editar · ${note.title}`;
   required<HTMLButtonElement>('#trash-note').hidden = false;
   required<HTMLDetailsElement>('#note-settings').open = false;
@@ -238,6 +287,33 @@ const loadNote = (sourcePath: string): void => {
   showView('editor');
   schedulePreview();
   renderOutline();
+};
+
+const createItemMenu = (
+  label: string,
+  editLabel: string,
+  deleteLabel: string,
+  onEdit: () => void,
+  onDelete: () => void,
+): HTMLDetailsElement => {
+  const menu = document.createElement('details');
+  menu.className = 'item-menu';
+  const summary = document.createElement('summary');
+  summary.textContent = 'Acciones';
+  summary.setAttribute('role', 'button');
+  summary.setAttribute('aria-label', `Acciones de ${label}`);
+  summary.setAttribute('aria-expanded', 'false');
+  const popover = document.createElement('div');
+  popover.className = 'item-menu-popover';
+  const edit = rowButton('Editar', () => { menu.open = false; onEdit(); });
+  edit.setAttribute('aria-label', editLabel);
+  const remove = rowButton('Eliminar', () => { menu.open = false; onDelete(); });
+  remove.className = 'danger-action';
+  remove.setAttribute('aria-label', deleteLabel);
+  popover.append(edit, remove);
+  menu.append(summary, popover);
+  menu.addEventListener('toggle', () => summary.setAttribute('aria-expanded', String(menu.open)));
+  return menu;
 };
 
 const renderCategories = (): void => {
@@ -252,6 +328,9 @@ const renderCategories = (): void => {
     return;
   }
   for (const category of categories) {
+    const item = document.createElement('div');
+    item.className = 'category-item';
+    item.dataset.categoryItemId = category.id;
     const button = document.createElement('button');
     button.type = 'button';
     button.className = 'category-card';
@@ -264,7 +343,15 @@ const renderCategories = (): void => {
     count.textContent = `${category.topics.length} temas · ${noteCount} notas`;
     button.append(name, count);
     button.addEventListener('click', () => selectCategory(category.id, button));
-    categoryGrid.append(button);
+    const menu = createItemMenu(
+      category.name,
+      `Editar categoría ${category.name}`,
+      `Eliminar categoría ${category.name}`,
+      () => window.dispatchEvent(new CustomEvent('content-admin:edit-category', { detail: { categoryId: category.id } })),
+      () => window.dispatchEvent(new CustomEvent('content-admin:delete-category', { detail: { categoryId: category.id } })),
+    );
+    item.append(button, menu);
+    categoryGrid.append(item);
   }
 };
 
@@ -411,6 +498,13 @@ const createTopicGroup = (
   if (topicItem) {
     actions.append(rowButton('Subir', () => moveTopicGroup(group, 'up')));
     actions.append(rowButton('Bajar', () => moveTopicGroup(group, 'down')));
+    actions.append(createItemMenu(
+      topicItem.label,
+      `Editar tema ${topicItem.label}`,
+      `Eliminar tema ${topicItem.label}`,
+      () => window.dispatchEvent(new CustomEvent('content-admin:edit-topic', { detail: { categoryId: currentCategoryId, topicId: topicItem.id } })),
+      () => window.dispatchEvent(new CustomEvent('content-admin:delete-topic', { detail: { categoryId: currentCategoryId, topicId: topicItem.id } })),
+    ));
     heading.addEventListener('dragstart', (event) => {
       draggedKey = orderItemKey(topicItem);
       event.dataTransfer?.setData('text/plain', draggedKey);
@@ -465,10 +559,7 @@ const renderOutline = (): void => {
 
 const updateCategoryHeader = (): void => {
   const category = currentCategory();
-  activeCategoryName.disabled = !category;
-  activeCategoryName.value = category?.name ?? '';
-  saveCategoryName.hidden = true;
-  categoryNameDirty = false;
+  activeCategoryName.textContent = category?.name ?? 'Selecciona una categoría';
   adminShell.classList.toggle('has-selection', Boolean(category));
 };
 
@@ -512,7 +603,7 @@ const renderIssues = (): void => {
 
 const selectCategory = async (categoryId: string, trigger: HTMLElement): Promise<void> => {
   syncDirtyGuard();
-  if ((draft.dirty || orderDirty || categoryNameDirty) && !await guard.confirmNavigation(trigger)) return;
+  if ((draft.dirty || orderDirty) && !await guard.confirmNavigation(trigger)) return;
   currentCategoryId = categoryId;
   activeNotePath = '';
   currentOrder = createOrderDraft(currentCategory() as CategoryDocument, bootstrap.snapshot.notes);
@@ -592,6 +683,7 @@ imageInput.addEventListener('change', async () => {
     const insertion = `\n\n![${imageAlt.value.trim() || 'Imagen'}](${staged.markdownReference})\n`;
     bodyInput.setRangeText(insertion, bodyInput.selectionStart, bodyInput.selectionEnd, 'end');
     draft = updateNoteDraft(draft, { body: bodyInput.value, uploadTokens: [...draft.values.uploadTokens, staged.uploadToken] });
+    syncDraftIndicators();
     required<HTMLElement>('#image-error').textContent = '';
     status.textContent = 'Imagen preparada. Se copiará únicamente al guardar la nota.';
     syncDirtyGuard();
@@ -604,6 +696,16 @@ imageInput.addEventListener('change', async () => {
 required<HTMLButtonElement>('#refresh-preview').addEventListener('click', refreshPreview);
 required<HTMLButtonElement>('#show-editor').addEventListener('click', () => showView('editor'));
 required<HTMLButtonElement>('#show-preview').addEventListener('click', () => showView('preview'));
+focusButton.addEventListener('click', () => {
+  if (document.body.classList.contains('focus-mode')) exitFocusMode();
+  else enterFocusMode();
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && document.body.classList.contains('focus-mode')) {
+    event.preventDefault();
+    exitFocusMode();
+  }
+});
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -622,7 +724,7 @@ form.addEventListener('submit', async (event) => {
     status.textContent = `${result.message ?? 'Nota guardada.'} ${(result.changedPaths ?? []).join(', ')}`;
     activeNotePath = result.data.sourcePath;
     draft = createNoteDraft(values, { baseRevision: result.data.revision, identity: { folder: result.data.folder, id: result.data.id } });
-    dirtyBadge.hidden = true;
+    syncDraftIndicators();
     await initialize(false);
     loadNote(activeNotePath);
     window.dispatchEvent(new Event('content-admin:refresh'));
@@ -682,36 +784,10 @@ discardOrderButton.addEventListener('click', () => {
   renderOutline();
 });
 
-activeCategoryName.addEventListener('input', () => {
-  categoryNameDirty = activeCategoryName.value.trim() !== currentCategory()?.name;
-  saveCategoryName.hidden = !categoryNameDirty;
-  syncDirtyGuard();
-});
-
-saveCategoryName.addEventListener('click', async () => {
-  const category = currentCategory();
-  if (!category || !activeCategoryName.value.trim()) return;
-  try {
-    const result = await api.updateCategory(category.id, category.revision, {
-      id: category.id,
-      name: activeCategoryName.value.trim(),
-      description: category.description,
-      image: category.image,
-      level: category.level,
-    });
-    status.textContent = result.message ?? 'Categoría actualizada.';
-    categoryNameDirty = false;
-    await initialize(false);
-    window.dispatchEvent(new Event('content-admin:refresh'));
-  } catch (error) { status.textContent = error instanceof Error ? error.message : 'No se pudo actualizar la categoría.'; }
-});
-
 required<HTMLButtonElement>('#new-category').addEventListener('click', () => {
-  showWorkspace('structure');
   window.dispatchEvent(new Event('content-admin:new-category'));
 });
 required<HTMLButtonElement>('#new-topic').addEventListener('click', () => {
-  showWorkspace('structure');
   window.dispatchEvent(new CustomEvent('content-admin:new-topic', { detail: { categoryId: currentCategoryId } }));
 });
 
@@ -720,10 +796,11 @@ for (const button of document.querySelectorAll<HTMLButtonElement>('[data-workspa
     const target = button.dataset.workspace;
     if (target === 'note') showWorkspace('note');
     if (target === 'order') {
+      exitFocusMode(false);
       categoryWorkspace.classList.remove('show-editor');
       required<HTMLElement>('.outline-panel').scrollIntoView({ block: 'start' });
     }
-    if (target === 'structure' || target === 'trash') showWorkspace(target);
+    if (target === 'trash') showWorkspace('trash');
   });
 }
 
@@ -742,4 +819,17 @@ initialize().then(() => {
   if (currentCategoryId) resetNote();
 }).catch((error) => { status.textContent = error instanceof Error ? error.message : 'No se pudo cargar el administrador.'; });
 
-window.addEventListener('content-admin:refresh', () => { initialize(false).catch(() => undefined); });
+window.addEventListener('content-admin:refresh', (event) => {
+  initialize(false).then(() => {
+    const focus = (event as CustomEvent<{ focus?: { kind: string; id: string } }>).detail?.focus;
+    if (!focus) return;
+    const selectors: Record<string, string> = {
+      category: `[data-category-item-id="${CSS.escape(focus.id)}"] .category-card`,
+      topic: `.topic-group[data-topic-id="${CSS.escape(focus.id)}"] .item-menu summary`,
+      'new-category': '#new-category',
+      'new-topic': '#new-topic',
+    };
+    const selector = selectors[focus.kind];
+    if (selector) document.querySelector<HTMLElement>(selector)?.focus();
+  }).catch(() => undefined);
+});

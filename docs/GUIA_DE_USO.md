@@ -352,14 +352,20 @@ contenido publicada.
 ### Flujos editoriales
 
 En **Nota** puedes crear o editar una nota escrita o de video, usar la toolbar
-Markdown, adjuntar una imagen y revisar la vista previa antes de guardar. El
+Markdown, adjuntar una imagen y revisar la vista previa antes de guardar. En las
+notas escritas, **Modo enfoque** ocupa la pantalla con el editor y la vista
+previa en vivo; **Escape** o **Salir del modo enfoque** regresa al panel normal.
+El
 explorador permite combinar búsqueda por título, categoría, tema y etiqueta;
 los archivos inválidos aparecen en una lista separada para corregirlos sin que
 la interfaz los sobrescriba.
 
-En **Estructura** se crean o editan categorías y temas. Los IDs existentes son
-estables. Una eliminación con dependencias se bloquea hasta reasignar o retirar
-las notas relacionadas. En **Orden**, los botones Subir/Bajar mantienen una
+Las acciones **Nueva categoría**, **Nuevo tema** y **Nueva nota** están
+identificadas por texto e iconos diferentes. Las categorías y los temas se
+crean en diálogos desde su contexto; el menú **Acciones** de cada elemento
+permite editarlo o eliminarlo. Los IDs existentes son estables y los temas
+nuevos se añaden al final. Una eliminación con dependencias muestra las notas
+que deben reasignarse antes de continuar. En **Orden**, los botones Subir/Bajar mantienen una
 secuencia global única entre temas y notas y el cambio solo se escribe al pulsar
 **Guardar orden**.
 

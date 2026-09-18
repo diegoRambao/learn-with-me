@@ -6,6 +6,7 @@
 - No existe enlace, ruta ni descubrimiento desde el sitio público.
 - Una cabecera identifica claramente “Administrador local” y muestra que los cambios afectan archivos del repositorio, no que publiquen a internet.
 - El layout de escritorio usa tres zonas reconocibles: explorador editorial, formulario/editor y vista previa. En anchuras estrechas se apilan sin perder controles ni crear una experiencia móvil dedicada.
+- El editor Markdown ofrece un modo de enfoque dentro de la aplicación: en escritorio ocupa el viewport con editor y preview simultáneos; bajo 900 px conserva ambas vistas mediante el selector Editor/Vista previa.
 - La composición, contraste, bordes, tipografía y densidad toman como referencia la claridad de Vercel, usando la identidad visual y el español propios del proyecto.
 
 ## Explorador editorial
@@ -15,6 +16,7 @@
 - Una búsqueda sin coincidencias explica el estado y ofrece limpiar filtros.
 - Los archivos inválidos permanecen visibles con estado de atención, ruta relativa y resumen accionable; abrirlos nunca dispara una escritura automática.
 - Si no existe contenido, el estado inicial dirige primero a “Crear categoría”; tema y nota permanecen explicados pero no utilizables hasta que existan sus dependencias.
+- Las acciones de alta se distinguen con texto e iconos propios: “Nueva categoría”, “Nuevo tema” y “Nueva nota”.
 
 ## Formularios
 
@@ -23,11 +25,14 @@
 - Campos: ID al crear, nombre, descripción, imagen y nivel.
 - El ID propuesto se deriva del nombre, puede corregirse antes del primer guardado y después queda estable.
 - La imagen admite la ruta pública o URL HTTPS que permite el contrato actual.
+- Crear, editar y eliminar se inicia desde la propia biblioteca y usa diálogos enfocados; no existe un selector intermedio de “editar existente”.
 
 ### Tema
 
 - Campos: ID al crear, nombre y ubicación en la secuencia de su categoría.
 - El ID queda estable después de crear.
+- El alta se realiza en el contexto de la categoría seleccionada y añade el tema al final; el orden se cambia desde la vista Orden.
+- Cada fila de tema ofrece acciones contextuales para editar o eliminar.
 - Eliminar muestra dependencias y se bloquea mientras existan notas relacionadas.
 
 ### Nota
@@ -43,6 +48,8 @@
 - El contenido se edita directamente en un `<textarea>` con label persistente.
 - La toolbar usa botones nativos con nombres accesibles y shortcuts anunciados para encabezado, negrita, cursiva, lista ordenada/no ordenada, enlace, código inline, bloque de código, imagen y recurso audiovisual compatible.
 - Cada comando modifica o envuelve la selección, devuelve foco al textarea y preserva una selección útil.
+- “Modo enfoque” oculta navegación y metadatos, conserva toolbar, estado de borrador, Guardar y Salir, y devuelve el foco al control que lo activó al pulsar Escape.
+- Si un guardado en modo enfoque falla por metadatos, la interfaz sale del modo, abre los ajustes y enfoca el resumen de errores.
 - Elegir una imagen muestra nombre, tipo, tamaño, texto alternativo y preview local. Solo después de “Guardar nota” el recurso pasa a la carpeta activa.
 - Un upload inválido conserva todos los demás campos y asocia el error al control de imagen.
 
