@@ -8,6 +8,16 @@
 
 **Input**: User description: "Agrega la libreria shadcn ui en el proyecto de administracion para mejorar la UI"
 
+## Clarifications
+
+### Session 2026-09-21
+
+- Q: ¿Qué estándar de accesibilidad debe cumplir la interfaz administrativa renovada? → A: WCAG 2.2 nivel AA.
+- Q: ¿En qué navegadores debe funcionar y probarse la interfaz administrativa renovada? → A: Las dos versiones más recientes de Chrome, Firefox, Safari y Edge.
+- Q: ¿Hasta qué punto deben migrarse a shadcn/ui los controles existentes del administrador? → A: Todos los controles equivalentes en todas las pantallas administrativas.
+- Q: ¿Qué tipos de contenido deben tener cobertura completa de pruebas de aceptación después de la renovación? → A: Categorías, temas y notas.
+- Q: ¿Qué degradación máxima de rendimiento puede introducir la renovación respecto a la interfaz administrativa actual? → A: Máximo 10% de degradación.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Gestionar contenido con una interfaz coherente (Priority: P1)
@@ -90,6 +100,9 @@ Como responsable del contenido, quiero usar el administrador con teclado, tecnol
 - **FR-016**: Los componentes visuales compartidos DEBEN contemplar, como mínimo, sus estados normal, enfocado, deshabilitado, en curso, correcto y con error cuando dichos estados sean aplicables.
 - **FR-017**: Los cambios de estado o transiciones visuales DEBEN respetar las preferencias de movimiento reducido del entorno y mantener disponible una señal no animada equivalente.
 - **FR-018**: El alcance inicial NO incluye rediseñar el sitio público, añadir nuevos flujos editoriales, modificar el modelo de contenido ni cambiar las reglas de acceso local del administrador.
+- **FR-019**: La interfaz administrativa renovada DEBE cumplir todos los criterios aplicables de WCAG 2.2 nivel AA.
+- **FR-020**: Todos los flujos administrativos críticos DEBEN funcionar en las dos versiones estables más recientes de Chrome, Firefox, Safari y Edge.
+- **FR-021**: Todos los controles existentes del administrador que tengan un equivalente adecuado en el sistema de componentes compartido DEBEN migrarse a ese sistema en todas las pantallas administrativas; los controles especializados sin equivalente adecuado PUEDEN conservarse si cumplen los demás requisitos de esta especificación.
 
 ## Success Criteria *(mandatory)*
 
@@ -103,6 +116,10 @@ Como responsable del contenido, quiero usar el administrador con teclado, tecnol
 - **SC-006**: El 100% de la suite vigente de aceptación del administrador continúa superándose después de la renovación visual.
 - **SC-007**: En una evaluación de consistencia de todas las pantallas administrativas, el 100% de las funciones equivalentes utiliza el mismo patrón de interacción y terminología.
 - **SC-008**: Al menos el 85% de las personas participantes califica la claridad y facilidad de uso del administrador con 4 o 5 puntos sobre 5.
+- **SC-009**: El 100% de las pantallas y recorridos administrativos críticos evaluados cumple todos los criterios aplicables de WCAG 2.2 nivel AA mediante comprobaciones automáticas y manuales.
+- **SC-010**: El 100% de los recorridos administrativos críticos supera las pruebas de aceptación en las dos versiones estables más recientes de Chrome, Firefox, Safari y Edge.
+- **SC-011**: El 100% de los flujos aplicables de creación, consulta, edición, ordenamiento, búsqueda, previsualización, eliminación y restauración de categorías, temas y notas supera las pruebas de aceptación después de la renovación.
+- **SC-012**: En el mismo entorno, con los mismos datos y bajo las mismas condiciones de medición, la carga inicial y el tiempo de respuesta de las interacciones críticas no empeoran más de un 10% respecto a la interfaz administrativa anterior a la renovación.
 
 ## Assumptions
 
