@@ -14,6 +14,8 @@ position: 1
 format: written
 body: >
 
+  https://youtu.be/T7jUQ2_9V0I
+
 
   El *vibe coding* puede llevarte de cero a una aplicación funcional en pocas
   horas. El problema comienza cuando esa aplicación debe sobrevivir a nuevos
@@ -558,10 +560,11 @@ body: >
   el costo de comprenderlo. Cuando el software crece, ese segundo costo es el
   que realmente determina si un proyecto escala.
 uploadTokens: []
-revision: 68f7876a2458e00597075bac36fede4e2ae5c7cd92a3a73205ce0e45a01ac44c
+revision: faf03f2e51bbac371f4ecb32d3e4554844cc1fadc7c2aaacaf3294d41d01cf8a
 ---
 
 
+https://youtu.be/T7jUQ2_9V0I
 
 El *vibe coding* puede llevarte de cero a una aplicación funcional en pocas horas. El problema comienza cuando esa aplicación debe sobrevivir a nuevos requisitos, nuevos desarrolladores y usuarios reales.
 
