@@ -9,23 +9,27 @@ const request = (payload: unknown): Request => new Request('http://127.0.0.1:432
 
 describe('POST /api/preview', () => {
   it('renders written Markdown into a sandbox-compatible document without writing files', async () => {
-    const response = await handlePreviewRequest(request({ title: 'Guía', description: 'Resumen', tags: ['astro'], durationMinutes: 4, format: 'written', body: '# Hola\n\n**Mundo**' }));
+    const response = await handlePreviewRequest(request({ title: 'Guía', description: 'Resumen', tags: ['astro'], durationMinutes: 4, position: 2, format: 'written', body: '# Hola\n\n**Mundo**\n\n```ts\nconst answer = left => right;\n```' }));
     const payload = await response.json();
     expect(response.status).toBe(200);
     expect(payload.data.html).toContain('<h1 id="hola">Hola</h1>');
+    expect(payload.data.html).toContain('Clase 2 · 4 minutos');
+    expect(payload.data.html).toContain('class="note-prose note-content-body"');
+    expect(payload.data.html).toContain('class="code-block"');
+    expect(payload.data.html).toContain('Cascadia Code');
     expect(payload.data.html).toContain('Content-Security-Policy');
     expect(payload.data.html).not.toContain('<script');
   });
 
   it('renders a video note with the privacy-enhanced YouTube player', async () => {
-    const response = await handlePreviewRequest(request({ title: 'Video', description: 'Resumen', tags: ['video'], durationMinutes: 4, format: 'video', youtubeVideoId: 'M7lc1UVf-VE', body: '' }));
+    const response = await handlePreviewRequest(request({ title: 'Video', description: 'Resumen', tags: ['video'], durationMinutes: 4, position: 1, format: 'video', youtubeVideoId: 'M7lc1UVf-VE', body: '' }));
     expect((await response.text())).toContain('youtube-nocookie.com/embed/M7lc1UVf-VE');
   });
 
   it('rejects invalid variants and oversized Markdown', async () => {
     const invalid = await handlePreviewRequest(request({ format: 'video', youtubeVideoId: 'bad', body: 'markdown' }));
     expect(invalid.status).toBe(400);
-    const oversized = await handlePreviewRequest(request({ format: 'written', title: 'x', description: 'x', tags: ['x'], durationMinutes: 1, body: 'x'.repeat(550_000) }));
+    const oversized = await handlePreviewRequest(request({ format: 'written', title: 'x', description: 'x', tags: ['x'], durationMinutes: 1, position: 1, body: 'x'.repeat(550_000) }));
     expect(oversized.status).toBe(413);
   });
 });

@@ -116,7 +116,7 @@ body: >
 
   - https://www.youtube.com/watch?v=zQyrhjEAqLs
 uploadTokens: []
-revision: 901ef0c42cbbfde8c553597f963ca8661da8dbb1a988a2403db906b61a7d692c
+revision: c10820747058035ed07d6bf98e4f6b3d236eb63ecf17d1f47fb884c33e8ced3a
 ---
 
 Antes de hablar de AWS es muy importante que estendamos ¿Que es la Nube? ¿Porque surgió?

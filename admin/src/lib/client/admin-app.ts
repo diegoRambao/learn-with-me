@@ -148,6 +148,7 @@ const previewPayload = () => ({
   description: draft.values.description,
   tags: draft.values.tags,
   durationMinutes: draft.values.durationMinutes,
+  position: draft.values.position,
   format: draft.values.format,
   body: draft.values.body,
   ...(draft.values.format === 'video' ? { youtubeVideoId: draft.values.youtubeVideoId } : {}),
@@ -581,6 +582,7 @@ const populateFilters = (): void => {
     categorySelect.add(new Option(category.name, category.id));
     if (category.id === currentCategoryId) for (const topic of category.topics) topicFilter.add(new Option(topic.name, topic.id));
   }
+  categorySelect.value = currentCategoryId;
   for (const tag of bootstrap.snapshot.tags) {
     tagFilter.add(new Option(tag.value, tag.value));
     required<HTMLDataListElement>('#existing-tags').append(new Option(tag.value));

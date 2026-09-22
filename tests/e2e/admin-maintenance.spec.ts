@@ -1,4 +1,4 @@
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { expect, test } from '@playwright/test';
 import { setupAdminRepository } from './admin-global-setup';
@@ -38,4 +38,27 @@ test('filters existing content, exposes invalid files, protects a dirty draft, a
   await page.getByLabel('Buscar por título').fill('sin-coincidencias');
   await expect(page.getByText(/No hay resultados/)).toBeVisible();
   await expect(page.getByLabel('Buscar por título')).toHaveValue('sin-coincidencias');
+});
+
+test('keeps the selected category after consecutive saves in focus mode', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'The mutating focus-save journey runs once.');
+  await setupAdminRepository();
+  await page.goto(adminUrl);
+  await page.getByRole('button', { name: /^Dart / }).click();
+  await page.getByRole('button', { name: /Introducción/ }).click();
+
+  const markdown = page.getByRole('textbox', { name: 'Markdown', exact: true });
+  await page.getByRole('button', { name: 'Modo enfoque' }).click();
+  await markdown.fill('# Primer guardado');
+  await page.getByRole('button', { name: 'Guardar nota' }).click();
+
+  const category = page.locator('#note-category');
+  await expect(category).toHaveValue('dart');
+  await expect(page.locator('#admin-status')).toContainText('src/content/notes/dart/intro.md');
+
+  await markdown.fill('# Cambio inmediato');
+  await page.getByRole('button', { name: 'Guardar nota' }).click();
+  await expect(category).toHaveValue('dart');
+  await expect(page.locator('#admin-status')).toContainText('src/content/notes/dart/intro.md');
+  await expect.poll(() => readFile(join(fixtureRoot, 'src/content/notes/dart/intro.md'), 'utf8')).toContain('# Cambio inmediato');
 });

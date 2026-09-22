@@ -560,7 +560,7 @@ body: >
   el costo de comprenderlo. Cuando el software crece, ese segundo costo es el
   que realmente determina si un proyecto escala.
 uploadTokens: []
-revision: faf03f2e51bbac371f4ecb32d3e4554844cc1fadc7c2aaacaf3294d41d01cf8a
+revision: c303b2bc476244072408ac940d7910d59877efc8b820347538d2b3c2e645a117
 ---
 
 

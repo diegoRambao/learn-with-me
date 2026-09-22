@@ -7,14 +7,14 @@ const watchUrl = note.format === 'video' ? `https://www.youtube.com/watch?v=${no
 const embedUrl = note.format === 'video' ? `https://www.youtube.com/embed/${note.youtubeVideoId}` : '';
 ---
 
-<article aria-labelledby="note-title">
+<article class="note-content" aria-labelledby="note-title">
   <p class="eyebrow">Clase {note.position} · {note.durationMinutes} minutos</p>
-  <h1 id="note-title" class="mt-4 text-4xl font-bold tracking-tight text-balance sm:text-5xl">{note.title}</h1>
-  <p class="mt-5 max-w-3xl text-lg leading-8 text-muted">{note.description}</p>
+  <h1 id="note-title" class="note-content-title">{note.title}</h1>
+  <p class="note-content-description">{note.description}</p>
 
   {note.format === 'written' ? (
     <>
-      <div class="note-prose mt-10 border-t border-line pt-8">
+      <div class="note-prose note-content-body">
         {Content ? <Content /> : <p>Este contenido no se pudo mostrar. Vuelve a la ruta e intenta otra nota.</p>}
       </div>
       <dialog class="note-image-dialog" data-note-image-dialog aria-label="Vista ampliada de imagen">
@@ -28,11 +28,11 @@ const embedUrl = note.format === 'video' ? `https://www.youtube.com/embed/${note
       </dialog>
     </>
   ) : (
-    <section aria-label={`Video: ${note.title}`} class="mt-10">
-      <div class="video-frame aspect-video overflow-hidden rounded-2xl border border-line">
-        <iframe class="h-full w-full" src={embedUrl} title={`Video: ${note.title}`} loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <section aria-label={`Video: ${note.title}`} class="note-video-section">
+      <div class="note-video-frame">
+        <iframe src={embedUrl} title={`Video: ${note.title}`} loading="lazy" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
       </div>
-      <p class="mt-4 text-sm text-muted">Si el reproductor no está disponible, <a class="font-bold text-accent underline underline-offset-4" href={watchUrl}>abre “{note.title}” directamente en YouTube</a>.</p>
+      <p class="note-video-fallback">Si el reproductor no está disponible, <a href={watchUrl}>abre “{note.title}” directamente en YouTube</a>.</p>
     </section>
   )}
   <template data-code-copy-content>
